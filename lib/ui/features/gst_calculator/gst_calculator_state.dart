@@ -1,6 +1,6 @@
 part of 'gst_calculator_cubit.dart';
 
-@immutable
+
 abstract class GstCalculatorState {}
 
 class GstCalculatorInitial extends GstCalculatorState {}

@@ -1,11 +1,13 @@
-import 'package:account_manager/features/calculator/emi_calculator/emi_calculator.dart';
-import 'package:account_manager/features/cash_counter/cash_counter_screen.dart';
-import 'package:account_manager/features/credit_debit/credit_debit_screen.dart';
-import 'package:account_manager/features/gst_calculator/gst_calculator.dart';
-import 'package:account_manager/features/gst_calculator/gst_calculator_cubit.dart';
-import 'package:account_manager/features/income_expense/income_expense.dart';
-import 'package:account_manager/screens/dashboard/dashboard_screen.dart';
-import 'package:account_manager/screens/splash/splash_screen.dart';
+import 'package:account_manager/repository/currency_repository.dart';
+import 'package:account_manager/ui/features/calculator/emi_calculator/emi_calculator.dart';
+import 'package:account_manager/ui/features/cash_counter/cash_counter_cubit.dart';
+import 'package:account_manager/ui/features/cash_counter/cash_counter_screen.dart';
+import 'package:account_manager/ui/features/credit_debit/credit_debit_screen.dart';
+import 'package:account_manager/ui/features/gst_calculator/gst_calculator.dart';
+import 'package:account_manager/ui/features/gst_calculator/gst_calculator_cubit.dart';
+import 'package:account_manager/ui/features/income_expense/income_expense.dart';
+import 'package:account_manager/ui/screens/dashboard/dashboard_screen.dart';
+import 'package:account_manager/ui/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,14 +30,22 @@ Route<dynamic> controller(RouteSettings settings) {
           builder: (context) => const DashboardScreen(), settings: settings);
     case gstCalculator:
       return MaterialPageRoute(
-          builder: (context) => BlocProvider(
+          builder: (context) =>
+              BlocProvider(
                 create: (context) => GstCalculatorCubit(),
                 child: const GstCalculator(),
               ),
           settings: settings);
     case cashCounter:
       return MaterialPageRoute(
-          builder: (context) => const CashCounterScreen(), settings: settings);
+          builder: (context) =>
+              RepositoryProvider(
+                create: (context) => CurrencyRepository(),
+                child: BlocProvider(
+                  create: (context) => CashCounterCubit(RepositoryProvider.of<CurrencyRepository>(context)),
+                  child: const CashCounterScreen(),
+                ),
+              ), settings: settings);
     case creditDebit:
       return MaterialPageRoute(
           builder: (context) => const CreditDebitScreen(), settings: settings);

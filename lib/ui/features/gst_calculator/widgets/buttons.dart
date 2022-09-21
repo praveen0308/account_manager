@@ -1,4 +1,4 @@
-import 'package:account_manager/features/gst_calculator/widgets/button_model.dart';
+import 'package:account_manager/ui/features/gst_calculator/widgets/button_model.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:flutter/material.dart';
 

@@ -1,6 +1,6 @@
-import 'package:account_manager/features/gst_calculator/gst_calculator_cubit.dart';
-import 'package:account_manager/features/gst_calculator/widgets/button_model.dart';
-import 'package:account_manager/features/gst_calculator/widgets/buttons.dart';
+import 'package:account_manager/ui/features/gst_calculator/gst_calculator_cubit.dart';
+import 'package:account_manager/ui/features/gst_calculator/widgets/button_model.dart';
+import 'package:account_manager/ui/features/gst_calculator/widgets/buttons.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:account_manager/res/app_strings.dart';
 import 'package:account_manager/widgets/app_bar.dart';
@@ -223,7 +223,7 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
   @override
   void initState() {
     scrollController = ScrollController(initialScrollOffset: 50.0);
-    WidgetsBinding.instance!.addPostFrameCallback(scroll);
+    WidgetsBinding.instance.addPostFrameCallback(scroll);
     super.initState();
   }
 

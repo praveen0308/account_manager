@@ -1,5 +1,4 @@
 import 'package:account_manager/res/app_colors.dart';
-import 'package:account_manager/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:account_manager/route/route.dart' as route;
 
@@ -16,9 +15,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
       title: 'Flutter Demo',
       theme: ThemeData(
+        iconTheme: const IconThemeData(color: AppColors.primaryDarkest),
           primarySwatch: AppColors.primarySwatchColor,
+          textSelectionTheme: const TextSelectionThemeData(
+            selectionHandleColor: Colors.transparent,
+          ),
           textTheme: TextTheme(),
           scaffoldBackgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(

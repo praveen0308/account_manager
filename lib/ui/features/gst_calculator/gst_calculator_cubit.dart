@@ -1,8 +1,6 @@
-import 'package:account_manager/features/gst_calculator/widgets/button_model.dart';
+import 'package:account_manager/ui/features/gst_calculator/widgets/button_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:function_tree/function_tree.dart';
-import 'package:meta/meta.dart';
-
 part 'gst_calculator_state.dart';
 
 class GstCalculatorCubit extends Cubit<GstCalculatorState> {

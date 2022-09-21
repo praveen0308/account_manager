@@ -17,6 +17,7 @@ class AppColors{
   });
 
   //Primary Color
+  static const white = Color(0XFFFFFFFF);
   static const primaryLightest = Color(0XFFFFFCF3);
   static const primaryLight = Color(0XFFFFECB3);
   static const primary = Color(0XFFFFC107);
@@ -58,4 +59,5 @@ class AppColors{
   static const greyDark = Color(0XFF3c4143);
   static const greyDarkest = Color(0XFF141616);
   static const colorTransparent = Color(0xFFFFFF);
+  static const surfaceColor = Color(0xFFFFFFFF);
 }
