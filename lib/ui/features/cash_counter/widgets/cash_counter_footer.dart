@@ -9,6 +9,7 @@ import 'package:account_manager/widgets/secondary_button.dart';
 import 'package:account_manager/widgets/time_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:account_manager/route/route.dart' as route;
 
 class CCBottomSheet extends StatefulWidget {
   const CCBottomSheet({Key? key}) : super(key: key);
@@ -31,13 +32,16 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
         details.globalPosition.dx,
         details.globalPosition.dy - 180,
       ), //position where you want to show the menu on screen
-      items: [
+      items: const [
         PopupMenuItem<String>(
-            child: const Text('menu option 1'), value: '1'),
+            value: '1',
+            child:  Text('menu option 1')),
         PopupMenuItem<String>(
-            child: const Text('menu option 2'), value: '2'),
+            value: '2',
+            child:  Text('menu option 2')),
         PopupMenuItem<String>(
-            child: const Text('menu option 3'), value: '3'),
+            value: '3',
+            child:  Text('menu option 3')),
       ],
       elevation: 8.0,
     ).then<void>((String? itemSelected) {
@@ -60,11 +64,15 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
         itemBuilder: (_) =>
         const<PopupMenuItem<String>>[
           PopupMenuItem<String>(
-              child: Text('Doge'), value: 'Doge'),
+              value: 'Doge',
+              child: Text('Doge')),
           PopupMenuItem<String>(
-              child: Text('Lion'), value: 'Lion'),
+              value: 'Lion',
+              child: Text('Lion')),
         ],
         onSelected: (_) {});
+
+    super.initState();
   }
 
   @override
@@ -80,6 +88,16 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           BlocBuilder<CashCounterCubit, CashCounterState>(
+            buildWhen: (previousState,state){
+              if(state is ClearScreen){
+                return true;
+              }
+              if(state is EntriesChanged){
+                return true;
+              }
+
+              return false;
+            },
             builder: (context, state) {
 
 
@@ -106,7 +124,7 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
                       child: ContainerLight(
                         childWidget: Column(
                           children: [
-                            Text(
+                            const Text(
                               "Notes",
                               style: TextStyle(
                                   color: AppColors.primaryDarkest,
@@ -115,7 +133,7 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
                             ),
                             Text(
                               state.noOfNotes.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: AppColors.primaryDarkest,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800),
@@ -130,7 +148,7 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
                       child: ContainerLight(
                         childWidget: Column(
                           children: [
-                            Text(
+                            const Text(
                               "Total",
                               style: TextStyle(
                                   color: AppColors.primaryDarkest,
@@ -139,7 +157,7 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
                             ),
                             Text(
                               state.grandTotal.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: AppColors.primaryDarkest,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800),
@@ -168,17 +186,24 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
           ),
           Row(
             children: [
-              Expanded(child: SecondaryButton(onClick: () {}, text: "Clear")),
+              Expanded(child: SecondaryButton(onClick: () {
+                BlocProvider.of<CashCounterCubit>(context).clearFields();
+              }, text: "Clear")),
               const SizedBox(
                 width: 16,
               ),
-              Expanded(child: PrimaryButton(onClick: () {}, text: "Save"))
+              Expanded(child: PrimaryButton(onClick: () {
+                BlocProvider.of<CashCounterCubit>(context).addCashTransaction();
+              }, text: "Save"))
             ],
           ),
           const SizedBox(
             height: 12,
           ),
-          PrimaryButton(onClick: () {}, text: "View History")
+          PrimaryButton(onClick: () {
+            Navigator.pushNamed(context, route.cashCounterHistory);
+
+          }, text: "View History")
         ],
       ),
     );

@@ -24,7 +24,7 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
       children: [
         Row(
           children: [
-            Text(
+            const Text(
               "Denomination Total",
               style: TextStyle(fontSize: 20),
             ),
@@ -33,7 +33,7 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
               builder: (context, state) {
                 return Text(
                   state.denominationTotal.toString(),
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: AppColors.primary,
                       fontSize: 20,
                       fontWeight: FontWeight.w600),
@@ -91,18 +91,26 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
         OutlinedTextField(
           controller: TextEditingController(),
           inputType: TextInputType.text,
-          maxLength: 7,
-          onSubmitted: (String txt) {},
-          onTextChanged: (String txt) {},
+          maxLength: 50,
+          onSubmitted: (String txt) {
+            BlocProvider.of<CashCounterCubit>(context).personName = txt;
+          },
+          onTextChanged: (String txt) {
+            BlocProvider.of<CashCounterCubit>(context).personName = txt;
+          },
           hintText: "Person Name",
         ),
 
         OutlinedTextField(
           controller: TextEditingController(),
           inputType: TextInputType.text,
-          maxLength: 7,
-          onSubmitted: (String txt) {},
-          onTextChanged: (String txt) {},
+          maxLength: 200,
+          onSubmitted: (String txt) {
+            BlocProvider.of<CashCounterCubit>(context).remark = txt;
+          },
+          onTextChanged: (String txt) {
+            BlocProvider.of<CashCounterCubit>(context).remark = txt;
+          },
           hintText: "Remark",
         ),
         CheckboxListTile(
@@ -113,7 +121,7 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
               _addIntoCreditDebit = v!;
             });
           },
-          title: Text(
+          title: const Text(
             "Add into Credit Debit",
             style: TextStyle(
                 fontSize: 18,

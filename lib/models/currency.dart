@@ -13,9 +13,11 @@ class Currency {
 
   int? id;
   int item;
+  int? qty;
   final bool isActive;
 
-  Currency({this.id, required this.item, this.isActive = true});
+
+  Currency({this.id, required this.item,this.qty=0, this.isActive = true});
 
   Map<String, dynamic> toMap() {
     return {

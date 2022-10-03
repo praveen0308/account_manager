@@ -1,6 +1,7 @@
+import 'package:account_manager/models/cash_transaction.dart';
+import 'package:account_manager/repository/cash_transaction_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import '../../../models/currency.dart';
 import '../../../repository/currency_repository.dart';
@@ -10,7 +11,8 @@ part 'cash_counter_state.dart';
 class CashCounterCubit extends Cubit<CashCounterState> {
 
   final CurrencyRepository _currencyRepository;
-  CashCounterCubit(this._currencyRepository) : super(CashCounterInitial(0,0.0,0.0));
+  final CashTransactionRepository _cashTransactionRepository;
+  CashCounterCubit(this._currencyRepository, this._cashTransactionRepository) : super(CashCounterInitial(0,0.0,0.0));
 
   int noOfNotes = 0;
   double denominationTotal = 0;
@@ -20,11 +22,13 @@ class CashCounterCubit extends Cubit<CashCounterState> {
   Map<int,int> noteMaps = Currency.getCurrencyMap();
   String personName = "";
   String remark = "";
-
+  List<Currency> currencies = [];
   Future<void> fetchCurrencies() async {
     emit(Loading(0,0.0,0.0));
     try{
       var result = await _currencyRepository.getAllCurrencies();
+      currencies.clear();
+      currencies.addAll(result);
       emit(ReceivedCurrencies(result));
     }catch(e){
       debugPrint(e.toString());
@@ -59,6 +63,62 @@ class CashCounterCubit extends Cubit<CashCounterState> {
     emit(EntriesChanged(noOfNotes, denominationTotal, grandTotal));
   }
   void clearFields(){
+    noOfNotes = 0;
+    manuallyAdded = 0;
+    manuallySubtracted = 0;
+    grandTotal = 0;
+    denominationTotal = 0;
+    personName="";
+    remark = "";
+
+    noteMaps.forEach((key, value) {
+      noteMaps.update(key, (value) => 0);
+    });
+
+    emit(ClearScreen(noOfNotes, denominationTotal, grandTotal,currencies));
+    emit(ReceivedCurrencies(currencies));
+  }
+
+  void addCashTransaction() async{
+    emit(AddingTransaction(noOfNotes, denominationTotal, grandTotal));
+    CashTransactionModel cashTransactionModel = CashTransactionModel();
+    cashTransactionModel.manuallySubtracted = manuallySubtracted;
+    cashTransactionModel.manuallyAdded = manuallyAdded;
+    cashTransactionModel.denominationTotal = denominationTotal;
+    cashTransactionModel.grandTotal = grandTotal;
+    cashTransactionModel.noOfNotes = noOfNotes;
+    cashTransactionModel.name = personName;
+    cashTransactionModel.remark = remark;
+    cashTransactionModel.description = getFormattedDescription();
+    var result = await _cashTransactionRepository.addCashTransaction(cashTransactionModel);
+
+    if(result){
+      emit(TransactionAddedSuccessfully(noOfNotes, denominationTotal, grandTotal));
+      clearFields();
+
+
+    }else{
+      emit(TransactionFailed(noOfNotes, denominationTotal, grandTotal));
+    }
 
   }
+
+  String getFormattedDescription() {
+    var output = "";
+
+
+    noteMaps.forEach((key, value) {
+      if(value>0){
+        output += "${key}x$value,";
+
+      }
+    });
+
+    output = output.substring(0,output.length-1);
+    return output;
+
+  }
+
+
+
 }

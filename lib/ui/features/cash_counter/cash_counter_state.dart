@@ -17,13 +17,29 @@ class Loading extends CashCounterState {
   Loading(super.noOfNotes, super.denominationTotal, super.grandTotal);
 }
 
+class AddingTransaction extends CashCounterState {
+  AddingTransaction(super.noOfNotes, super.denominationTotal, super.grandTotal);
+}
+
 class EntriesChanged extends CashCounterState {
   EntriesChanged(super.noOfNotes, super.denominationTotal, super.grandTotal);
+}
+
+class ClearScreen extends CashCounterState {
+  final List<Currency> currencies;
+  ClearScreen(super.noOfNotes, super.denominationTotal, super.grandTotal, this.currencies);
 }
 class ReceivedCurrencies extends CashCounterState {
   final List<Currency> currencies;
 
   ReceivedCurrencies(this.currencies) : super(0, 0.0, 0.0);
+}
 
+class TransactionAddedSuccessfully extends CashCounterState {
+  TransactionAddedSuccessfully(super.noOfNotes, super.denominationTotal, super.grandTotal);
+}
+
+class TransactionFailed extends CashCounterState {
+  TransactionFailed(super.noOfNotes, super.denominationTotal, super.grandTotal);
 }
 

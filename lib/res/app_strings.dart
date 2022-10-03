@@ -5,6 +5,7 @@ class AppStrings{
   static const String gstCalculator = "GST Calculator";
   static const String cashCounter = "Cash Counter";
   static const String creditDebit = "Credit Debit";
+  static const String cashTransactions = "Cash Transactions";
   static const String emiCalculator = "EMI Calculator";
   static const String incomeExpense = "Income & Expense";
 

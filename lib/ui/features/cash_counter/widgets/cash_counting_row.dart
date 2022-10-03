@@ -42,6 +42,7 @@ class _CashCountingRowState extends State<CashCountingRow> {
       });
 
     });
+    super.initState();
 
   }
 

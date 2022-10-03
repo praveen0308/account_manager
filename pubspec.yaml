@@ -21,6 +21,11 @@ dependencies:
   intl: ^0.17.0
   sqflite:
   path:
+  percent_indicator: ^4.2.2
+  persistent_bottom_nav_bar: ^5.0.2
+  flutter_native_contact_picker: ^0.0.3
+  flutter_phone_direct_caller: ^2.1.1
+  flutter_chat_bubble: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
