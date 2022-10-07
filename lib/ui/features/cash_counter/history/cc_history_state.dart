@@ -7,7 +7,7 @@ class CcHistoryInitial extends CcHistoryState {}
 class LoadingData extends CcHistoryState {}
 class ReceivedHistory extends CcHistoryState {
   final double grandTotal;
-  final List<CashTransactionModel> data;
+  final List<DayTransactionModel> data;
 
   ReceivedHistory(this.data, this.grandTotal);
 }

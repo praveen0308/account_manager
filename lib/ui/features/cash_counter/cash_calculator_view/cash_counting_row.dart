@@ -26,7 +26,13 @@ class _CashCountingRowState extends State<CashCountingRow> {
   void initState() {
     qty = widget.qty;
     total = getTotal(widget.item, qty);
-    txtController.text = qty.toString();
+    if(qty==0){
+      txtController.text = "";
+    }else{
+      txtController.text = qty.toString();
+    }
+
+
     txtController.addListener(() {
 
       if(txtController.text.isNotEmpty){
@@ -46,10 +52,7 @@ class _CashCountingRowState extends State<CashCountingRow> {
 
   }
 
-  void quantityChanged(){
 
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +60,7 @@ class _CashCountingRowState extends State<CashCountingRow> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Text(widget.item.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),),
+        Text(widget.item.toString(),style: const TextStyle(fontSize: 16,fontWeight: FontWeight.w500),),
         const Text("x"),
         Container(
           decoration: BoxDecoration(
@@ -69,9 +72,7 @@ class _CashCountingRowState extends State<CashCountingRow> {
             width: 70,
             height: 30,
             child: TextFormField(
-              onChanged: (t){
-                quantityChanged();
-              },
+
               // onFieldSubmitted: quantityChanged,
               cursorHeight: 0,
               cursorWidth: 0,
@@ -91,7 +92,7 @@ class _CashCountingRowState extends State<CashCountingRow> {
           ),
         ),
         const Text("="),
-        Text(total.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),)
+        Text(total.toString(),style: const TextStyle(fontSize: 16,fontWeight: FontWeight.w500),)
       ],
     );
   }

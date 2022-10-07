@@ -1,6 +1,8 @@
+import 'package:account_manager/models/day_transaction_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-
+import "package:collection/collection.dart";
+import 'package:intl/intl.dart';
 import '../../../../models/cash_transaction.dart';
 import '../../../../repository/cash_transaction_repository.dart';
 
@@ -21,11 +23,34 @@ class CcHistoryCubit extends Cubit<CcHistoryState> {
 
       transactions.clear();
       transactions.addAll(result);
-      transactions.forEach((element) {
+      for (var element in transactions) {
         grandTotal+=element.grandTotal;
+      }
+
+      var gTransactions = groupBy(transactions,(CashTransactionModel e)=>DateFormat.yMMMd().format(DateTime.parse(e.addedOn)));
+      List<DayTransactionModel> dayTransactions = [];
+
+      gTransactions.forEach((date, transactions) {
+        var noOfNotes = 0;
+        double denominationTotal = 0;
+        double mAdded = 0;
+        double mSubtracted = 0;
+        Map<int,int> notes = {};
+        for(var t in transactions){
+          noOfNotes += t.noOfNotes;
+          denominationTotal += t.denominationTotal;
+
+          mAdded += t.manuallyAdded!;
+          mSubtracted += t.manuallySubtracted!;
+        }
+
+        var dayTransaction  = DayTransactionModel(date, transactions, grandTotal, notes, noOfNotes, denominationTotal, mAdded, mSubtracted);
+        dayTransactions.add(dayTransaction);
       });
 
-      emit(ReceivedHistory(result,grandTotal));
+
+
+      emit(ReceivedHistory(dayTransactions,grandTotal));
     }catch(e){
       debugPrint(e.toString());
     }

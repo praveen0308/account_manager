@@ -1,3 +1,4 @@
+import 'package:account_manager/models/day_transaction_model.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:account_manager/ui/features/cash_counter/widgets/cc_history_item.dart';
 import 'package:account_manager/widgets/outlined_container.dart';
@@ -6,9 +7,9 @@ import 'package:flutter/material.dart';
 import '../../../../models/cash_transaction.dart';
 
 class CCHistoryDayItem extends StatefulWidget {
-  final List<CashTransactionModel> data;
+  final DayTransactionModel dayTransaction;
 
-  const CCHistoryDayItem({Key? key, required this.data}) : super(key: key);
+  const CCHistoryDayItem({Key? key, required this.dayTransaction}) : super(key: key);
 
   @override
   State<CCHistoryDayItem> createState() => _CCHistoryDayItemState();
@@ -20,9 +21,10 @@ class _CCHistoryDayItemState extends State<CCHistoryDayItem> {
 
   @override
   void initState() {
-    widget.data.forEach((element) {
+    for (var element in widget.dayTransaction.cashTransactions) {
       total += element.grandTotal;
-    });
+    }
+    super.initState();
   }
 
   void toggleExpansion() {
@@ -50,7 +52,7 @@ class _CCHistoryDayItemState extends State<CCHistoryDayItem> {
                     IconButton(onPressed: () {}, icon: const Icon(Icons.share)),
                     Expanded(
                         child: Text(
-                      widget.data[0].getDate(),
+                      widget.dayTransaction.date,
                       textAlign: TextAlign.center,
                     )),
                     IconButton(
@@ -62,14 +64,14 @@ class _CCHistoryDayItemState extends State<CCHistoryDayItem> {
 
           // Body
           Container(
-              child: ListView.builder(
+              child: ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: widget.data.length,
+                  itemCount: widget.dayTransaction.cashTransactions.length,
                   itemBuilder: (context, index) {
-                    final transaction = widget.data[index];
+                    final transaction = widget.dayTransaction.cashTransactions[index];
                     return CCHistoryItem(transactionModel: transaction);
-                  })),
+                  }, separatorBuilder: (BuildContext context, int index) { return const SizedBox(height: 4,); },)),
           // Footer
           Container(
             child: Row(

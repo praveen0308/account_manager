@@ -18,6 +18,30 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
   @override
   void initState() {
     BlocProvider.of<CreditDebitCubit>(context).fetchPersons();
+    super.initState();
+  }
+
+  showPopupMenu(BuildContext context, TapDownDetails details) {
+    showMenu<int>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        details.globalPosition.dx,
+        details.globalPosition.dy - 180,
+        details.globalPosition.dx,
+        details.globalPosition.dy - 180,
+      ), //position where you want to show the menu on screen
+      items: const [
+        PopupMenuItem<int>(value: 1, child: Text('A to Z')),
+        PopupMenuItem<int>(value: 2, child: Text('Creditor wise')),
+        PopupMenuItem<int>(value: 3, child: Text('Debtor wise')),
+        // PopupMenuItem<int>(value: 4, child: Text('Time wise')),
+      ],
+      elevation: 8.0,
+    ).then<void>((int? itemSelected) {
+      if (itemSelected == null) return;
+
+      BlocProvider.of<CreditDebitCubit>(context).applyFilter(itemSelected);
+    });
   }
 
   @override
@@ -33,12 +57,21 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                const ListDataHeader(),
+                ListDataHeader(
+                  onFilterClicked: (details) {
+                    showPopupMenu(context, details);
+                  },
+                  onSearched: (String q) {
+                    BlocProvider.of<CreditDebitCubit>(context).filterPersons(q);
+                  },
+                  onPdfClicked: () {},
+                ),
                 Expanded(
                   child: BlocBuilder<CreditDebitCubit, CreditDebitState>(
                     buildWhen: (_, state) {
-                      if (state is LoadingPersons || state is ReceivedPersons)
+                      if (state is LoadingPersons || state is ReceivedPersons) {
                         return true;
+                      }
                       return false;
                     },
                     builder: (context, state) {

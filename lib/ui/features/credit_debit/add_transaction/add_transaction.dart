@@ -12,7 +12,7 @@ import '../../../../../widgets/primary_button.dart';
 
 class AddCDTransactionForm extends StatefulWidget {
   final PersonModel person;
-  final String type;
+  final TransactionType type;
 
   const AddCDTransactionForm(
       {Key? key, required this.person, required this.type})
@@ -115,16 +115,29 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
                                 isValid = true;
                               });
 
-                              BlocProvider.of<AddTransactionCubit>(context)
-                                  .addNewTransaction(
-                                      widget.person,
-                                      CDTransaction(
+                              if (widget.type == TransactionType.credit) {
+                                BlocProvider.of<AddTransactionCubit>(context)
+                                    .addNewTransaction(
+                                        widget.person,
+                                        CDTransaction(
                                           walletId: selectedWalletId,
-                                          amount: double.parse(amount),
+                                          credit: double.parse(amount),
                                           remark: remark,
                                           personId: widget.person.personId!,
-                                          type: widget.type
-                                      ));
+                                          type: widget.type.name
+                                        ));
+                              } else {
+                                BlocProvider.of<AddTransactionCubit>(context)
+                                    .addNewTransaction(
+                                        widget.person,
+                                        CDTransaction(
+                                          walletId: selectedWalletId,
+                                          debit: double.parse(amount),
+                                          remark: remark,
+                                          personId: widget.person.personId!,
+                                            type: widget.type.name
+                                        ));
+                              }
                             } else {
                               setState(() {
                                 isValid = false;

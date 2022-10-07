@@ -8,11 +8,11 @@ class CashTransactionRepository{
   final dbHelper = DatabaseHelper.instance;
 
   Future<bool> addCashTransaction(CashTransactionModel cashTransactionModel) async {
-    cashTransactionModel.addedOn = DateTime.now().toString();
+    // cashTransactionModel.addedOn = DateTime.now().toString();
     Database db = await dbHelper.database;
     var result = await db.insert(CashTransactionModel.table, cashTransactionModel.toMap());
     debugPrint("Operation done >>> result : $result");
-    return result==1;
+    return result>0;
   }
 
 

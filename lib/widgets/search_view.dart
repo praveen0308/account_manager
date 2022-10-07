@@ -2,7 +2,8 @@ import 'package:account_manager/res/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SearchView extends StatelessWidget {
-  const SearchView({Key? key}) : super(key: key);
+  final Function(String txt) onTextChanged;
+  const SearchView({Key? key, required this.onTextChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +17,14 @@ class SearchView extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.search),
+          const Icon(Icons.search),
           const SizedBox(width: 16,),
           Expanded(child: TextFormField(
+            onChanged: (txt){
+              onTextChanged(txt);
+            },
 
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Search...",
               border: InputBorder.none,
             ),

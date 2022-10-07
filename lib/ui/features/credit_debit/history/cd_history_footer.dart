@@ -1,3 +1,4 @@
+import 'package:account_manager/models/credit_debit_transaction.dart';
 import 'package:account_manager/models/person_model.dart';
 import 'package:account_manager/repository/credit_debit_repository.dart';
 import 'package:account_manager/res/app_colors.dart';
@@ -19,7 +20,7 @@ class CDHistoryFooter extends StatefulWidget {
 }
 
 class _CDHistoryFooterState extends State<CDHistoryFooter> {
-  _displayDialog(String type) {
+  _displayDialog(TransactionType type) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -58,7 +59,7 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
                 ),
                 ElevatedButton.icon(
                     onPressed: () {
-                      _displayDialog("IN");
+                      _displayDialog(TransactionType.credit);
                     },
                     icon: const Icon(
                       Icons.arrow_drop_down,
@@ -94,7 +95,7 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
                 ),
                 ElevatedButton.icon(
                     onPressed: () {
-                      _displayDialog("OUT");
+                      _displayDialog(TransactionType.debit);
                     },
                     icon: const Icon(
                       Icons.arrow_drop_up,

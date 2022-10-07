@@ -43,4 +43,45 @@ class CreditDebitCubit extends Cubit<CreditDebitState> {
 
   }
 
+  void applyFilter(int type){
+    switch (type) {
+      case 1:
+        {
+          persons.sort((a, b) => a.name.compareTo(b.name));
+          emit(ReceivedPersons(persons));
+        }
+        break;
+      case 2:
+        {
+          persons.sort((a, b) => b.credit.compareTo(a.credit));
+          emit(ReceivedPersons(persons));
+        }
+        break;
+      case 3:
+        {
+          persons.sort((a, b) => b.debit.compareTo(a.debit));
+          emit(ReceivedPersons(persons));
+        }
+        break;
+      case 4:
+        {}
+        break;
+    }
+  }
+
+  void filterPersons(String q) {
+    List<PersonModel> filteredPersons = [];
+    filteredPersons.clear();
+    if (q.isEmpty) {
+      filteredPersons.addAll(persons);
+    } else {
+      for (var person in persons) {
+        if (person.name.toLowerCase().contains(q.toLowerCase())) {
+          filteredPersons.add(person);
+        }
+      }
+    }
+    emit(ReceivedPersons(filteredPersons));
+  }
+
 }

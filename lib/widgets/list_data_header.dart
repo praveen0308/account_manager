@@ -2,19 +2,45 @@ import 'package:account_manager/widgets/search_view.dart';
 import 'package:flutter/material.dart';
 
 class ListDataHeader extends StatelessWidget {
-  const ListDataHeader({Key? key}) : super(key: key);
+  final Function(String q) onSearched;
+  final Function(TapDownDetails details) onFilterClicked;
+  final VoidCallback onPdfClicked;
+
+  const ListDataHeader({Key? key,
+    required this.onFilterClicked,
+    required this.onSearched,
+    required this.onPdfClicked})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
-        Expanded(child: SearchView()),
-        SizedBox(width: 16,),
-        Icon(Icons.filter_alt_rounded),
-        SizedBox(width: 8,),
-        Icon(Icons.picture_as_pdf),
+        children: [
+    Expanded(child: SearchView(
+    onTextChanged: (String txt)
+    {
+      onSearched(txt);
+    },
+    )),
+    const SizedBox(
+    width: 16,
+    ),
 
-      ],
+    GestureDetector(child: const Icon(Icons.filter_alt_rounded),onTapDown: (d){
+      onFilterClicked(d);
+    },),
+
+
+    const SizedBox(
+    width: 8,
+    ),
+    IconButton(
+    icon: const Icon(Icons.picture_as_pdf),
+    onPressed: onPdfClicked,
+    )
+    ,
+    ]
+    ,
     );
   }
 }

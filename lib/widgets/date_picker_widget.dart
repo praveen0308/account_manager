@@ -3,8 +3,10 @@ import 'package:account_manager/utils/date_time_helper.dart';
 import 'package:flutter/material.dart';
 
 class DatePickerWidget extends StatefulWidget {
+  final Function(DateTime date) onDateSelected;
 
-  const DatePickerWidget({Key? key}) : super(key: key);
+  const DatePickerWidget({Key? key, required this.onDateSelected})
+      : super(key: key);
 
   @override
   State<DatePickerWidget> createState() => _DatePickerWidgetState();
@@ -22,6 +24,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     if (picked != null && picked != currentDate) {
       setState(() {
         currentDate = picked;
+        widget.onDateSelected(currentDate);
       });
     }
   }
@@ -29,14 +32,27 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         _selectDate(context);
       },
       child: Row(
         children: [
-          const Icon(Icons.calendar_month,color: AppColors.primaryDarkest,size: 32,),
-          const SizedBox(width: 8,),
-          Expanded(child: Text(DateTimeHelper.formatDate(currentDate, "dd MMM yyyy"),style: const TextStyle(fontSize: 20,color: AppColors.primaryText,fontWeight: FontWeight.w600),))
+          const Icon(
+            Icons.calendar_month,
+            color: AppColors.primaryDarkest,
+            size: 32,
+          ),
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+              child: Text(
+            DateTimeHelper.formatDate(currentDate, "dd MMM yyyy"),
+            style: const TextStyle(
+                fontSize: 20,
+                color: AppColors.primaryText,
+                fontWeight: FontWeight.w600),
+          ))
         ],
       ),
     );

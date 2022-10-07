@@ -6,7 +6,9 @@ class CDTransaction {
   static const String colTransactionId = "transactionId";
   static const String colPersonId = "personId";
   static const String colWalletId = "walletId";
-  static const String colAmount = "amount";
+  static const String colCredit = "credit";
+  static const String colDebit = "debit";
+  static const String colClosingBalance = "closingBalance";
   static const String colType = "type";
   static const String colDescription = "description";
   static const String colRemark = "remark";
@@ -18,7 +20,9 @@ class CDTransaction {
           $colTransactionId INTEGER primary key AUTOINCREMENT,
           $colPersonId INTEGER NOT NULL,
           $colWalletId INTEGER NOT NULL,
-          $colAmount REAL NOT NULL,
+          $colCredit REAL NOT NULL,
+          $colDebit REAL NOT NULL,
+          $colClosingBalance REAL NOT NULL,
           $colType TEXT NOT NULL,
           $colDescription TEXT NULL,
           $colRemark TEXT NULL,
@@ -30,7 +34,10 @@ class CDTransaction {
   int? transactionId;
   int personId;
   int walletId;
-  double amount;
+  // double amount;
+  double credit;
+  double debit;
+  double closingBalance;
   String type;  // IN/OUT
   String? description;
   String? remark;
@@ -42,7 +49,9 @@ class CDTransaction {
       {this.transactionId,
       this.personId = 0,
       this.walletId = 1,
-      this.amount = 0.0,
+      this.credit = 0.0,
+      this.debit = 0.0,
+      this.closingBalance = 0.0,
       this.type = "IN",
       this.description,
       this.remark,
@@ -59,7 +68,9 @@ class CDTransaction {
       'transactionId': transactionId,
       'personId': personId,
       'walletId': walletId,
-      'amount': amount,
+      'credit': credit,
+      'debit': debit,
+      'closingBalance': closingBalance,
       'type': type,
       'description': description,
       'remark': remark,
@@ -74,7 +85,9 @@ class CDTransaction {
       transactionId: map['transactionId'] as int?,
       personId: map['personId'] as int,
       walletId: map['walletId'] as int,
-      amount: map['amount'] as double,
+      credit: map['credit'] as double,
+      debit: map['debit'] as double,
+      closingBalance: map['closingBalance'] as double,
       type: map['type'] as String,
       description: map['description'] as String?,
       remark: map['remark'] as String?,
@@ -83,4 +96,8 @@ class CDTransaction {
       isCancel: map['isCancel'] as int == 1 ,
     );
   }
+}
+
+enum TransactionType{
+  credit,debit
 }

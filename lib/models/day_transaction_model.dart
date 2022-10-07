@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import 'cash_transaction.dart';
 
 class DayTransactionModel{
@@ -19,4 +21,6 @@ class DayTransactionModel{
       this.denominationTotal,
       this.manuallyAdded,
       this.manuallySubtracted);
+  String getDate() => DateFormat.yMMMd().format(DateTime.parse(date));
+
 }

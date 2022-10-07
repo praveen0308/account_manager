@@ -1,6 +1,9 @@
+import 'package:account_manager/repository/currency_repository.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:account_manager/ui/features/cash_counter/cash_counter_cubit.dart';
 import 'package:account_manager/ui/features/cash_counter/cash_counter_cubit.dart';
+import 'package:account_manager/ui/features/cash_counter/settings/cc_settings_cubit.dart';
+import 'package:account_manager/ui/features/cash_counter/settings/cc_settings_dialog.dart';
 import 'package:account_manager/utils/toaster.dart';
 import 'package:account_manager/widgets/container_light.dart';
 import 'package:account_manager/widgets/date_picker_widget.dart';
@@ -21,10 +24,8 @@ class CCBottomSheet extends StatefulWidget {
 class _CCBottomSheetState extends State<CCBottomSheet> {
   final GlobalKey _menuKey = GlobalKey();
 
-  late PopupMenuButton<String> menus;
-
   showPopupMenu(BuildContext context, TapDownDetails details) {
-    showMenu<String>(
+    showMenu<int>(
       context: context,
       position: RelativeRect.fromLTRB(
         details.globalPosition.dx,
@@ -33,23 +34,15 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
         details.globalPosition.dy - 180,
       ), //position where you want to show the menu on screen
       items: const [
-        PopupMenuItem<String>(
-            value: '1',
-            child:  Text('menu option 1')),
-        PopupMenuItem<String>(
-            value: '2',
-            child:  Text('menu option 2')),
-        PopupMenuItem<String>(
-            value: '3',
-            child:  Text('menu option 3')),
+        PopupMenuItem<int>(value: 1, child: Text('Note Settings')),
       ],
       elevation: 8.0,
-    ).then<void>((String? itemSelected) {
+    ).then<void>((int? itemSelected) {
       if (itemSelected == null) return;
 
-      if (itemSelected == "1") {
-        //code here
-      } else if (itemSelected == "2") {
+      if (itemSelected == 1) {
+        _displayDialog();
+      } else if (itemSelected == 2) {
         //code here
       } else {
         //code here
@@ -59,20 +52,26 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
 
   @override
   void initState() {
-    menus = PopupMenuButton(
-        key: _menuKey,
-        itemBuilder: (_) =>
-        const<PopupMenuItem<String>>[
-          PopupMenuItem<String>(
-              value: 'Doge',
-              child: Text('Doge')),
-          PopupMenuItem<String>(
-              value: 'Lion',
-              child: Text('Lion')),
-        ],
-        onSelected: (_) {});
-
     super.initState();
+  }
+
+  _displayDialog() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
+            ),
+            elevation: 6,
+            backgroundColor: Colors.transparent,
+            child: BlocProvider(
+              create: (context) => CcSettingsCubit(
+                  RepositoryProvider.of<CurrencyRepository>(context)),
+              child: const CCSettingsDialog(),
+            ),
+          );
+        });
   }
 
   @override
@@ -88,19 +87,17 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           BlocBuilder<CashCounterCubit, CashCounterState>(
-            buildWhen: (previousState,state){
-              if(state is ClearScreen){
+            buildWhen: (previousState, state) {
+              if (state is ClearScreen) {
                 return true;
               }
-              if(state is EntriesChanged){
+              if (state is EntriesChanged) {
                 return true;
               }
 
               return false;
             },
             builder: (context, state) {
-
-
               return Row(
                 children: [
                   GestureDetector(
@@ -122,49 +119,49 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
                   ),
                   Expanded(
                       child: ContainerLight(
-                        childWidget: Column(
-                          children: [
-                            const Text(
-                              "Notes",
-                              style: TextStyle(
-                                  color: AppColors.primaryDarkest,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16),
-                            ),
-                            Text(
-                              state.noOfNotes.toString(),
-                              style: const TextStyle(
-                                  color: AppColors.primaryDarkest,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800),
-                            )
-                          ],
+                    childWidget: Column(
+                      children: [
+                        const Text(
+                          "Notes",
+                          style: TextStyle(
+                              color: AppColors.primaryDarkest,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16),
                         ),
-                      )),
+                        Text(
+                          state.noOfNotes.toString(),
+                          style: const TextStyle(
+                              color: AppColors.primaryDarkest,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800),
+                        )
+                      ],
+                    ),
+                  )),
                   const SizedBox(
                     width: 16,
                   ),
                   Expanded(
                       child: ContainerLight(
-                        childWidget: Column(
-                          children: [
-                            const Text(
-                              "Total",
-                              style: TextStyle(
-                                  color: AppColors.primaryDarkest,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16),
-                            ),
-                            Text(
-                              state.grandTotal.toString(),
-                              style: const TextStyle(
-                                  color: AppColors.primaryDarkest,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800),
-                            )
-                          ],
+                    childWidget: Column(
+                      children: [
+                        const Text(
+                          "Total",
+                          style: TextStyle(
+                              color: AppColors.primaryDarkest,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16),
                         ),
-                      ))
+                        Text(
+                          state.grandTotal.toString(),
+                          style: const TextStyle(
+                              color: AppColors.primaryDarkest,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800),
+                        )
+                      ],
+                    ),
+                  ))
                 ],
               );
             },
@@ -173,12 +170,22 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
             height: 8,
           ),
           Row(
-            children: const [
-              Expanded(child: DatePickerWidget()),
-              SizedBox(
+            children: [
+              Expanded(child: DatePickerWidget(
+                onDateSelected: (DateTime date) {
+                  BlocProvider.of<CashCounterCubit>(context)
+                      .setTransactionDate(date);
+                },
+              )),
+              const SizedBox(
                 width: 16,
               ),
-              Expanded(child: TimePickerWidget())
+              Expanded(child: TimePickerWidget(
+                onTimeSelected: (TimeOfDay time) {
+                  BlocProvider.of<CashCounterCubit>(context)
+                      .setTransactionTiming(time);
+                },
+              ))
             ],
           ),
           const SizedBox(
@@ -186,24 +193,33 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
           ),
           Row(
             children: [
-              Expanded(child: SecondaryButton(onClick: () {
-                BlocProvider.of<CashCounterCubit>(context).clearFields();
-              }, text: "Clear")),
+              Expanded(
+                  child: SecondaryButton(
+                      onClick: () {
+                        BlocProvider.of<CashCounterCubit>(context)
+                            .clearFields();
+                      },
+                      text: "Clear")),
               const SizedBox(
                 width: 16,
               ),
-              Expanded(child: PrimaryButton(onClick: () {
-                BlocProvider.of<CashCounterCubit>(context).addCashTransaction();
-              }, text: "Save"))
+              Expanded(
+                  child: PrimaryButton(
+                      onClick: () {
+                        BlocProvider.of<CashCounterCubit>(context)
+                            .addCashTransaction();
+                      },
+                      text: "Save"))
             ],
           ),
           const SizedBox(
             height: 12,
           ),
-          PrimaryButton(onClick: () {
-            Navigator.pushNamed(context, route.cashCounterHistory);
-
-          }, text: "View History")
+          PrimaryButton(
+              onClick: () {
+                Navigator.pushNamed(context, route.cashCounterHistory);
+              },
+              text: "View History")
         ],
       ),
     );

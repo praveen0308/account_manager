@@ -26,8 +26,7 @@ class EntriesChanged extends CashCounterState {
 }
 
 class ClearScreen extends CashCounterState {
-  final List<Currency> currencies;
-  ClearScreen(super.noOfNotes, super.denominationTotal, super.grandTotal, this.currencies);
+  ClearScreen(super.noOfNotes, super.denominationTotal, super.grandTotal);
 }
 class ReceivedCurrencies extends CashCounterState {
   final List<Currency> currencies;

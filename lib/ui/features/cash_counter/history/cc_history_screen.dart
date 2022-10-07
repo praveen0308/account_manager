@@ -29,7 +29,7 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: [
-                    const ListDataHeader(),
+                     ListDataHeader(onSearched: (String q) {  }, onFilterClicked: (TapDownDetails details) {  }, onPdfClicked: () {  },),
                     const SizedBox(height: 16,),
                     Expanded(
                       child: BlocBuilder<CcHistoryCubit, CcHistoryState>(
@@ -39,24 +39,24 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> {
 
                             if(state.data.isNotEmpty){
                               return ListView.separated(
-
+                                padding: const EdgeInsets.only(bottom: 120),
                                 itemCount: state.data.length,
                                 itemBuilder: (context, index) {
-                                  var person = state.data[index];
-                                  return CCHistoryDayItem(data: state.data);
+                                  var dayTransaction = state.data[index];
+                                  return CCHistoryDayItem(dayTransaction: dayTransaction);
                                 },
                                 separatorBuilder: (BuildContext context,
                                     int index) {
-                                  return const Divider(
-                                    thickness: 1,
+                                  return const SizedBox(
+                                    height: 8,
                                   );
                                 },
                               );
                             }else{
-                              Column(
+                              return Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [
-                                  Icon(Icons.person_add,size: 50,),
+                                  Icon(Icons.note_add,size: 50,),
                                   SizedBox(height: 16,),
                                   Text("No transactions added!!!")
                                 ],

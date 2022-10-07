@@ -68,7 +68,8 @@ class CashTransactionModel {
   // extension methods
   String getTiming() => DateFormat.jm().format(DateTime.parse(addedOn));
 
-  String getDate() => DateFormat.yMd().format(DateTime.parse(addedOn));
+  String getDate() => DateFormat.yMMMd().format(DateTime.parse(addedOn));
+  String getFDate() => DateFormat('dd/MM/yy').format(DateTime.parse(addedOn));
 
   String getDescription(){
     final Map<int, int> map = getDescriptionMap();

@@ -3,7 +3,8 @@ import 'package:account_manager/utils/date_time_helper.dart';
 import 'package:flutter/material.dart';
 
 class TimePickerWidget extends StatefulWidget {
-  const TimePickerWidget({Key? key}) : super(key: key);
+  final Function(TimeOfDay time) onTimeSelected;
+  const TimePickerWidget({Key? key, required this.onTimeSelected}) : super(key: key);
 
   @override
   State<TimePickerWidget> createState() => _TimePickerWidgetState();
@@ -24,6 +25,7 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
     if (pickedS != null && pickedS != selectedTime ) {
       setState(() {
         selectedTime = pickedS;
+        widget.onTimeSelected(selectedTime);
       });
     }
   }

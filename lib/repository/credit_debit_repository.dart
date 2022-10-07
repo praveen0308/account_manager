@@ -21,17 +21,33 @@ class CreditDebitRepository {
 
   Future<PersonModel> addNewTransaction(
       PersonModel personModel, CDTransaction transaction) async {
-    Database db = await dbHelper.database;
+    bool isCredit = transaction.type == TransactionType.credit.name;
 
-    var result = await db.insert(CDTransaction.table, transaction.toMap());
+    Database db = await dbHelper.database;
+    var lastTransactionReq =
+        await getTransactionsByPersonId(personModel.personId!);
+    if (lastTransactionReq.isNotEmpty) {
+      var lastTransaction = lastTransactionReq.last;
+      if (isCredit) {
+        transaction.closingBalance =
+            lastTransaction.closingBalance + transaction.credit;
+      } else {
+        transaction.closingBalance =
+            lastTransaction.closingBalance - transaction.debit;
+      }
+    } else {
+      transaction.closingBalance =
+          isCredit ? transaction.credit : transaction.debit;
+    }
+    await db.insert(CDTransaction.table, transaction.toMap());
 
     Map<String, dynamic> row;
 
-    if (transaction.type == "IN") {
-      personModel.credit = personModel.credit + transaction.amount;
+    if (isCredit) {
+      personModel.credit += transaction.credit;
       row = {PersonModel.colCredit: personModel.credit};
     } else {
-      personModel.debit = personModel.debit + transaction.amount;
+      personModel.debit += transaction.debit;
       row = {PersonModel.colDebit: personModel.debit};
     }
 
@@ -59,27 +75,23 @@ class CreditDebitRepository {
   Future<List<CDTransaction>> getTransactionsByPersonId(int personId) async {
     Database db = await dbHelper.database;
     var records = await db.query(CDTransaction.table,
-        where: "${CDTransaction.colPersonId}=?",
-      whereArgs: [personId]
-    );
+        where: "${CDTransaction.colPersonId}=?", whereArgs: [personId]);
 
     return records.map((e) => CDTransaction.fromMap(e)).toList();
   }
 
   Future<List<WalletModel>> fetchStats() async {
-
     Database db = await dbHelper.database;
 
-    var query = "SELECT sum(${PersonTransaction.colAmount}) as result from ${CDTransaction.table} GROUP by ${CDTransaction.colWalletId},${CDTransaction.colType}";
+    /*var query =
+        "SELECT sum(${CDTransaction.colCredit}) as result from ${CDTransaction.table} GROUP by ${CDTransaction.colWalletId},${CDTransaction.colType}";
+    */
+    var query = "SELECT ${CDTransaction.colWalletId},sum(${CDTransaction.colCredit}) as credit,sum(${CDTransaction.colDebit}) as debit from credit_debit group by ${CDTransaction.colWalletId};";
     var result = await db.rawQuery(query);
-    List<double> fRes = result.map((e) => e['result'] as double).toList();
 
     List<WalletModel> wallets = [];
-    wallets.add(WalletModel(1, "Wallet 1", fRes[0], fRes[1]));
-    wallets.add(WalletModel(2, "Wallet 2", fRes[2], fRes[3]));
-
-
-
+    wallets.add(WalletModel(1, "Wallet 1", result[0]['credit'] as double, result[0]['debit'] as double));
+    wallets.add(WalletModel(2, "Wallet 2", result[1]['credit'] as double, result[1]['debit'] as double));
 
     return wallets;
   }

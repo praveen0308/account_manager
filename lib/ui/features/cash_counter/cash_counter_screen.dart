@@ -1,12 +1,15 @@
+import 'package:account_manager/repository/currency_repository.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:account_manager/res/app_strings.dart';
+import 'package:account_manager/ui/features/cash_counter/cash_calculator_view/cash_calculator_view_cubit.dart';
 import 'package:account_manager/ui/features/cash_counter/cash_counter_cubit.dart';
 import 'package:account_manager/ui/features/cash_counter/widgets/cash_counter_footer.dart';
-import 'package:account_manager/ui/features/cash_counter/widgets/cash_counter_view.dart';
 import 'package:account_manager/ui/features/cash_counter/widgets/extra_info_form.dart';
 import 'package:account_manager/utils/toaster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'cash_calculator_view/cash_counter_view.dart';
 
 class CashCounterScreen extends StatefulWidget {
   const CashCounterScreen({Key? key}) : super(key: key);
@@ -21,7 +24,6 @@ class _CashCounterScreenState extends State<CashCounterScreen> {
   @override
   void initState() {
     _cubit = BlocProvider.of<CashCounterCubit>(context);
-    _cubit.fetchCurrencies();
     super.initState();
   }
 
@@ -53,7 +55,15 @@ class _CashCounterScreenState extends State<CashCounterScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      const CashCounterView(),
+                      BlocProvider(
+                        create: (context) => CashCalculatorViewCubit(
+                            RepositoryProvider.of<CurrencyRepository>(context),BlocProvider.of<CashCounterCubit>(context)),
+                        child: CashCounterView(
+                          onQtyChanged: (int item, int qty) {
+                            BlocProvider.of<CashCounterCubit>(context).updateNoteQty(item, qty);
+                          },
+                        ),
+                      ),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 16.0),
                         child: Divider(
