@@ -33,7 +33,7 @@ class CashCalculatorViewCubit extends Cubit<CashCalculatorViewState> {
   Future<void> fetchCurrencies() async {
     emit(Loading());
     try{
-      var result = await _currencyRepository.getAllCurrencies();
+      var result = await _currencyRepository.getActiveCurrencies();
       currencies.clear();
       currencies.addAll(result);
       emit(ReceivedCurrencies(result));

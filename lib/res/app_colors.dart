@@ -23,6 +23,7 @@ class AppColors{
   static const primary = Color(0XFFFFC107);
   static const primaryDark = Color(0XFFFFA000);
   static const primaryDarkest = Color(0XFFFF8A00);
+  static const primaryDarkest50 = Color.fromRGBO(255,138,0,.2);
 
   //Text Color
   static const primaryText = Color(0XFF212121);

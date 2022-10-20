@@ -18,11 +18,23 @@ class CcSettingsCubit extends Cubit<CcSettingsState> {
       var result = await _currencyRepository.getAllCurrencies();
       currencies.clear();
       currencies.addAll(result);
-      emit(ReceivedCurrencies(result));
+      emit(ReceivedNotes(result));
     }catch(e){
       emit(Error());
       debugPrint(e.toString());
     }
-
   }
+
+  Future<void> updateCurrencies() async {
+    emit(Loading());
+    try{
+      var result = await _currencyRepository.updateCurrencies(currencies);
+
+      emit(UpdatedSuccessfully());
+    }catch(e){
+      emit(Error());
+      debugPrint(e.toString());
+    }
+  }
+
 }

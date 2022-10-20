@@ -6,10 +6,11 @@ abstract class CcSettingsState {}
 class CcSettingsInitial extends CcSettingsState {}
 class Loading extends CcSettingsState {}
 class Error extends CcSettingsState {}
-class ReceivedCurrencies extends CcSettingsState {
+class UpdatedSuccessfully extends CcSettingsState {}
+class ReceivedNotes extends CcSettingsState {
 
   final List<Currency> currencies;
 
-  ReceivedCurrencies(this.currencies);
+  ReceivedNotes(this.currencies);
 }
-class UpdatedSuccess extends CcSettingsState {}
+

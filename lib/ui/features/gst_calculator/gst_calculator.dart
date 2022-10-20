@@ -3,7 +3,7 @@ import 'package:account_manager/ui/features/gst_calculator/widgets/button_model.
 import 'package:account_manager/ui/features/gst_calculator/widgets/buttons.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:account_manager/res/app_strings.dart';
-import 'package:account_manager/widgets/app_bar.dart';
+import 'package:account_manager/widgets/marquee_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -43,9 +43,7 @@ class _GstCalculatorState extends State<GstCalculator> {
 
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.gstCalculator),
-      ),
+
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
@@ -199,67 +197,3 @@ class _GstCalculatorState extends State<GstCalculator> {
   }
 }
 
-class MarqueeWidget extends StatefulWidget {
-  final Widget child;
-  final Axis direction;
-  final Duration animationDuration, backDuration, pauseDuration;
-
-  const MarqueeWidget({
-    Key? key,
-    required this.child,
-    this.direction = Axis.horizontal,
-    this.animationDuration = const Duration(milliseconds: 6000),
-    this.backDuration = const Duration(milliseconds: 800),
-    this.pauseDuration = const Duration(milliseconds: 800),
-  }) : super(key: key);
-
-  @override
-  _MarqueeWidgetState createState() => _MarqueeWidgetState();
-}
-
-class _MarqueeWidgetState extends State<MarqueeWidget> {
-  late ScrollController scrollController;
-
-  @override
-  void initState() {
-    scrollController = ScrollController(initialScrollOffset: 50.0);
-    WidgetsBinding.instance.addPostFrameCallback(scroll);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: widget.child,
-      scrollDirection: widget.direction,
-      controller: scrollController,
-    );
-  }
-
-  void scroll(_) async {
-    while (scrollController.hasClients) {
-      await Future.delayed(widget.pauseDuration);
-      if (scrollController.hasClients) {
-        await scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: widget.animationDuration,
-          curve: Curves.ease,
-        );
-      }
-      await Future.delayed(widget.pauseDuration);
-      if (scrollController.hasClients) {
-        await scrollController.animateTo(
-          0.0,
-          duration: widget.backDuration,
-          curve: Curves.easeOut,
-        );
-      }
-    }
-  }
-}

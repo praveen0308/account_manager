@@ -96,6 +96,16 @@ class CDTransaction {
       isCancel: map['isCancel'] as int == 1 ,
     );
   }
+
+  String getDescription(){
+    return "Transaction ID : $transactionId\n"
+        "Wallet : $walletId\n"
+        "Credit : +₹$credit\n"
+        "Debit : -₹$debit\n"
+        "Closing : ₹$closingBalance\n"
+        "Time : ${getDate()}\n"
+        "Remark : $remark";
+  }
 }
 
 enum TransactionType{

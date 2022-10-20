@@ -15,12 +15,14 @@ import 'package:account_manager/ui/features/gst_calculator/gst_calculator.dart';
 import 'package:account_manager/ui/features/gst_calculator/gst_calculator_cubit.dart';
 import 'package:account_manager/ui/features/income_expense/income_expense_screen.dart';
 import 'package:account_manager/ui/screens/dashboard/dashboard_screen.dart';
+import 'package:account_manager/ui/screens/dashboard/dashboard_screen1.dart';
 import 'package:account_manager/ui/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 const String splashScreen = '/';
 const String dashboard = '/dashboard';
+const String dashboard1 = '/dashboard1';
 const String gstCalculator = '/gstCalculator';
 const String cashCounter = '/cashCounter';
 const String cashCounterHistory = '/cashCounterHistory';
@@ -38,6 +40,9 @@ Route<dynamic> controller(RouteSettings settings) {
     case dashboard:
       return MaterialPageRoute(
           builder: (context) => const DashboardScreen(), settings: settings);
+    case dashboard1:
+      return MaterialPageRoute(
+          builder: (context) => const DashboardScreen1(), settings: settings);
     case gstCalculator:
       return MaterialPageRoute(
           builder: (context) => BlocProvider(
@@ -47,16 +52,13 @@ Route<dynamic> controller(RouteSettings settings) {
           settings: settings);
     case cashCounter:
       return MaterialPageRoute(
-          builder: (context) => RepositoryProvider(
-                create: (context) => CurrencyRepository(),
-                child: BlocProvider(
-                  create: (context) => CashCounterCubit(
-                      RepositoryProvider.of<CurrencyRepository>(context),
-                      RepositoryProvider.of<CashTransactionRepository>(
-                          context)),
-                  child: const CashCounterScreen(),
-                ),
-              ),
+          builder: (context) => BlocProvider(
+            create: (context) => CashCounterCubit(
+                RepositoryProvider.of<CurrencyRepository>(context),
+                RepositoryProvider.of<CashTransactionRepository>(
+                    context)),
+            child: const CashCounterScreen(),
+          ),
           settings: settings);
     case creditDebit:
       return MaterialPageRoute(

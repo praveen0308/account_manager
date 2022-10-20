@@ -14,13 +14,24 @@ class ExtraInfoForm extends StatefulWidget {
 
 class _ExtraInfoFormState extends State<ExtraInfoForm> {
 
-  bool _addIntoCreditDebit = false;
+  
   final TextEditingController _manuallyAddedController = TextEditingController();
   final TextEditingController _manuallySubtractedController = TextEditingController();
+  final TextEditingController _nameTxtController = TextEditingController();
+  final TextEditingController _remarkTxtController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return BlocListener<CashCounterCubit, CashCounterState>(
+  listener: (context, state) {
+    if(state is ClearScreen){
+      _manuallyAddedController.text = "";
+      _manuallySubtractedController.text = "";
+      _nameTxtController.text = "";
+      _remarkTxtController.text = "";
+    }
+  },
+  child: Column(
       children: [
         Row(
           children: [
@@ -89,7 +100,7 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
           ],
         ),
         OutlinedTextField(
-          controller: TextEditingController(),
+          controller: _nameTxtController,
           inputType: TextInputType.text,
           maxLength: 50,
           onSubmitted: (String txt) {
@@ -102,7 +113,7 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
         ),
 
         OutlinedTextField(
-          controller: TextEditingController(),
+          controller: _remarkTxtController,
           inputType: TextInputType.text,
           maxLength: 200,
           onSubmitted: (String txt) {
@@ -113,23 +124,9 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
           },
           hintText: "Remark",
         ),
-        CheckboxListTile(
-          activeColor: AppColors.primaryDarkest,
-          value: _addIntoCreditDebit,
-          onChanged: (v) {
-            setState(() {
-              _addIntoCreditDebit = v!;
-            });
-          },
-          title: const Text(
-            "Add into Credit Debit",
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600
-            ),
-          ),
-        )
+        const SizedBox(height: 60,)
       ],
-    );
+    ),
+);
   }
 }

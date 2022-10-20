@@ -10,6 +10,7 @@ class Failed extends CdHistoryState {
   Failed(this.msg);
 }
 class LoadingTransactions extends CdHistoryState {}
+class DeletedSuccessfully extends CdHistoryState {}
 class ReceivedTransactions extends CdHistoryState {
   final List<CDTransaction> transactions;
   ReceivedTransactions(this.transactions);

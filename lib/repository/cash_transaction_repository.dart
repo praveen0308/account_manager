@@ -4,17 +4,29 @@ import 'package:sqflite/sqflite.dart';
 
 import '../local/db_helper.dart';
 
-class CashTransactionRepository{
+class CashTransactionRepository {
   final dbHelper = DatabaseHelper.instance;
 
-  Future<bool> addCashTransaction(CashTransactionModel cashTransactionModel) async {
+  Future<bool> addCashTransaction(
+      CashTransactionModel cashTransactionModel) async {
     // cashTransactionModel.addedOn = DateTime.now().toString();
     Database db = await dbHelper.database;
-    var result = await db.insert(CashTransactionModel.table, cashTransactionModel.toMap());
+    var result = await db.insert(
+        CashTransactionModel.table, cashTransactionModel.toMap());
     debugPrint("Operation done >>> result : $result");
-    return result>0;
+    return result > 0;
   }
 
+  Future<bool> deleteTransaction(
+      int transactionId) async {
+    // cashTransactionModel.addedOn = DateTime.now().toString();
+    Database db = await dbHelper.database;
+    var result = await db.delete(CashTransactionModel.table,
+        where: "${CashTransactionModel.columnTransactionId}=?",
+        whereArgs: [transactionId]);
+    debugPrint("Deleted successfully >>> result : $result");
+    return result > 0;
+  }
 
   Future<List<CashTransactionModel>> fetchAllTransactions() async {
     Database db = await dbHelper.database;
@@ -22,6 +34,4 @@ class CashTransactionRepository{
     debugPrint("Transactions >>> $records");
     return records.map((e) => CashTransactionModel.fromMap(e)).toList();
   }
-
-
 }

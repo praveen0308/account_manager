@@ -29,6 +29,9 @@ dependencies:
   whatsapp_unilink: ^2.0.2
   url_launcher: ^6.1.6
   syncfusion_flutter_pdf: ^20.3.48
+  number_to_words_english: ^2.0.2
+  fluttercontactpicker: ^4.7.0
+
 
 dev_dependencies:
   flutter_test:

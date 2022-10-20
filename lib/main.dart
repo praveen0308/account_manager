@@ -1,5 +1,6 @@
 import 'package:account_manager/repository/cash_transaction_repository.dart';
 import 'package:account_manager/repository/credit_debit_repository.dart';
+import 'package:account_manager/repository/currency_repository.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:account_manager/route/route.dart' as route;
@@ -20,10 +21,11 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(create: (_) => CashTransactionRepository()),
         RepositoryProvider(create: (_) => CashTransactionRepository()),
         RepositoryProvider(create: (_) => CreditDebitRepository()),
+        RepositoryProvider(create: (_) => CurrencyRepository()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Account Manager',
         theme: ThemeData(
             iconTheme: const IconThemeData(color: AppColors.primaryDarkest),
             primarySwatch: AppColors.primarySwatchColor,

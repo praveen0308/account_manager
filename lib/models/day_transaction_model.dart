@@ -23,4 +23,33 @@ class DayTransactionModel{
       this.manuallySubtracted);
   String getDate() => DateFormat.yMMMd().format(DateTime.parse(date));
 
+  String getDescription(){
+    final Map<int, int> map = notes;
+    String result = "";
+
+    map.forEach((key, value) {
+      result = "${key}x$value=${key*value}\n";
+    });
+
+
+    return result;
+  }
+
+
+  String getFullDescription() {
+    final Map<int, int> map = notes;
+    String result = "";
+
+    result = "Date : $date\n";
+
+    result +=getDescription();
+
+    result += "D. Total : ₹$denominationTotal\n";
+    result += "Added(+) : ₹$manuallyAdded\n";
+    result += "Subtracted(-) : ₹$manuallySubtracted\n";
+
+
+    return result;
+  }
+
 }

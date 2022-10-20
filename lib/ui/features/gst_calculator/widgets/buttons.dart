@@ -10,9 +10,16 @@ class BtnType1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+      customBorder: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+
+      ),
       onTap: onItemClick,
-      child: Container(
+      splashColor: AppColors.primaryDarkest50
+      ,
+      child: Ink(
+
         height: 60,
         width: 60,
         decoration: BoxDecoration(
@@ -21,6 +28,7 @@ class BtnType1 extends StatelessWidget {
               : AppColors.primaryLightest,
 
           borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.primaryLight)
         ),
 
         child: Center(

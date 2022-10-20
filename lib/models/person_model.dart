@@ -48,4 +48,9 @@ class PersonModel {
       addedOn: map['addedOn'] as String
     );
   }
+
+  @override
+  String toString() {
+    return "Name : $name\nCredit : +₹$credit\nDebit : -₹$debit\nBalance : ₹${credit-debit}";
+  }
 }

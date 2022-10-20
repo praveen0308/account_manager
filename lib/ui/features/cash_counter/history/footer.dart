@@ -1,12 +1,12 @@
 import 'package:account_manager/res/text_styles.dart';
+import 'package:account_manager/ui/features/cash_counter/dialogs/transaction_full_detail_dialog.dart';
 import 'package:account_manager/ui/features/cash_counter/history/cc_history_cubit.dart';
-import 'package:account_manager/ui/features/cash_counter/history/cc_history_cubit.dart';
+import 'package:account_manager/widgets/app_dialog.dart';
 import 'package:account_manager/widgets/footer_container.dart';
 import 'package:account_manager/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 import '../../../../res/app_colors.dart';
 
@@ -56,36 +56,18 @@ class _FooterState extends State<Footer> {
           ),
           const Spacer(),
           PrimaryButton(onClick: () {
-            _launchWhatsapp();
+            var bloc = BlocProvider.of<CcHistoryCubit>(context);
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AppDialog(
+
+                    child: TransactionFullDetailDialog(title: "Total", notes: bloc.gNotes, mAdded:bloc.gAdded, mSubtracted: bloc.gSubtracted),
+                  );
+                });
           }, text: "Total Notes")
         ],
       )),
     );
   }
-
-  _launchWhatsapp() async {
-
-    var whatsappAndroid =Uri.parse(  "whatsapp://send?text=Hello World!");
-    await launchUrl(whatsappAndroid);
-    /*if (await canLaunchUrl(whatsappAndroid)) {
-      await launchUrl(whatsappAndroid);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("WhatsApp is not installed on the device"),
-        ),
-      );
-    }*/
-  }
-
-  // ...somewhere in your Flutter app...
-  /*launchWhatsApp() async {
-    final link = WhatsAppUnilink(
-      text: "Hey! I'm inquiring about the apartment listing",
-    );
-    // Convert the WhatsAppUnilink instance to a string.
-    // Use either Dart's string interpolation or the toString() method.
-    // The "launch" method is part of "url_launcher".
-    await launchUrl(link.text);
-  }*/
 }

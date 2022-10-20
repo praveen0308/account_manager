@@ -9,6 +9,8 @@ import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 
+import '../../../../utils/share_utils.dart';
+
 class CDHistory extends StatefulWidget {
   final PersonModel person;
 
@@ -23,6 +25,7 @@ class _CDHistoryState extends State<CDHistory> {
   void initState() {
     BlocProvider.of<CdHistoryCubit>(context).personModel = widget.person;
     BlocProvider.of<CdHistoryCubit>(context).fetchTransactions();
+    super.initState();
   }
 
   @override
@@ -34,27 +37,29 @@ class _CDHistoryState extends State<CDHistory> {
       ),
       body: Stack(
         children: [
-          Expanded(
-            child: BlocBuilder<CdHistoryCubit, CdHistoryState>(
-              builder: (context, state) {
-                if (state is ReceivedTransactions) {
-                  if (state.transactions.isNotEmpty) {
-                    return ListView.builder(
-                        itemCount: state.transactions.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return buildTransactionView(
-                              state.transactions[index]);
-                        });
-                  } else {
-                    return const Center(
-                      child: Text("No Transactions!!!"),
-                    );
-                  }
+          BlocConsumer<CdHistoryCubit, CdHistoryState>(
+            listener: (context,state){
+              if(state is DeletedSuccessfully){
+                BlocProvider.of<CdHistoryCubit>(context).fetchTransactions();
+              }
+            },
+            builder: (context, state) {
+              if (state is ReceivedTransactions) {
+                if (state.transactions.isNotEmpty) {
+                  return ListView.builder(
+                      itemCount: state.transactions.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return buildTransactionView(state.transactions[index]);
+                      });
+                } else {
+                  return const Center(
+                    child: Text("No Transactions!!!"),
+                  );
                 }
+              }
 
-                return const CircularProgressIndicator();
-              },
-            ),
+              return const CircularProgressIndicator();
+            },
           ),
           Positioned(
               bottom: 0,
@@ -66,6 +71,36 @@ class _CDHistoryState extends State<CDHistory> {
         ],
       ),
     ));
+  }
+
+  _showPopupMenu(
+      BuildContext context, TapDownDetails details, CDTransaction transaction) {
+    showMenu<int>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        details.globalPosition.dx,
+        details.globalPosition.dy - 120,
+        details.globalPosition.dx,
+        details.globalPosition.dy - 120,
+      ), //position where you want to show the menu on screen
+      items: const [
+        PopupMenuItem<int>(value: 1, child: Text('Edit')),
+        PopupMenuItem<int>(value: 2, child: Text('Delete')),
+        PopupMenuItem<int>(value: 3, child: Text('Share')),
+      ],
+      elevation: 8.0,
+    ).then<void>((int? itemSelected) {
+      if (itemSelected == null) return;
+
+      if (itemSelected == 1) {
+          // todo edit cd transaction
+      } else if (itemSelected == 2) {
+        BlocProvider.of<CdHistoryCubit>(context)
+            .deleteTransaction(transaction.transactionId!);
+      } else if (itemSelected == 3) {
+        ShareUtil.launchWhatsapp(transaction.getDescription());
+      } else {}
+    });
   }
 
   Widget buildTransactionView(CDTransaction transaction) {
@@ -80,8 +115,8 @@ class _CDHistoryState extends State<CDHistory> {
       child: Container(
         padding: const EdgeInsets.all(8),
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.5,
-        ),
+            maxWidth: MediaQuery.of(context).size.width * 0.5,
+            minWidth: MediaQuery.of(context).size.width * 0.5),
         child: Row(
           mainAxisAlignment:
               isCredit ? MainAxisAlignment.start : MainAxisAlignment.end,
@@ -90,8 +125,9 @@ class _CDHistoryState extends State<CDHistory> {
               crossAxisAlignment:
                   isCredit ? CrossAxisAlignment.start : CrossAxisAlignment.end,
               children: [
-                Icon(transaction.walletId == 1 ? Icons.looks_one_outlined:Icons.looks_two_outlined),
-
+                Icon(transaction.walletId == 1
+                    ? Icons.looks_one_outlined
+                    : Icons.looks_two_outlined),
                 Text(transaction.remark ?? ""),
                 Text(
                   "₹${isCredit ? transaction.credit : transaction.debit}",
@@ -114,8 +150,9 @@ class _CDHistoryState extends State<CDHistory> {
               ],
             ),
             const Spacer(),
-            IconButton(
-                onPressed: () {}, icon: const Icon(Icons.more_vert_rounded))
+            GestureDetector(onTapDown:(details){
+              _showPopupMenu(context, details, transaction);
+            },child: const Icon(Icons.more_vert_rounded))
           ],
         ),
       ),

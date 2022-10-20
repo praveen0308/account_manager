@@ -32,9 +32,7 @@ class _CashCounterScreenState extends State<CashCounterScreen> {
     return SafeArea(
         child: Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text(AppStrings.cashCounter),
-      ),
+
       body: BlocListener<CashCounterCubit, CashCounterState>(
         listener: (context, state) {
           if (state is TransactionAddedSuccessfully) {

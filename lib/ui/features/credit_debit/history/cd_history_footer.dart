@@ -82,7 +82,7 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
               child: Column(
                 children: [
                   Text("₹${widget.person.credit-widget.person.debit}",style: const TextStyle(fontWeight: FontWeight.w700,fontSize: 18),),
-                  const Text("Balance",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16),)
+                  const Text("Balance",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 14),)
                 ],
               ),
             ),

@@ -27,4 +27,16 @@ class CdHistoryCubit extends Cubit<CdHistoryState> {
     }
 
   }
+  Future<void> deleteTransaction(int transactionId) async {
+    emit(LoadingTransactions());
+    try{
+      var result = await _creditDebitRepository.deleteCDTransaction(transactionId);
+      emit(DeletedSuccessfully());
+    }catch(e){
+      emit(Failed("Something went wrong !!!"));
+      debugPrint(e.toString());
+    }
+
+  }
+
 }

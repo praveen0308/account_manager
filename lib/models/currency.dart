@@ -14,7 +14,7 @@ class Currency {
   int? id;
   int item;
   int? qty;
-  final bool isActive;
+  bool isActive;
 
 
   Currency({this.id, required this.item,this.qty=0, this.isActive = true});

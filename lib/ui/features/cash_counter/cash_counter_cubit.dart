@@ -1,7 +1,9 @@
 import 'package:account_manager/models/cash_transaction.dart';
 import 'package:account_manager/repository/cash_transaction_repository.dart';
+import 'package:account_manager/utils/extension_methods.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:number_to_words_english/number_to_words_english.dart';
 
 import '../../../models/currency.dart';
 import '../../../repository/currency_repository.dart';
@@ -13,7 +15,7 @@ class CashCounterCubit extends Cubit<CashCounterState> {
   final CashTransactionRepository _cashTransactionRepository;
 
   CashCounterCubit(this._currencyRepository, this._cashTransactionRepository)
-      : super(CashCounterInitial(0, 0.0, 0.0));
+      : super(const CashCounterInitial(0, 0.0, 0.0));
 
   int noOfNotes = 0;
   double denominationTotal = 0;
@@ -108,6 +110,25 @@ class CashCounterCubit extends Cubit<CashCounterState> {
     } else {
       emit(TransactionFailed(noOfNotes, denominationTotal, grandTotal));
     }
+  }
+
+  CashTransactionModel getCurrentSession(){
+    CashTransactionModel cashTransactionModel = CashTransactionModel();
+    cashTransactionModel.manuallySubtracted = manuallySubtracted;
+    cashTransactionModel.manuallyAdded = manuallyAdded;
+    cashTransactionModel.denominationTotal = denominationTotal;
+    cashTransactionModel.grandTotal = grandTotal;
+    cashTransactionModel.noOfNotes = noOfNotes;
+    cashTransactionModel.name = personName;
+    cashTransactionModel.remark = remark;
+    cashTransactionModel.description = getFormattedDescription();
+    cashTransactionModel.addedOn = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        selectedTime.hour,
+        selectedTime.minute).toString();
+    return cashTransactionModel;
   }
 
   String getFormattedDescription() {

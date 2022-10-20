@@ -6,7 +6,8 @@ import 'package:account_manager/widgets/outlined_text_field.dart';
 import 'package:account_manager/widgets/secondary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
+// import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
+import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 
 import '../../../../widgets/primary_button.dart';
 
@@ -20,8 +21,8 @@ class AddPersonForm extends StatefulWidget {
 class _AddPersonFormState extends State<AddPersonForm> {
   final TextEditingController _txtNameController = TextEditingController();
   final TextEditingController _txtMobileNoController = TextEditingController();
-  final FlutterContactPicker _contactPicker = FlutterContactPicker();
-  late Contact _contact;
+  // final FlutterContactPicker _contactPicker = FlutterContactPicker();
+  late PhoneContact _contact;
 
   bool isValid = true;
 
@@ -81,17 +82,17 @@ class _AddPersonFormState extends State<AddPersonForm> {
                   ),
                   IconButton(
                       onPressed: () async {
-                        Contact? contact = await _contactPicker.selectContact();
-                        if (contact != null) {
-                          setState(() {
-                            _contact = contact;
-                          });
+                        final PhoneContact contact = await FlutterContactPicker.pickPhoneContact(askForPermission: true);
 
-                          _txtNameController.text =
-                              _contact.fullName.toString();
-                          _txtMobileNoController.text =
-                              _contact.phoneNumbers!.first.toString();
-                        }
+                        // Contact? contact = await _contactPicker.selectContact();
+                        setState(() {
+                          _contact = contact;
+                        });
+
+                        _txtNameController.text =
+                            _contact.fullName.toString();
+                        _txtMobileNoController.text =
+                            _contact.phoneNumber!.number.toString();
                       },
                       icon: const Icon(Icons.contacts_rounded))
                 ],

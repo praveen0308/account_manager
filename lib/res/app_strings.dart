@@ -7,6 +7,7 @@ class AppStrings{
   static const String creditDebit = "Credit Debit";
   static const String cashTransactions = "Cash Transactions";
   static const String emiCalculator = "EMI Calculator";
+  static const String calculator = "Calculator";
   static const String incomeExpense = "Income & Expense";
 
 }

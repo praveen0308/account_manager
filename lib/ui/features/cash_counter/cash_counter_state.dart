@@ -6,39 +6,47 @@ abstract class CashCounterState {
   final double denominationTotal;
   final double grandTotal;
 
-  CashCounterState(this.noOfNotes, this.denominationTotal, this.grandTotal);
+  const CashCounterState(this.noOfNotes, this.denominationTotal, this.grandTotal);
+
+  String getGrandTotalInWords(){
+    String inWords = NumberToWordsEnglish.convert(grandTotal.toInt());
+    inWords = inWords.replaceAll("-", " ");
+    inWords = inWords.capitalize();
+
+    return inWords;
+  }
 
 }
 
 class CashCounterInitial extends CashCounterState {
-  CashCounterInitial(super.noOfNotes, super.denominationTotal, super.grandTotal);
+  const CashCounterInitial(super.noOfNotes, super.denominationTotal, super.grandTotal);
 }
 class Loading extends CashCounterState {
-  Loading(super.noOfNotes, super.denominationTotal, super.grandTotal);
+  const Loading(super.noOfNotes, super.denominationTotal, super.grandTotal);
 }
 
 class AddingTransaction extends CashCounterState {
-  AddingTransaction(super.noOfNotes, super.denominationTotal, super.grandTotal);
+  const AddingTransaction(super.noOfNotes, super.denominationTotal, super.grandTotal);
 }
 
 class EntriesChanged extends CashCounterState {
-  EntriesChanged(super.noOfNotes, super.denominationTotal, super.grandTotal);
+  const EntriesChanged(super.noOfNotes, super.denominationTotal, super.grandTotal);
 }
 
 class ClearScreen extends CashCounterState {
-  ClearScreen(super.noOfNotes, super.denominationTotal, super.grandTotal);
+  const ClearScreen(super.noOfNotes, super.denominationTotal, super.grandTotal);
 }
 class ReceivedCurrencies extends CashCounterState {
   final List<Currency> currencies;
 
-  ReceivedCurrencies(this.currencies) : super(0, 0.0, 0.0);
+  const ReceivedCurrencies(this.currencies) : super(0, 0.0, 0.0);
 }
 
 class TransactionAddedSuccessfully extends CashCounterState {
-  TransactionAddedSuccessfully(super.noOfNotes, super.denominationTotal, super.grandTotal);
+  const TransactionAddedSuccessfully(super.noOfNotes, super.denominationTotal, super.grandTotal);
 }
 
 class TransactionFailed extends CashCounterState {
-  TransactionFailed(super.noOfNotes, super.denominationTotal, super.grandTotal);
+  const TransactionFailed(super.noOfNotes, super.denominationTotal, super.grandTotal);
 }
 

@@ -80,6 +80,17 @@ class CreditDebitRepository {
     return records.map((e) => CDTransaction.fromMap(e)).toList();
   }
 
+  Future<bool> deleteCDTransaction(
+      int transactionId) async {
+    // cashTransactionModel.addedOn = DateTime.now().toString();
+    Database db = await dbHelper.database;
+    var result = await db.delete(CDTransaction.table,
+        where: "${CDTransaction.colTransactionId}=?",
+        whereArgs: [transactionId]);
+    debugPrint("Deleted successfully >>> result : $result");
+    return result > 0;
+  }
+
   Future<List<WalletModel>> fetchStats() async {
     Database db = await dbHelper.database;
 
