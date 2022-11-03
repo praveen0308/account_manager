@@ -31,7 +31,7 @@ class _CashCounterScreenState extends State<CashCounterScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
 
       body: BlocListener<CashCounterCubit, CashCounterState>(
         listener: (context, state) {

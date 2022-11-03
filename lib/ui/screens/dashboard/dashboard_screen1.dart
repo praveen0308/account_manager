@@ -31,6 +31,7 @@ class _DashboardScreen1State extends State<DashboardScreen1> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: DefaultTabController(
+          initialIndex: 1,
       length: 3,
       child: Scaffold(
         body: Column(
@@ -39,6 +40,7 @@ class _DashboardScreen1State extends State<DashboardScreen1> {
               indicatorWeight: 3,
               labelColor: AppColors.primaryDarkest,
               indicatorColor: AppColors.primaryDarkest,
+
               tabs: [
                 Tab(
                   text: AppStrings.calculator,
@@ -49,6 +51,7 @@ class _DashboardScreen1State extends State<DashboardScreen1> {
                 Tab(
                   text: AppStrings.creditDebit,
                 ),
+
               ],
             ),
             const SizedBox(height: 8,),

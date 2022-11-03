@@ -31,8 +31,8 @@ dependencies:
   syncfusion_flutter_pdf: ^20.3.48
   number_to_words_english: ^2.0.2
   fluttercontactpicker: ^4.7.0
-
-
+  pdf: ^3.8.4
+  printing: ^5.9.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

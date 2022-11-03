@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../models/cash_transaction.dart';
+import '../../../../reports/cash_transaction_preview.dart';
 
 class CCHistoryScreen extends StatefulWidget {
   const CCHistoryScreen({Key? key}) : super(key: key);
@@ -17,6 +18,8 @@ class CCHistoryScreen extends StatefulWidget {
 }
 
 class _CCHistoryScreenState extends State<CCHistoryScreen> {
+
+  List<CashTransactionModel> transactions = [];
   _showPopupMenu(BuildContext context, TapDownDetails details) {
     showMenu<int>(
       context: context,
@@ -73,7 +76,13 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> {
                   onFilterClicked: (TapDownDetails details) {
 
                   },
-                  onPdfClicked: () {},
+                  onPdfClicked: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => PdfPreviewPage(transactions:transactions),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: 16,
@@ -96,6 +105,8 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> {
                       }
                       if (state is ReceivedHistory) {
                         if (state.data.isNotEmpty) {
+                          transactions.clear();
+                          transactions.addAll(BlocProvider.of<CcHistoryCubit>(context).transactions);
                           return ListView.separated(
                             padding: const EdgeInsets.only(bottom: 120),
                             itemCount: state.data.length,

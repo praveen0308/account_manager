@@ -249,7 +249,12 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
                         BlocProvider.of<CashCounterCubit>(context)
                             .addCashTransaction();
                       },
-                      text: "Save"))
+                      text: "Save")),
+              IconButton(onPressed: (){
+                ShareUtil.launchWhatsapp(BlocProvider.of<CashCounterCubit>(context)
+                    .getCurrentSession()
+                    .getFullDescription());
+              }, icon: const Icon(Icons.share))
             ],
           ),
           const SizedBox(

@@ -1,7 +1,3 @@
-import 'package:account_manager/models/person_model.dart';
-import 'package:account_manager/reports/credit_debit/person_credit_debit_report.dart';
-import 'package:account_manager/repository/credit_debit_repository.dart';
-import 'package:account_manager/res/app_strings.dart';
 import 'package:account_manager/ui/features/credit_debit/credit_debit_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/widgets/credit_debit_footer.dart';
 import 'package:account_manager/ui/features/credit_debit/widgets/credit_debit_row.dart';
@@ -11,6 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
+import '../../../models/person_model.dart';
+import '../../../reports/credit_debit/cd_transaction_preview.dart';
+
 class CreditDebitScreen extends StatefulWidget {
   const CreditDebitScreen({Key? key}) : super(key: key);
 
@@ -19,6 +18,7 @@ class CreditDebitScreen extends StatefulWidget {
 }
 
 class _CreditDebitScreenState extends State<CreditDebitScreen> {
+  List<PersonModel> persons =[];
   @override
   void initState() {
     BlocProvider.of<CreditDebitCubit>(context).fetchPersons();
@@ -67,7 +67,11 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
                     BlocProvider.of<CreditDebitCubit>(context).filterPersons(q);
                   },
                   onPdfClicked: () {
-                    PersonCreditDebitReport(RepositoryProvider.of<CreditDebitRepository>(context)).generateReport();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CDReportPreview(persons:persons),
+                      ),
+                    );
                   },
                 ),
                 Expanded(
@@ -82,6 +86,8 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
                       if (state is ReceivedPersons) {
                         BlocProvider.of<CreditDebitCubit>(context).fetchStats();
                         if (state.persons.isNotEmpty) {
+                          persons.clear();
+                          persons.addAll(state.persons);
                           return ListView.separated(
                             itemCount: state.persons.length,
                             itemBuilder: (context, index) {

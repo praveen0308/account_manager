@@ -83,7 +83,7 @@ class CcHistoryCubit extends Cubit<CcHistoryState> {
         dayTransactions.add(dayTransaction);
       });
 
-      emit(ReceivedHistory(dayTransactions, grandTotal));
+      emit(ReceivedHistory(dayTransactions.reversed.toList(), grandTotal));
     } catch (e) {
       emit(Error("Something went wrong !!!"));
       debugPrint(e.toString());

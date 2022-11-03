@@ -9,6 +9,7 @@ import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 
+import '../../../../reports/cd_person_history/cd_person_report_preview.dart';
 import '../../../../utils/share_utils.dart';
 
 class CDHistory extends StatefulWidget {
@@ -21,6 +22,7 @@ class CDHistory extends StatefulWidget {
 }
 
 class _CDHistoryState extends State<CDHistory> {
+  List<CDTransaction> transactions = [];
   @override
   void initState() {
     BlocProvider.of<CdHistoryCubit>(context).personModel = widget.person;
@@ -34,6 +36,15 @@ class _CDHistoryState extends State<CDHistory> {
         child: Scaffold(
       appBar: AppBar(
         title: Text(widget.person.name),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => CDPersonReportPreview(transactions:transactions,person: widget.person,),
+              ),
+            );
+          }, icon: const Icon(Icons.picture_as_pdf))
+        ],
       ),
       body: Stack(
         children: [
@@ -46,6 +57,8 @@ class _CDHistoryState extends State<CDHistory> {
             builder: (context, state) {
               if (state is ReceivedTransactions) {
                 if (state.transactions.isNotEmpty) {
+                  transactions.clear();
+                  transactions.addAll(state.transactions);
                   return ListView.builder(
                       itemCount: state.transactions.length,
                       itemBuilder: (BuildContext context, int index) {
