@@ -6,7 +6,6 @@ import 'package:account_manager/ui/features/credit_debit/add_person/add_person_f
 import 'package:account_manager/ui/features/credit_debit/credit_debit_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/widgets/wallet_view.dart';
 import 'package:account_manager/widgets/outlined_text_field.dart';
-import 'package:account_manager/widgets/primary_button.dart';
 import 'package:account_manager/widgets/secondary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,8 +20,37 @@ class CreditDebitFooter extends StatefulWidget {
 
 class _CreditDebitFooterState extends State<CreditDebitFooter> {
   double grandTotal = 0.0;
-  WalletModel w1 = WalletModel(1, "business", 0, 0);
-  WalletModel w2 = WalletModel(2, "current", 0, 0);
+  double credit = 0.0;
+  double debit = 0.0;
+
+
+  _showBusinessMenu(BuildContext context, TapDownDetails details) {
+    showMenu<int>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        details.globalPosition.dx,
+        details.globalPosition.dy - 200,
+        details.globalPosition.dx,
+        details.globalPosition.dy - 120,
+      ), //position where you want to show the menu on screen
+      items: const [
+        PopupMenuItem<int>(value: 1, child: Text('Business 1')),
+        PopupMenuItem<int>(value: 2, child: Text('Business 2')),
+        PopupMenuItem<int>(value: 3, child: Text('Business 3')),
+      ],
+      elevation: 8.0,
+    ).then<void>((int? itemSelected) {
+      if (itemSelected == null) return;
+
+      if (itemSelected == 1) {
+        BlocProvider.of<CreditDebitCubit>(context).fetchPersonsByWalletId(1);
+      } else if (itemSelected == 2) {
+        BlocProvider.of<CreditDebitCubit>(context).fetchPersonsByWalletId(2);
+      } else {
+        BlocProvider.of<CreditDebitCubit>(context).fetchPersonsByWalletId(3);
+      }
+    });
+  }
 
   _displayDialog() {
     return showDialog(
@@ -49,61 +77,111 @@ class _CreditDebitFooterState extends State<CreditDebitFooter> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
           color: AppColors.surfaceColor,
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           border: Border.all(color: AppColors.dividerColor)),
-      child: BlocListener<CreditDebitCubit, CreditDebitState>(
-        listener: (context, state) {
+      child: BlocBuilder<CreditDebitCubit, CreditDebitState>(
+        builder: (context, state) {
           if (state is ReceivedStats) {
-            setState(() {
+
               grandTotal = state.grandTotal;
-              w1 = state.wallet1;
-              w2 = state.wallet2;
-            });
+              credit = state.credit;
+              debit = state.debit;
+
+
           }
-        },
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(child: WalletView(walletModel: w1, color: Colors.blue,)),
-                const SizedBox(
-                  width: 16,
-                ),
-                Expanded(child: WalletView(walletModel: w2,color: Colors.red,)),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Total : ₹$grandTotal",
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    _displayDialog();
-                  },
-                  icon: const Icon(
-                    Icons.person_add,
-                    color: AppColors.white,
+
+          return Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Cr. : +₹$credit",
+                    style: const TextStyle(
+                        color: AppColors.success,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18),
                   ),
-                  label: const Text(
-                    "Add Person",
-                    style: TextStyle(color: AppColors.white),
+                  Text("Db. : -₹$debit",
+                      style: const TextStyle(
+                          color: AppColors.error,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18)),
+                  Text(
+                    "Total : ₹$grandTotal",
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w600),
                   ),
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(AppColors.primaryDarkest)),
+                ],
+              ),
+              const Spacer(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTapDown: (details){
+                      _showBusinessMenu(context, details);
+                    },
+                    child: OutlinedButton(
+                        onPressed: () {
+
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(
+                              width: 2.0, color: AppColors.primaryDark),
+                        ),
+                        child: Text("Business ${
+                          BlocProvider.of<CreditDebitCubit>(context)
+                              .activeWalletId
+                        }")),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      _displayDialog();
+                    },
+                    icon: const Icon(
+                      Icons.person_add,
+                      color: AppColors.white,
+                    ),
+                    label: const Text(
+                      "Add Person",
+                      style: TextStyle(color: AppColors.white),
+                    ),
+                    style: ButtonStyle(
+                        backgroundColor:
+                        MaterialStateProperty.all(AppColors.primaryDarkest)),
+                  )
+                ],
+              ),
+              /*Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(child: WalletView(walletModel: w1, color: Colors.blue,)),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(child: WalletView(walletModel: w2,color: Colors.red,)),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+
+
+                  ],
                 )
               ],
-            )
-          ],
-        ),
+            ),*/
+            ],
+          );
+        },
+
+
       ),
     );
   }

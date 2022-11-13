@@ -5,4 +5,9 @@ class WalletModel {
   double debit;
 
   WalletModel(this.walletId, this.name, this.credit, this.debit);
+
+  @override
+  String toString() {
+    return name;
+  }
 }

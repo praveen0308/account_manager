@@ -160,13 +160,13 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16),
                             ),
-                            Text(
+                            FittedBox(child: Text(
                               state.grandTotal.toString(),
                               style: const TextStyle(
                                   color: AppColors.primaryDarkest,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800),
-                            )
+                            ),)
                           ],
                         ),
                       ))

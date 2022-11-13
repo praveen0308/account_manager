@@ -11,10 +11,11 @@ part 'credit_debit_state.dart';
 class CreditDebitCubit extends Cubit<CreditDebitState> {
   final CreditDebitRepository _creditDebitRepository;
   CreditDebitCubit(this._creditDebitRepository) : super(CreditDebitInitial());
-
+  // String activeBusiness = "Business 1";
+  int activeWalletId = 1;
   final List<PersonModel> persons = [];
 
-  Future<void> fetchPersons() async {
+  /*Future<void> fetchPersons() async {
     emit(LoadingPersons());
     try{
       var result = await _creditDebitRepository.getAllPersons();
@@ -26,21 +27,63 @@ class CreditDebitCubit extends Cubit<CreditDebitState> {
       debugPrint(e.toString());
     }
 
+  }*/
+  Future<void> fetchPersonsByWalletId(int walletId) async {
+    emit(LoadingPersons());
+    try{
+      activeWalletId = walletId;
+      var result = await _creditDebitRepository.getPersonsByWalletId(walletId);
+      persons.clear();
+      persons.addAll(result);
+      emit(ReceivedPersons(result));
+
+    }catch(e){
+      debugPrint(e.toString());
+    }
+
   }
 
-  Future<void> fetchStats() async {
+  Future<void> fetchPersons() async {
+    emit(LoadingPersons());
+    try{
+
+      var result = await _creditDebitRepository.getPersonsByWalletId(activeWalletId);
+      persons.clear();
+      persons.addAll(result);
+      emit(ReceivedPersons(result));
+
+    }catch(e){
+      debugPrint(e.toString());
+    }
+
+  }
+
+/*  Future<void> fetchStats() async {
     emit(LoadingStats());
     try{
       var result = await _creditDebitRepository.fetchStats();
       var wallet1 = result[0];
       var wallet2 = result[1];
-      var grandTotal = wallet1.credit+wallet2.credit-wallet1.debit-wallet2.debit;
-      emit(ReceivedStats(grandTotal, wallet1, wallet2));
+      // var grandTotal = wallet1.credit+wallet2.credit-wallet1.debit-wallet2.debit;
+      // emit(ReceivedStats(grandTotal, wallet1, wallet2));
     }catch(e){
       debugPrint(e.toString());
 
     }
+  }*/
 
+  Future<void> fetchStatsByWalletId() async {
+    emit(LoadingStats());
+    try{
+      var result = await _creditDebitRepository.fetchStatsByWalletId(activeWalletId);
+
+
+      var grandTotal = result.credit-result.debit;
+      emit(ReceivedStats(grandTotal, result.credit, result.debit));
+    }catch(e){
+      debugPrint(e.toString());
+
+    }
   }
 
   void applyFilter(int type){

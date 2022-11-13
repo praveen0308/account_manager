@@ -1,8 +1,5 @@
-import 'package:account_manager/models/cash_transaction.dart';
 import 'package:account_manager/models/credit_debit_transaction.dart';
-import 'package:account_manager/models/currency.dart';
 import 'package:account_manager/models/person_model.dart';
-import 'package:account_manager/models/person_transaction.dart';
 import 'package:account_manager/models/wallet_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
@@ -65,6 +62,13 @@ class CreditDebitRepository {
     return records.map((e) => PersonModel.fromMap(e)).toList();
   }
 
+  Future<List<PersonModel>> getPersonsByWalletId(int walletId) async {
+    Database db = await dbHelper.database;
+    var records = await db.query(PersonModel.table,where: "${PersonModel.colWalletId}=?",whereArgs: [walletId]);
+
+    return records.map((e) => PersonModel.fromMap(e)).toList();
+  }
+
   Future<List<CDTransaction>> getAllTransactions() async {
     Database db = await dbHelper.database;
     var records = await db.query(CDTransaction.table);
@@ -80,8 +84,7 @@ class CreditDebitRepository {
     return records.map((e) => CDTransaction.fromMap(e)).toList();
   }
 
-  Future<bool> deleteCDTransaction(
-      int transactionId) async {
+  Future<bool> deleteCDTransaction(int transactionId) async {
     // cashTransactionModel.addedOn = DateTime.now().toString();
     Database db = await dbHelper.database;
     var result = await db.delete(CDTransaction.table,
@@ -97,13 +100,36 @@ class CreditDebitRepository {
     /*var query =
         "SELECT sum(${CDTransaction.colCredit}) as result from ${CDTransaction.table} GROUP by ${CDTransaction.colWalletId},${CDTransaction.colType}";
     */
-    var query = "SELECT ${CDTransaction.colWalletId},sum(${CDTransaction.colCredit}) as credit,sum(${CDTransaction.colDebit}) as debit from credit_debit group by ${CDTransaction.colWalletId};";
+    var query =
+        "SELECT ${CDTransaction.colWalletId},sum(${CDTransaction.colCredit}) as credit,sum(${CDTransaction.colDebit}) as debit from credit_debit group by ${CDTransaction.colWalletId};";
     var result = await db.rawQuery(query);
 
     List<WalletModel> wallets = [];
-    wallets.add(WalletModel(1, "Wallet 1", result[0]['credit'] as double, result[0]['debit'] as double));
-    wallets.add(WalletModel(2, "Wallet 2", result[1]['credit'] as double, result[1]['debit'] as double));
+    wallets.add(WalletModel(1, "Wallet 1", result[0]['credit'] as double,
+        result[0]['debit'] as double));
+    wallets.add(WalletModel(2, "Wallet 2", result[1]['credit'] as double,
+        result[1]['debit'] as double));
 
     return wallets;
+  }
+
+  Future<WalletModel> fetchStatsByWalletId(int walletId) async {
+    Database db = await dbHelper.database;
+
+    /*var query =
+        "SELECT sum(${CDTransaction.colCredit}) as result from ${CDTransaction.table} GROUP by ${CDTransaction.colWalletId},${CDTransaction.colType}";
+    */
+    var query =
+        "SELECT ${CDTransaction.colWalletId},sum(${CDTransaction.colCredit}) as credit,sum(${CDTransaction.colDebit}) as debit from credit_debit where ${CDTransaction.colWalletId}=$walletId;";
+    var result = await db.rawQuery(query);
+
+    if(result[0]['walletId']==null){
+      return WalletModel(walletId, "Business $walletId}", 0, 0);
+    }else{
+
+      return WalletModel(result[0]['walletId'] as int, "Business ${result[0]['walletId']}", result[0]['credit'] as double,
+          result[0]['debit'] as double);
+    }
+
   }
 }

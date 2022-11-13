@@ -80,13 +80,13 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
                 maxLength: 50,
                 hintText: "Remark",
               ),
-              Padding(
+              /*Padding(
                   padding: const EdgeInsets.only(left: 5, right: 5),
                   child: WalletGroup(
                     onWalletSelected: (int selectedWallet) {
                       selectedWalletId = selectedWallet;
                     },
-                  )),
+                  )),*/
               Visibility(
                   visible: !isValid,
                   child: const Text(
@@ -120,7 +120,7 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
                                     .addNewTransaction(
                                         widget.person,
                                         CDTransaction(
-                                          walletId: selectedWalletId,
+                                          walletId: widget.person.walletId,
                                           credit: double.parse(amount),
                                           remark: remark,
                                           personId: widget.person.personId!,

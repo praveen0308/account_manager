@@ -1,5 +1,6 @@
 class PersonModel {
   static const String colPersonId = "personId";
+  static const String colWalletId = "walletId";
   static const String colName = "name";
   static const String colMobileNumber = "mobileNumber";
   static const String colCredit = "credit";
@@ -11,6 +12,7 @@ class PersonModel {
   static const String createTable = '''
   CREATE TABLE $table (
           $colPersonId INTEGER PRIMARY KEY AUTOINCREMENT,
+          $colWalletId INTEGER NOT NULL,
           $colName TEXT NOT NULL,
           $colMobileNumber TEXT NULL,
           $colCredit REAL NULL DEFAULT 0.0,
@@ -19,17 +21,19 @@ class PersonModel {
   )''';
 
   int? personId;
+  int walletId;
   String name;
   String mobileNumber;
   double credit;
   double debit;
   String addedOn;
 
-  PersonModel({this.personId, this.name="", this.mobileNumber="", this.credit=0.0, this.debit=0.0,this.addedOn=""});
+  PersonModel({this.personId,this.walletId=1, this.name="", this.mobileNumber="", this.credit=0.0, this.debit=0.0,this.addedOn=""});
 
   Map<String, dynamic> toMap() {
     return {
       'personId': personId,
+      'walletId': walletId,
       'name': name,
       'mobileNumber': mobileNumber,
       'credit': credit,
@@ -40,7 +44,8 @@ class PersonModel {
 
   factory PersonModel.fromMap(Map<String, dynamic> map) {
     return PersonModel(
-      personId: map['personId'] as int,
+      personId: map['personId'] as int, 
+        walletId: map['walletId'] as int,
       name: map['name'] as String,
       mobileNumber: map['mobileNumber'] as String,
       credit: map['credit'] as double,

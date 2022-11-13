@@ -1,7 +1,10 @@
 import 'package:account_manager/models/person_model.dart';
+import 'package:account_manager/models/wallet_model.dart';
+import 'package:account_manager/res/app_constants.dart';
 import 'package:account_manager/ui/features/credit_debit/add_person/add_person_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/credit_debit_cubit.dart';
 import 'package:account_manager/utils/toaster.dart';
+import 'package:account_manager/widgets/custom_dropdown.dart';
 import 'package:account_manager/widgets/outlined_text_field.dart';
 import 'package:account_manager/widgets/secondary_button.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +28,8 @@ class _AddPersonFormState extends State<AddPersonForm> {
   late PhoneContact _contact;
 
   bool isValid = true;
+  int selectedWallet = 1;
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +47,7 @@ class _AddPersonFormState extends State<AddPersonForm> {
       builder: (context, state) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          height: 350,
+          height: 400,
           decoration: const BoxDecoration(
             color: Colors.white,
             shape: BoxShape.rectangle,
@@ -61,6 +66,9 @@ class _AddPersonFormState extends State<AddPersonForm> {
                 ),
               ),
               const SizedBox(height: 16),
+              CustomDropDown(hint: "Business 1", itemList: AppConstants.getWallets(), onItemSelected: (item){
+                selectedWallet = item.walletId;
+              }),
               OutlinedTextField(
                   controller: _txtNameController,
                   onTextChanged: (txt) {},
@@ -97,6 +105,7 @@ class _AddPersonFormState extends State<AddPersonForm> {
                       icon: const Icon(Icons.contacts_rounded))
                 ],
               ),
+
               Visibility(
                   visible: !isValid,
                   child: const Text(
@@ -127,7 +136,9 @@ class _AddPersonFormState extends State<AddPersonForm> {
 
                               BlocProvider.of<AddPersonCubit>(context).addNewPerson(PersonModel(
                                 name: name,
-                                mobileNumber: mobileNo
+                                mobileNumber: mobileNo,
+                                walletId: selectedWallet
+
                               ));
                             }else{
                               setState((){

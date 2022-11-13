@@ -138,9 +138,9 @@ class _CDHistoryState extends State<CDHistory> {
               crossAxisAlignment:
                   isCredit ? CrossAxisAlignment.start : CrossAxisAlignment.end,
               children: [
-                Icon(transaction.walletId == 1
+                /*Icon(transaction.walletId == 1
                     ? Icons.looks_one_outlined
-                    : Icons.looks_two_outlined),
+                    : Icons.looks_two_outlined),*/
                 Text(transaction.remark ?? ""),
                 Text(
                   "₹${isCredit ? transaction.credit : transaction.debit}",

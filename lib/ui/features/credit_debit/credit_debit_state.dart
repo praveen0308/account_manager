@@ -13,6 +13,7 @@ class Error extends CreditDebitState {
 
 }
 class ReceivedPersons extends CreditDebitState {
+
   final List<PersonModel> persons;
 
   ReceivedPersons(this.persons);
@@ -20,12 +21,9 @@ class ReceivedPersons extends CreditDebitState {
 }
 class ReceivedStats extends CreditDebitState {
   final double grandTotal;
-  final WalletModel wallet1;
-  final WalletModel wallet2;
+  final double credit;
+  final double debit;
 
-  ReceivedStats(this.grandTotal, this.wallet1, this.wallet2);
-
-
-
+  ReceivedStats(this.grandTotal, this.credit, this.debit);
 
 }
