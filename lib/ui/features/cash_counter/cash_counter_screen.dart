@@ -1,6 +1,5 @@
 import 'package:account_manager/repository/currency_repository.dart';
 import 'package:account_manager/res/app_colors.dart';
-import 'package:account_manager/res/app_strings.dart';
 import 'package:account_manager/ui/features/cash_counter/cash_calculator_view/cash_calculator_view_cubit.dart';
 import 'package:account_manager/ui/features/cash_counter/cash_counter_cubit.dart';
 import 'package:account_manager/ui/features/cash_counter/widgets/cash_counter_footer.dart';
@@ -42,6 +41,9 @@ class _CashCounterScreenState extends State<CashCounterScreen> {
           if (state is TransactionFailed) {
             ScaffoldMessenger.of(context)
                 .showToast("Failed to add transaction !!!", ToastType.error);
+          }
+          if(state is ClearScreen){
+            setState((){});
           }
         },
         child: SizedBox(

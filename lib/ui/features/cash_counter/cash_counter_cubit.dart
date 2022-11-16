@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:account_manager/models/cash_transaction.dart';
 import 'package:account_manager/repository/cash_transaction_repository.dart';
 import 'package:account_manager/utils/extension_methods.dart';
@@ -16,6 +18,7 @@ class CashCounterCubit extends Cubit<CashCounterState> {
 
   CashCounterCubit(this._currencyRepository, this._cashTransactionRepository)
       : super(const CashCounterInitial(0, 0.0, 0.0));
+
 
   int noOfNotes = 0;
   double denominationTotal = 0;
@@ -99,7 +102,7 @@ class CashCounterCubit extends Cubit<CashCounterState> {
         selectedDate.month,
         selectedDate.day,
         selectedTime.hour,
-        selectedTime.minute).toString();
+        selectedTime.minute).millisecondsSinceEpoch;
     var result = await _cashTransactionRepository
         .addCashTransaction(cashTransactionModel);
 
@@ -127,7 +130,7 @@ class CashCounterCubit extends Cubit<CashCounterState> {
         selectedDate.month,
         selectedDate.day,
         selectedTime.hour,
-        selectedTime.minute).toString();
+        selectedTime.minute).millisecondsSinceEpoch;
     return cashTransactionModel;
   }
 

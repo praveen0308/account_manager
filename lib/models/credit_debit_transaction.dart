@@ -26,8 +26,8 @@ class CDTransaction {
           $colType TEXT NOT NULL,
           $colDescription TEXT NULL,
           $colRemark TEXT NULL,
-          $colAddedOn TEXT NOT NULL,
-          $colUpdatedOn TEXT NULL,
+          $colAddedOn INTEGER NOT NULL,
+          $colUpdatedOn INTEGER NULL,
           $colIsCancel INTEGER NULL DEFAULT 0
   )''';
 
@@ -41,8 +41,8 @@ class CDTransaction {
   String type;  // IN/OUT
   String? description;
   String? remark;
-  String addedOn;
-  String? updatedOn;
+  int addedOn;
+  int? updatedOn;
   bool isCancel;
 
   CDTransaction(
@@ -55,12 +55,12 @@ class CDTransaction {
       this.type = "IN",
       this.description,
       this.remark,
-      this.addedOn = "",
+      this.addedOn=0,
       this.updatedOn,
       this.isCancel=false});
 
 
-  String getDate() => DateFormat.yMd().add_jm().format(DateTime.parse(addedOn));
+  String getDate() => DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(addedOn));
 
 
   Map<String, dynamic> toMap() {
@@ -91,8 +91,8 @@ class CDTransaction {
       type: map['type'] as String,
       description: map['description'] as String?,
       remark: map['remark'] as String?,
-      addedOn: map['addedOn'] as String,
-      updatedOn: map['updatedOn'] as String?,
+      addedOn: map['addedOn'] as int,
+      updatedOn: map['updatedOn'] as int?,
       isCancel: map['isCancel'] as int == 1 ,
     );
   }

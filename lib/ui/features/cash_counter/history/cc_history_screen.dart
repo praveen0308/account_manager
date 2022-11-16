@@ -17,7 +17,76 @@ class CCHistoryScreen extends StatefulWidget {
   State<CCHistoryScreen> createState() => _CCHistoryScreenState();
 }
 
-class _CCHistoryScreenState extends State<CCHistoryScreen> {
+class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin{
+  @override
+  String? get restorationId => "CashTransactionsFilter";
+  final RestorableDateTimeN _startDate = RestorableDateTimeN(DateTime(2022));
+  final RestorableDateTimeN _endDate =
+  RestorableDateTimeN(DateTime(2030));
+  late final RestorableRouteFuture<DateTimeRange?>
+  _restorableDateRangePickerRouteFuture =
+  RestorableRouteFuture<DateTimeRange?>(
+    onComplete: _selectDateRange,
+    onPresent: (NavigatorState navigator, Object? arguments) {
+      return navigator
+          .restorablePush(_dateRangePickerRoute, arguments: <String, dynamic>{
+        'initialStartDate': _startDate.value?.millisecondsSinceEpoch,
+        'initialEndDate': _endDate.value?.millisecondsSinceEpoch,
+      });
+    },
+  );
+
+  void _selectDateRange(DateTimeRange? newSelectedDate) {
+    if (newSelectedDate != null) {
+      setState(() {
+        _startDate.value = newSelectedDate.start;
+        _endDate.value = newSelectedDate.end;
+
+        BlocProvider.of<CcHistoryCubit>(context).fetchTransactions(from: _startDate.value!.millisecondsSinceEpoch,to:_endDate.value!.millisecondsSinceEpoch);
+      });
+    }
+  }
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_startDate, 'start_date');
+    registerForRestoration(_endDate, 'end_date');
+    registerForRestoration(
+        _restorableDateRangePickerRouteFuture, 'date_picker_route_future');
+  }
+
+  static Route<DateTimeRange?> _dateRangePickerRoute(
+      BuildContext context,
+      Object? arguments,
+      ) {
+    return DialogRoute<DateTimeRange?>(
+      context: context,
+      builder: (BuildContext context) {
+        return DateRangePickerDialog(
+          restorationId: 'date_picker_dialog',
+          initialDateRange:
+          _initialDateTimeRange(arguments! as Map<dynamic, dynamic>),
+          firstDate: DateTime(2022),
+
+          lastDate: DateTime(2030),
+        );
+      },
+    );
+  }
+
+  static DateTimeRange? _initialDateTimeRange(Map<dynamic, dynamic> arguments) {
+    if (arguments['initialStartDate'] != null &&
+        arguments['initialEndDate'] != null) {
+      return DateTimeRange(
+        start: DateTime.fromMillisecondsSinceEpoch(
+            arguments['initialStartDate'] as int),
+        end: DateTime.fromMillisecondsSinceEpoch(
+            arguments['initialEndDate'] as int),
+      );
+    }
+
+    return null;
+  }
 
   List<CashTransactionModel> transactions = [];
   _showPopupMenu(BuildContext context, TapDownDetails details) {
@@ -42,22 +111,42 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> {
       if (itemSelected == null) return;
 
       if (itemSelected == 1) {
-
-      } else if (itemSelected == 2) {
-
-      } else if (itemSelected == 3) {
-
-      }else if (itemSelected == 4) {
-
-      }else if (itemSelected == 5) {
-
+        BlocProvider.of<CcHistoryCubit>(context).fetchTransactions();
+      } else if ([2,3,4,5].contains(itemSelected)) {
+        var dates = getDates(itemSelected);
+        BlocProvider.of<CcHistoryCubit>(context).fetchTransactions(from: dates[0],to:dates[1]);
       } else {
-
+        _restorableDateRangePickerRouteFuture.present();
       }
     });
   }
 
+  List<int> getDates(int filterId){
+    var today = DateTime.now();
+    int from =0;
+    int to = today.millisecondsSinceEpoch;
 
+    switch(filterId){
+      case 2:{
+        from = DateTime(today.year,today.month,today.day-7).millisecondsSinceEpoch;
+      }
+      break;
+      case 3:{
+        from = DateTime(today.year,today.month,today.day-30).millisecondsSinceEpoch;
+      }
+      break;
+      case 4:{
+        from = DateTime(today.year,today.month,today.day-90).millisecondsSinceEpoch;
+      }
+      break;
+      case 5:{
+        from = DateTime(today.year-1,today.month,today.day).millisecondsSinceEpoch;
+      }
+      break;
+    }
+
+    return [from,to];
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -74,7 +163,7 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> {
                 ListDataHeader(
                   onSearched: (String q) {},
                   onFilterClicked: (TapDownDetails details) {
-
+                    _showPopupMenu(context, details);
                   },
                   onPdfClicked: () {
                     Navigator.of(context).push(

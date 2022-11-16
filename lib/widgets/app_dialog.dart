@@ -17,7 +17,7 @@ class AppDialog extends StatelessWidget {
         backgroundColor: Colors.transparent,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          height: height,
+
           decoration: const BoxDecoration(
             color: Colors.white,
             shape: BoxShape.rectangle,

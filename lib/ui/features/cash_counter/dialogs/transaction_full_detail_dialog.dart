@@ -62,6 +62,7 @@ class _TransactionFullDetailDialogState
       child: DefaultTextStyle(
         style: const TextStyle(fontSize: 16, color: Colors.black),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,7 +153,8 @@ class _TransactionFullDetailDialogState
 
                 children: [const Text("Remark : ",style: TextStyle(fontWeight: FontWeight.w700,color: Colors.red),), Text(widget.remark??"",style: const TextStyle(color: Colors.red),)],
               ),
-            )
+            ),
+            const SizedBox(height: 32,),
 
 
           ],

@@ -34,4 +34,12 @@ class CashTransactionRepository {
     debugPrint("Transactions >>> $records");
     return records.map((e) => CashTransactionModel.fromMap(e)).toList();
   }
+
+  Future<List<CashTransactionModel>> fetchTransactionsByDate(int from,int to) async {
+    Database db = await dbHelper.database;
+    debugPrint("From >>> $from  -  to >>> $to");
+    var records = await db.query(CashTransactionModel.table,where:"${CashTransactionModel.columnAddedOn}>=? and ${CashTransactionModel.columnAddedOn}<=?",whereArgs: [from,to]);
+    debugPrint("Transactions >>> $records");
+    return records.map((e) => CashTransactionModel.fromMap(e)).toList();
+  }
 }

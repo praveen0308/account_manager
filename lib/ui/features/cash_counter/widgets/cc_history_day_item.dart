@@ -1,6 +1,5 @@
 import 'package:account_manager/models/day_transaction_model.dart';
 import 'package:account_manager/res/app_colors.dart';
-import 'package:account_manager/ui/features/cash_counter/dialogs/transaction_detail_dialog.dart';
 import 'package:account_manager/ui/features/cash_counter/widgets/cc_history_item.dart';
 import 'package:account_manager/utils/share_utils.dart';
 import 'package:account_manager/widgets/outlined_container.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../models/cash_transaction.dart';
 import '../../../../widgets/app_dialog.dart';
+import '../dialogs/transaction_full_detail_dialog.dart';
 
 class CCHistoryDayItem extends StatefulWidget {
   final DayTransactionModel dayTransaction;
@@ -118,10 +118,8 @@ class _CCHistoryDayItemState extends State<CCHistoryDayItem> {
                           context: context,
                           builder: (BuildContext context) {
                             return AppDialog(
-                              child: TransactionDetailDialog(
-                                data:
-                                    widget.dayTransaction.getFullDescription(),
-                              ),
+                              child:  TransactionFullDetailDialog(title: "Total", notes: widget.dayTransaction.notes, mAdded:widget.dayTransaction.manuallyAdded, mSubtracted: widget.dayTransaction.manuallySubtracted)
+
                             );
                           });
                     },

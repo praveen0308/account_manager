@@ -22,10 +22,18 @@ class CcHistoryCubit extends Cubit<CcHistoryState> {
   Map<int,int> gNotes = {};
   final List<CashTransactionModel> transactions = [];
 
-  Future<void> fetchTransactions() async {
+  Future<void> fetchTransactions({int? from,int? to}) async {
+
     emit(LoadingData());
     try {
-      var result = await _cashTransactionRepository.fetchAllTransactions();
+      List<CashTransactionModel> result;
+      if(from == null){
+        result = await _cashTransactionRepository.fetchAllTransactions();
+      }else{
+        result = await _cashTransactionRepository.fetchTransactionsByDate(from, to!);
+        // debugPrint("Transactions >>> ${result[0].addedOn}");
+      }
+
       grandTotal = 0;
 
       transactions.clear();
@@ -37,7 +45,7 @@ class CcHistoryCubit extends Cubit<CcHistoryState> {
       var gTransactions = groupBy(
           transactions,
           (CashTransactionModel e) =>
-              DateFormat.yMMMd().format(DateTime.parse(e.addedOn)));
+              DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(e.addedOn)));
       List<DayTransactionModel> dayTransactions = [];
 
       gTransactions.forEach((date, transactions) {
@@ -84,11 +92,13 @@ class CcHistoryCubit extends Cubit<CcHistoryState> {
       });
 
       emit(ReceivedHistory(dayTransactions.reversed.toList(), grandTotal));
-    } catch (e) {
+    } on Exception catch(e) {
       emit(Error("Something went wrong !!!"));
       debugPrint(e.toString());
     }
   }
+
+
 
   Future<void> deleteTransaction(int transactionId) async {
     emit(LoadingData());

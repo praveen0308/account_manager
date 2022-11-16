@@ -36,7 +36,8 @@ class _CCSettingsDialogState extends State<CCSettingsDialog> {
               if(state is UpdatedSuccessfully){
                 showToast("Updated Successfully!!",ToastType.success);
                 Navigator.pop(context,true);
-                BlocProvider.of<CashCounterCubit>(context).emit(const ClearScreen(0 , 0 , 0));
+                BlocProvider.of<CashCounterCubit>(context)
+                    .clearFields();
               }
             },
             builder: (context, state) {

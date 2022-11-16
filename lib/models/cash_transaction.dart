@@ -1,4 +1,6 @@
+import 'package:account_manager/utils/extension_methods.dart';
 import 'package:intl/intl.dart';
+import 'package:number_to_words_english/number_to_words_english.dart';
 
 class CashTransactionModel {
   static const String table = "cash_transactions";
@@ -32,8 +34,8 @@ class CashTransactionModel {
           $columnMobileNumber TEXT NULL,
           $columnAccountNumber TEXT NULL,
           $columnRemark TEXT NULL,
-          $columnAddedOn TEXT NOT NULL,
-          $columnUpdatedOn TEXT NULL
+          $columnAddedOn INTEGER NOT NULL,
+          $columnUpdatedOn INTEGER NULL
   )''';
 
   int? transactionID;
@@ -47,8 +49,8 @@ class CashTransactionModel {
   String? mobileNumber;
   String? accountNumber;
   String? remark;
-  String addedOn;
-  String? updatedOn;
+  int addedOn;
+  int? updatedOn;
 
   CashTransactionModel(
       {this.transactionID,
@@ -62,21 +64,21 @@ class CashTransactionModel {
       this.mobileNumber,
       this.accountNumber,
       this.remark,
-      this.addedOn = "",
+      this.addedOn = 0,
       this.updatedOn});
 
   // extension methods
-  String getTiming() => DateFormat.jm().format(DateTime.parse(addedOn));
+  String getTiming() => DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(addedOn));
 
-  String getDate() => DateFormat.yMMMd().format(DateTime.parse(addedOn));
-  String getFDate() => DateFormat('dd/MM/yy').format(DateTime.parse(addedOn));
+  String getDate() => DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(addedOn));
+  String getFDate() => DateFormat('dd/MM/yy').format(DateTime.fromMillisecondsSinceEpoch(addedOn));
 
   String getDescription(){
     final Map<int, int> map = getDescriptionMap();
     String result = "";
 
     map.forEach((key, value) {
-      result = "${key}x$value=${key*value}\n";
+      result += "$key x $value = ${key*value}\n";
     });
 
 
@@ -104,22 +106,36 @@ class CashTransactionModel {
     }
 
     result +=getDescription();
-
+    result += '--'*15;
+    result += "\n";
     result += "D. Total : ₹$denominationTotal\n";
     result += "Added(+) : ₹$manuallyAdded\n";
     result += "Subtracted(-) : ₹$manuallySubtracted\n";
+    result += '='*20;
+    result += "\n";
+    result += "Grand Total : ₹$grandTotal";
+    result += "\n\n";
+    result +=getGrandTotalInWords();
+    result += "\n\n";
+    result += "[Total $noOfNotes Notes]\n";
 
 
     if(remark != null){
       if(remark!.isNotEmpty){
-        result = "Remark : $remark\n";
+        result += "Remark : $remark\n";
       }
     }
 
 
     return result;
   }
+  String getGrandTotalInWords(){
+    String inWords = NumberToWordsEnglish.convert(grandTotal.toInt());
+    inWords = inWords.replaceAll("-", " ");
+    inWords = inWords.capitalize();
 
+    return inWords;
+  }
   Map<String, dynamic> toMap() {
     return {
       columnTransactionId: transactionID,
@@ -151,8 +167,8 @@ class CashTransactionModel {
       mobileNumber: map[columnMobileNumber] as String?,
       accountNumber: map[columnAccountNumber] as String?,
       remark: map[columnRemark] as String?,
-      addedOn: map[columnAddedOn] as String,
-      updatedOn: map[columnUpdatedOn] as String?,
+      addedOn: map[columnAddedOn] as int,
+      updatedOn: map[columnUpdatedOn] as int?,
     );
   }
 }
