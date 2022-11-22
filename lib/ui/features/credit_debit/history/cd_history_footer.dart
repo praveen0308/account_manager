@@ -4,6 +4,7 @@ import 'package:account_manager/repository/credit_debit_repository.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:account_manager/ui/features/credit_debit/add_transaction/add_transaction.dart';
 import 'package:account_manager/ui/features/credit_debit/add_transaction/add_transaction_cubit.dart';
+import 'package:account_manager/utils/toaster.dart';
 import 'package:account_manager/widgets/footer_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,18 +34,22 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
             child: BlocProvider.value(
               value: BlocProvider.of<CdHistoryCubit>(this.context),
               child: BlocProvider(
-                create: (context) => AddTransactionCubit(RepositoryProvider.of<CreditDebitRepository>(context)),
-                child:  AddCDTransactionForm(person: widget.person, type: type),
+                create: (context) => AddTransactionCubit(
+                    RepositoryProvider.of<CreditDebitRepository>(context)),
+                child: AddCDTransactionForm(person: widget.person, type: type),
               ),
             ),
           );
-        });
+        }).then((value) {
+          if(value){
+            showToast("Call whatsapp share", ToastType.success);
+          }
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
-
+    double balance = widget.person.credit - widget.person.debit;
     return FooterContainer(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -74,15 +79,20 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
                       backgroundColor:
                           MaterialStateProperty.all(AppColors.success),
                     )),
-
-
               ],
             ),
             Expanded(
               child: Column(
                 children: [
-                  Text("₹${widget.person.credit-widget.person.debit}",style: const TextStyle(fontWeight: FontWeight.w700,fontSize: 18),),
-                  const Text("Balance",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 14),)
+                  Text(
+                    "₹$balance",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700, fontSize: 18),
+                  ),
+                  Text(
+                    balance < 0 ? "Due" : "Advance",
+                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                  )
                 ],
               ),
             ),
@@ -108,10 +118,8 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
                     ),
                     style: ButtonStyle(
                       backgroundColor:
-                      MaterialStateProperty.all(AppColors.error),
+                          MaterialStateProperty.all(AppColors.error),
                     )),
-
-
               ],
             ),
           ],

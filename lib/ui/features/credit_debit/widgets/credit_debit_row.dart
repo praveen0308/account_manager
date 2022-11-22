@@ -91,7 +91,7 @@ class CreditDebitRow extends StatelessWidget {
                       onPressed: () async {
                         ShareUtil.launchWhatsapp1(personModel.toString(), personModel.mobileNumber);
                       },
-                      icon: const Icon(Icons.share)),
+                      icon: const Icon(Icons.add_alarm_rounded)),
                 ],),
 
                 Text("₹${personModel.credit - personModel.debit}",

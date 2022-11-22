@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../widgets/primary_button.dart';
+import '../../../../res/app_colors.dart';
 
 class AddCDTransactionForm extends StatefulWidget {
   final PersonModel person;
@@ -23,6 +24,7 @@ class AddCDTransactionForm extends StatefulWidget {
 }
 
 class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
+  bool _shareViaWhatsapp = false;
   final TextEditingController _txtAmountController = TextEditingController();
   final TextEditingController _txtRemarkController = TextEditingController();
 
@@ -34,13 +36,12 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
     return BlocConsumer<AddTransactionCubit, AddTransactionState>(
       listener: (context, state) {
         if (state is AddedSuccessfully) {
-          _txtAmountController.text = "";
-          _txtAmountController.text = "";
+
           BlocProvider.of<CdHistoryCubit>(context).personModel = state.result;
           BlocProvider.of<CdHistoryCubit>(context).fetchTransactions();
           ScaffoldMessenger.of(context)
               .showToast("Added successfully!!!", ToastType.success);
-          Navigator.pop(context, true);
+          Navigator.pop(context, _shareViaWhatsapp);
         }
       },
       builder: (context, state) {
@@ -56,7 +57,7 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
             children: <Widget>[
               const SizedBox(height: 24),
               Text(
-                widget.type == "IN" ? "Receive(IN)" : "Give(OUT)".toUpperCase(),
+                widget.type == TransactionType.credit ? "Receive(IN)" : "Give(OUT)".toUpperCase(),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.black,
@@ -93,6 +94,19 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
                     "Invalid data !!!",
                     style: TextStyle(color: Colors.red),
                   )),
+              CheckboxListTile(
+                activeColor: AppColors.primaryDarkest,
+                value: _shareViaWhatsapp,
+                onChanged: (v) {
+                  setState(() {
+                    _shareViaWhatsapp = v!;
+                  });
+                },
+                title: const Text(
+                  "Share via Whatsapp",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+              ),
               const Spacer(),
               Row(
                 mainAxisSize: MainAxisSize.min,

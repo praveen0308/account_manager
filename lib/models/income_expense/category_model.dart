@@ -9,22 +9,24 @@ class CategoryModel {
 
   static const String createTable = '''CREATE TABLE $table (
           $colCategoryId INTEGER primary key AUTOINCREMENT,
+          $colIcon INTEGER NULL,
           $colType TEXT NOT NULL,
           $colName TEXT NOT NULL,
-          $colDescription TEXT NOT NULL,
-          $colIcon TEXT NULL
+          $colDescription TEXT NOT NULL
+          
   )''';
 
 
 
   int? categoryId;
+  int icon;
   String type;
   String name;
   String description;
-  String? icon;
+
 
   CategoryModel(
-  {this.categoryId, this.type="", this.name="", this.description="", this.icon});
+  {this.categoryId,this.icon=0, this.type="", this.name="", this.description=""});
 
   Map<String, dynamic> toMap() {
     return {
@@ -42,7 +44,7 @@ class CategoryModel {
       type: map['type'] as String,
       name: map['name'] as String,
       description: map['description'] as String,
-      icon: map['icon'] as String,
+      icon: map['icon'] as int,
     );
   }
 }

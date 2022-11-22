@@ -8,6 +8,7 @@ class OutlinedTextField extends StatelessWidget {
   final TextInputType inputType;
   final int maxLength;
   final String? hintText;
+  final Widget? label;
   final EdgeInsetsGeometry? margin;
 
 
@@ -19,7 +20,7 @@ class OutlinedTextField extends StatelessWidget {
     required this.inputType,
     required this.maxLength,
     this.hintText,
-    this.margin=const EdgeInsets.symmetric(vertical: 8,horizontal: 0),
+    this.margin=const EdgeInsets.symmetric(vertical: 8,horizontal: 0), this.label,
   }) : super(key: key);
 
   @override
@@ -35,6 +36,7 @@ class OutlinedTextField extends StatelessWidget {
         maxLines: 1,
         keyboardType: inputType,
         decoration: InputDecoration(
+          label: label,
           hintText: hintText,
           counterText: "",
           contentPadding:

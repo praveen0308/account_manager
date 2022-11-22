@@ -23,12 +23,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return SafeArea(
         child: Scaffold(
             key: _scaffoldKey,
-            appBar: AppBar(
+            /*appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.menu),
                 onPressed: () => _scaffoldKey.currentState!.openDrawer(),
               ),
-            ),
+            ),*/
             drawer: const AppDrawer(),
             body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),

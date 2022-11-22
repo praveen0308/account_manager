@@ -22,7 +22,7 @@ class _IncomeExpenseSummaryState extends State<IncomeExpenseSummary> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
+              /*Row(
                 children: [
                   IconButton(icon:const Icon(Icons.chevron_left_rounded,size: 28), onPressed: () {  },),
 
@@ -30,7 +30,7 @@ class _IncomeExpenseSummaryState extends State<IncomeExpenseSummary> {
 
                   IconButton(icon:const Icon(Icons.chevron_right_rounded,size: 28), onPressed: () {  },),
                 ],
-              ),
+              ),*/
 
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),

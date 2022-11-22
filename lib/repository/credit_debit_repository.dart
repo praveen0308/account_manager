@@ -16,6 +16,7 @@ class CreditDebitRepository {
     return result > 0;
   }
 
+/*
   Future<PersonModel> addNewTransaction(
       PersonModel personModel, CDTransaction transaction) async {
     bool isCredit = transaction.type == TransactionType.credit.name;
@@ -54,6 +55,61 @@ class CreditDebitRepository {
 
     return personModel;
   }
+*/
+
+  Future<PersonModel> addNewTransaction1(
+      PersonModel personModel, CDTransaction transaction) async {
+    bool isCredit = transaction.type == TransactionType.credit.name;
+
+    Database db = await dbHelper.database;
+    transaction.closingBalance = 0;
+    await db.insert(CDTransaction.table, transaction.toMap());
+
+    Map<String, dynamic> row;
+
+    if (isCredit) {
+      personModel.credit += transaction.credit;
+      row = {PersonModel.colCredit: personModel.credit};
+    } else {
+      personModel.debit += transaction.debit;
+      row = {PersonModel.colDebit: personModel.debit};
+    }
+
+    await db.update(PersonModel.table, row,
+        where: "${PersonModel.colPersonId}=?",
+        whereArgs: [transaction.personId]);
+
+    return personModel;
+  }
+
+  Future<PersonModel> deleteCDTransaction(
+      PersonModel personModel, CDTransaction transaction) async {
+    // cashTransactionModel.addedOn = DateTime.now().toString();
+    bool isCredit = transaction.type == TransactionType.credit.name;
+    Database db = await dbHelper.database;
+    var result = await db.delete(CDTransaction.table,
+        where: "${CDTransaction.colTransactionId}=?",
+        whereArgs: [transaction.transactionId]);
+    debugPrint("Deleted successfully >>> result : $result");
+    Map<String, dynamic> row;
+
+    if (isCredit) {
+      personModel.credit -= transaction.credit;
+      row = {PersonModel.colCredit: personModel.credit};
+    } else {
+      personModel.debit += transaction.debit;
+      row = {PersonModel.colDebit: personModel.debit};
+    }
+
+    await db.update(PersonModel.table, row,
+        where: "${PersonModel.colPersonId}=?",
+        whereArgs: [transaction.personId]);
+
+    return personModel;
+
+  }
+
+
 
   Future<List<PersonModel>> getAllPersons() async {
     Database db = await dbHelper.database;
@@ -84,14 +140,13 @@ class CreditDebitRepository {
     return records.map((e) => CDTransaction.fromMap(e)).toList();
   }
 
-  Future<bool> deleteCDTransaction(int transactionId) async {
-    // cashTransactionModel.addedOn = DateTime.now().toString();
+
+  Future<List<CDTransaction>> getTransactionsByPersonIdAcDate(int personId,int from,int to) async {
     Database db = await dbHelper.database;
-    var result = await db.delete(CDTransaction.table,
-        where: "${CDTransaction.colTransactionId}=?",
-        whereArgs: [transactionId]);
-    debugPrint("Deleted successfully >>> result : $result");
-    return result > 0;
+    var records = await db.query(CDTransaction.table,
+        where: "${CDTransaction.colPersonId}=? and ${CDTransaction.colAddedOn}>=? and ${CDTransaction.colAddedOn}<=?", whereArgs: [personId,from,to]);
+
+    return records.map((e) => CDTransaction.fromMap(e)).toList();
   }
 
   Future<List<WalletModel>> fetchStats() async {

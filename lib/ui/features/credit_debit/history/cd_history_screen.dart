@@ -3,6 +3,7 @@ import 'package:account_manager/models/person_model.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:account_manager/ui/features/credit_debit/history/cd_history_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/history/cd_history_footer.dart';
+import 'package:account_manager/utils/date_time_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
@@ -30,6 +31,38 @@ class _CDHistoryState extends State<CDHistory> {
     super.initState();
   }
 
+
+  _showFilters(BuildContext context, TapDownDetails details) {
+    showMenu<int>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        details.globalPosition.dx,
+        details.globalPosition.dy - 120,
+        details.globalPosition.dx,
+        details.globalPosition.dy - 120,
+      ), //position where you want to show the menu on screen
+      items: const [
+        PopupMenuItem<int>(value: 1, child: Text('All time')),
+        PopupMenuItem<int>(value: 2, child: Text('Last week')),
+        PopupMenuItem<int>(value: 3, child: Text('Last month')),
+        PopupMenuItem<int>(value: 4, child: Text('Last 3 months')),
+        PopupMenuItem<int>(value: 5, child: Text('Last year')),
+
+      ],
+      elevation: 8.0,
+    ).then<void>((int? itemSelected) {
+      if (itemSelected == null) return;
+
+      if (itemSelected == 1) {
+        BlocProvider.of<CdHistoryCubit>(context).fetchTransactions();
+      } else if ([2,3,4,5].contains(itemSelected)) {
+        var dates = DateTimeHelper.getDates(itemSelected);
+        BlocProvider.of<CdHistoryCubit>(context).fetchTransactions(from: dates[0],to:dates[1]);
+      } else {
+
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -37,6 +70,9 @@ class _CDHistoryState extends State<CDHistory> {
       appBar: AppBar(
         title: Text(widget.person.name),
         actions: [
+          GestureDetector(onTapDown:(details){
+            _showFilters(context, details);
+          },child: const Icon(Icons.filter_alt_rounded)),
           IconButton(onPressed: (){
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -74,13 +110,17 @@ class _CDHistoryState extends State<CDHistory> {
               return const CircularProgressIndicator();
             },
           ),
-          Positioned(
+          BlocBuilder<CdHistoryCubit, CdHistoryState>(
+  builder: (context, state) {
+    return Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: CDHistoryFooter(
-                person: widget.person,
-              ))
+                person: BlocProvider.of<CdHistoryCubit>(context).personModel,
+              ));
+  },
+)
         ],
       ),
     ));
@@ -109,7 +149,7 @@ class _CDHistoryState extends State<CDHistory> {
           // todo edit cd transaction
       } else if (itemSelected == 2) {
         BlocProvider.of<CdHistoryCubit>(context)
-            .deleteTransaction(transaction.transactionId!);
+            .deleteTransaction(transaction);
       } else if (itemSelected == 3) {
         ShareUtil.launchWhatsapp(transaction.getDescription());
       } else {}

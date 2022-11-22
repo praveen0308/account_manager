@@ -33,6 +33,7 @@ dependencies:
   fluttercontactpicker: ^4.7.0
   pdf: ^3.8.4
   printing: ^5.9.3
+  flutter_iconpicker: ^3.2.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

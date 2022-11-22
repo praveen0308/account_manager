@@ -2,6 +2,7 @@ import 'package:account_manager/res/app_strings.dart';
 import 'package:account_manager/ui/features/cash_counter/history/cc_history_cubit.dart';
 import 'package:account_manager/ui/features/cash_counter/history/footer.dart';
 import 'package:account_manager/ui/features/cash_counter/widgets/cc_history_day_item.dart';
+import 'package:account_manager/utils/date_time_helper.dart';
 import 'package:account_manager/utils/toaster.dart';
 import 'package:account_manager/widgets/list_data_header.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +114,7 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin
       if (itemSelected == 1) {
         BlocProvider.of<CcHistoryCubit>(context).fetchTransactions();
       } else if ([2,3,4,5].contains(itemSelected)) {
-        var dates = getDates(itemSelected);
+        var dates = DateTimeHelper.getDates(itemSelected);
         BlocProvider.of<CcHistoryCubit>(context).fetchTransactions(from: dates[0],to:dates[1]);
       } else {
         _restorableDateRangePickerRouteFuture.present();
@@ -121,32 +122,6 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin
     });
   }
 
-  List<int> getDates(int filterId){
-    var today = DateTime.now();
-    int from =0;
-    int to = today.millisecondsSinceEpoch;
-
-    switch(filterId){
-      case 2:{
-        from = DateTime(today.year,today.month,today.day-7).millisecondsSinceEpoch;
-      }
-      break;
-      case 3:{
-        from = DateTime(today.year,today.month,today.day-30).millisecondsSinceEpoch;
-      }
-      break;
-      case 4:{
-        from = DateTime(today.year,today.month,today.day-90).millisecondsSinceEpoch;
-      }
-      break;
-      case 5:{
-        from = DateTime(today.year-1,today.month,today.day).millisecondsSinceEpoch;
-      }
-      break;
-    }
-
-    return [from,to];
-  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(

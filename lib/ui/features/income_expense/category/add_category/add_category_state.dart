@@ -4,6 +4,6 @@ part of 'add_category_cubit.dart';
 abstract class AddCategoryState {}
 
 class AddCategoryInitial extends AddCategoryState {}
-class AddingCategory extends AddCategoryState {}
-class Added extends AddCategoryState {}
+class Loading extends AddCategoryState {}
+class AddedSuccessfully extends AddCategoryState {}
 class Failed extends AddCategoryState {}

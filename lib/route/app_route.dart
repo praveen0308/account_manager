@@ -1,7 +1,10 @@
 import 'package:account_manager/models/person_model.dart';
 import 'package:account_manager/repository/cash_transaction_repository.dart';
+import 'package:account_manager/repository/category_repository.dart';
 import 'package:account_manager/repository/credit_debit_repository.dart';
 import 'package:account_manager/repository/currency_repository.dart';
+import 'package:account_manager/repository/income_expense_repository.dart';
+import 'package:account_manager/ui/features/calculator/calculator.dart';
 import 'package:account_manager/ui/features/calculator/emi_calculator/emi_calculator.dart';
 import 'package:account_manager/ui/features/cash_counter/cash_counter_cubit.dart';
 import 'package:account_manager/ui/features/cash_counter/cash_counter_screen.dart';
@@ -13,12 +16,20 @@ import 'package:account_manager/ui/features/credit_debit/history/cd_history_cubi
 import 'package:account_manager/ui/features/credit_debit/history/cd_history_screen.dart';
 import 'package:account_manager/ui/features/gst_calculator/gst_calculator.dart';
 import 'package:account_manager/ui/features/gst_calculator/gst_calculator_cubit.dart';
+import 'package:account_manager/ui/features/income_expense/add_income_expense/add_income_expense.dart';
+import 'package:account_manager/ui/features/income_expense/add_income_expense/add_income_expense_cubit.dart';
+import 'package:account_manager/ui/features/income_expense/category/add_category/add_category_cubit.dart';
 import 'package:account_manager/ui/features/income_expense/income_expense_screen.dart';
+import 'package:account_manager/ui/features/income_expense/pick_category/pick_category.dart';
+import 'package:account_manager/ui/features/income_expense/pick_category/pick_category_cubit.dart';
 import 'package:account_manager/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:account_manager/ui/screens/dashboard/dashboard_screen1.dart';
 import 'package:account_manager/ui/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../ui/features/income_expense/category/add_category/add_category_screen.dart';
+import '../utils/income_type.dart';
 
 const String splashScreen = '/';
 const String dashboard = '/dashboard';
@@ -30,6 +41,9 @@ const String creditDebit = '/creditDebit';
 const String emiCalculator = '/emiCalculator';
 const String incomeExpense = '/incomeExpense';
 const String cdHistory = '/cdHistory';
+const String addCategory = '/addCategory';
+const String addIncomeExpense = '/addIncomeExpense';
+const String pickCategory = '/pickCategory';
 
 Route<dynamic> controller(RouteSettings settings) {
   final args = settings.arguments;
@@ -70,7 +84,7 @@ Route<dynamic> controller(RouteSettings settings) {
           settings: settings);
     case emiCalculator:
       return MaterialPageRoute(
-          builder: (context) => const EmiCalculator(), settings: settings);
+          builder: (context) => const MainCalculator(), settings: settings);
     case incomeExpense:
       return MaterialPageRoute(
           builder: (context) => const IncomeExpenseScreen(),
@@ -91,6 +105,31 @@ Route<dynamic> controller(RouteSettings settings) {
                     RepositoryProvider.of<CashTransactionRepository>(context)),
                 child: const CCHistoryScreen(),
               ),
+          settings: settings);
+    case addCategory:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => AddCategoryCubit(
+                RepositoryProvider.of<CategoryRepository>(context)),
+            child: const AddCategoryScreen(),
+          ),
+          settings: settings);
+    case addIncomeExpense:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => AddIncomeExpenseCubit(
+                RepositoryProvider.of<IncomeExpenseRepository>(context)),
+            child:  AddIncomeExpense(args: args as AddIncomeExpenseArgs),
+          ),
+          settings: settings);
+
+    case pickCategory:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => PickCategoryCubit(
+                RepositoryProvider.of<CategoryRepository>(context)),
+            child:  PickCategory(type: args as IncomeType),
+          ),
           settings: settings);
     default:
       throw ('this route name does not exist');

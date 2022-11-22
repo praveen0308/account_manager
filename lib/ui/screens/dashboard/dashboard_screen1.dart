@@ -7,6 +7,7 @@ import 'package:account_manager/ui/features/cash_counter/cash_counter_cubit.dart
 import 'package:account_manager/ui/features/cash_counter/cash_counter_screen.dart';
 import 'package:account_manager/ui/features/credit_debit/credit_debit_screen.dart';
 import 'package:account_manager/ui/features/gst_calculator/gst_calculator.dart';
+import 'package:account_manager/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:account_manager/ui/screens/dashboard/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:account_manager/route/route.dart' as route;
@@ -31,17 +32,23 @@ class _DashboardScreen1State extends State<DashboardScreen1> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: DefaultTabController(
-          initialIndex: 1,
-      length: 3,
+          initialIndex: 2,
+
+      length: 4,
       child: Scaffold(
         body: Column(
           children: [
             const TabBar(
+              isScrollable: true,
               indicatorWeight: 3,
               labelColor: AppColors.primaryDarkest,
               indicatorColor: AppColors.primaryDarkest,
-
+              indicatorSize: TabBarIndicatorSize.label,
               tabs: [
+                Tab(
+                  icon: Icon(Icons.menu_rounded),
+                  iconMargin: EdgeInsets.all(0),
+                ),
                 Tab(
                   text: AppStrings.calculator,
                 ),
@@ -58,6 +65,7 @@ class _DashboardScreen1State extends State<DashboardScreen1> {
             Expanded(
               child: TabBarView(
                 children: [
+                  const DashboardScreen(),
                   BlocProvider(
                     create: (context) => GstCalculatorCubit(),
                     child: const GstCalculator(),

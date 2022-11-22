@@ -18,11 +18,10 @@ class CashCounterScreen extends StatefulWidget {
 }
 
 class _CashCounterScreenState extends State<CashCounterScreen> {
-  late CashCounterCubit _cubit;
+
 
   @override
   void initState() {
-    _cubit = BlocProvider.of<CashCounterCubit>(context);
     super.initState();
   }
 
@@ -30,7 +29,7 @@ class _CashCounterScreenState extends State<CashCounterScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-          resizeToAvoidBottomInset: true,
+          resizeToAvoidBottomInset: false,
 
       body: BlocListener<CashCounterCubit, CashCounterState>(
         listener: (context, state) {

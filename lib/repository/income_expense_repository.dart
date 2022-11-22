@@ -29,7 +29,9 @@ class IncomeExpenseRepository{
 
   Future<List<IncomeExpenseModel>> getAllTransactions() async {
     Database db = await dbHelper.database;
-    var records = await db.query(IncomeExpenseModel.table);
+    // SELECT IE.*,C.icon,C.name as categoryName from IncomeExpense as IE INNER JOIN Category as C on C.categoryId = IE.transactionId
+    String query = "Select IE.*,C.icon,C.name as categoryName from ${IncomeExpenseModel.table} as IE inner join ${CategoryModel.table} as C on C.categoryId=IE.transactionId";
+    var records = await db.rawQuery(query);
 
     return records.map((e) => IncomeExpenseModel.fromMap(e)).toList();
   }
