@@ -19,6 +19,7 @@ import 'package:account_manager/ui/features/gst_calculator/gst_calculator_cubit.
 import 'package:account_manager/ui/features/income_expense/add_income_expense/add_income_expense.dart';
 import 'package:account_manager/ui/features/income_expense/add_income_expense/add_income_expense_cubit.dart';
 import 'package:account_manager/ui/features/income_expense/category/add_category/add_category_cubit.dart';
+import 'package:account_manager/ui/features/income_expense/income_expense_parent_cubit.dart';
 import 'package:account_manager/ui/features/income_expense/income_expense_screen.dart';
 import 'package:account_manager/ui/features/income_expense/pick_category/pick_category.dart';
 import 'package:account_manager/ui/features/income_expense/pick_category/pick_category_cubit.dart';
@@ -87,7 +88,11 @@ Route<dynamic> controller(RouteSettings settings) {
           builder: (context) => const MainCalculator(), settings: settings);
     case incomeExpense:
       return MaterialPageRoute(
-          builder: (context) => const IncomeExpenseScreen(),
+          builder: (context) => BlocProvider(
+            create: (context) => IncomeExpenseParentCubit(
+                RepositoryProvider.of<IncomeExpenseRepository>(context)),
+            child: const IncomeExpenseScreen(),
+          ),
           settings: settings);
     case cdHistory:
       return MaterialPageRoute(

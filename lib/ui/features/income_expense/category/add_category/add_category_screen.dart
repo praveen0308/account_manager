@@ -130,7 +130,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                                 .addNewCategory(CategoryModel(
                                     icon: _icon.icon!.codePoint,
                                     name: _name.text,
-                                    type: _type.toString(),
+                                    type: _type!.name,
                                     description: _description.text));
                           },
                           child: const Text("Submit"))

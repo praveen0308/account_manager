@@ -7,5 +7,6 @@ part 'spending_screen_state.dart';
 
 class SpendingScreenCubit extends Cubit<SpendingScreenState> {
   final IncomeExpenseRepository _incomeExpenseRepository;
+
   SpendingScreenCubit(this._incomeExpenseRepository) : super(SpendingScreenInitial());
 }

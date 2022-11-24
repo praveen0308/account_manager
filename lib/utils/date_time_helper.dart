@@ -83,4 +83,28 @@ class DateTimeHelper {
 
     return [from,to];
   }
+
+
+}
+extension DateBounds on DateTime {
+
+  int get firstMillisecondOfDay => DateTime(year, month, day).millisecondsSinceEpoch;
+
+  int get lastMillisecondOfDay => DateTime(year, month, day+1).millisecondsSinceEpoch;
+
+  int get firstMillisecondOfMonth => DateTime(year, month, 1).millisecondsSinceEpoch;
+
+  int get lastMillisecondOfMonth =>
+      month < 12 ? DateTime(year, month + 1, 1, 00, 00, 00, -1).millisecondsSinceEpoch : DateTime(year + 1, 1, 1, 00, 00, 00, -1).millisecondsSinceEpoch;
+
+  int get firstMillisecondOfYear => DateTime(year).millisecondsSinceEpoch;
+
+  int get lastMillisecondOfYear =>
+      DateTime(year+1, 1, 0).millisecondsSinceEpoch;
+
+
+}
+
+enum DateFilter{
+  daily,monthly,yearly
 }

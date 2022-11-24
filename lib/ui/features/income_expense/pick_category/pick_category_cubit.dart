@@ -18,7 +18,7 @@ class PickCategoryCubit extends Cubit<PickCategoryState> {
     try{
 
       var result = await _categoryRepository.getAllCategories();
-      result = result.where((element) => element.type==type.toString()).toList();
+      result = result.where((element) => element.type==type.name).toList();
       if(result.isNotEmpty){
 
         emit(ReceivedCategories(result));

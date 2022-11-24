@@ -1,11 +1,11 @@
 import 'package:account_manager/res/app_strings.dart';
 import 'package:account_manager/ui/features/income_expense/category/categories/manage_categories.dart';
 import 'package:account_manager/ui/features/income_expense/category/categories/manage_categories_cubit.dart';
+import 'package:account_manager/ui/features/income_expense/income_expense_parent_cubit.dart';
 import 'package:account_manager/ui/features/income_expense/spending/spending_screen.dart';
 import 'package:account_manager/ui/features/income_expense/spending/spending_screen_cubit.dart';
 import 'package:account_manager/ui/features/income_expense/transactions/transactions_screen.dart';
 import 'package:account_manager/ui/features/income_expense/transactions/transactions_screen_cubit.dart';
-import 'package:account_manager/ui/features/income_expense/widgets/income_expense_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,7 +27,7 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text(AppStrings.incomeExpense),
-            actions: [ TextButton(onPressed: () {}, child: Text("This Month"))],
+            actions: [ TextButton(onPressed: () {}, child: Text(""))],
           ),
           body: DefaultTabController(
             length: 3,
@@ -62,18 +62,24 @@ class _IncomeExpenseScreenState extends State<IncomeExpenseScreen> {
                   child: TabBarView(
                     children: [
 
+                      BlocProvider.value(
+                        value: BlocProvider.of<IncomeExpenseParentCubit>(context),
+                        child: BlocProvider(
+                          create: (context) =>
+                              SpendingScreenCubit(
+                                  RepositoryProvider.of<
+                                      IncomeExpenseRepository>(
+                                      context)
+                              ),
+                          child: const SpendingScreen(),
+                        ),
+                      ),
                       BlocProvider(
                         create: (context) =>
-                            SpendingScreenCubit(
+                            TransactionsScreenCubit(
                                 RepositoryProvider.of<IncomeExpenseRepository>(
                                     context)
                             ),
-                        child: const SpendingScreen(),
-                      ),
-                      BlocProvider(
-                        create: (context) => TransactionsScreenCubit(
-                          RepositoryProvider.of<IncomeExpenseRepository>(context)
-                        ),
                         child: TransactionsScreen(),
                       ),
                       BlocProvider(

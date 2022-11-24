@@ -29,7 +29,7 @@ class _AddIncomeExpenseState extends State<AddIncomeExpense> {
   final TextEditingController _amount = TextEditingController();
   final TextEditingController _remark = TextEditingController();
   CategoryModel? selectedCategory;
-  final DateTime transactionDate = DateTime.now();
+  DateTime transactionDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -115,7 +115,9 @@ class _AddIncomeExpenseState extends State<AddIncomeExpense> {
                       const Expanded(flex: 3, child: Text("Date")),
                       Expanded(
                         flex: 7,
-                        child: DatePickerWidget(onDateSelected: (dateTime) {}),
+                        child: DatePickerWidget(onDateSelected: (dateTime) {
+                          transactionDate = dateTime;
+                        }),
                       )
                     ],
                   ),
@@ -140,7 +142,7 @@ class _AddIncomeExpenseState extends State<AddIncomeExpense> {
                           BlocProvider.of<AddIncomeExpenseCubit>(context)
                               .addIncomeExpense(IncomeExpenseModel(
                                   categoryId: selectedCategory!.categoryId!,
-                                  type: widget.args.type.toString(),
+                                  type: widget.args.type.name,
                                   remark: _remark.text,
                                   amount: amount,
                                   date: transactionDate.millisecondsSinceEpoch,
