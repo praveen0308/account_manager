@@ -27,6 +27,28 @@ class IncomeExpenseRepository {
     return result > 0;
   }
 
+  Future<bool> updateIncomeExpense(
+      IncomeExpenseModel incomeExpenseModel) async {
+    Database db = await dbHelper.database;
+    var result = await db.update(
+        IncomeExpenseModel.table, incomeExpenseModel.toMap(),
+        where: "${IncomeExpenseModel.colTransactionId}=?",
+        whereArgs: [incomeExpenseModel.transactionId]);
+
+    return result > 0;
+  }
+
+  Future<bool> deleteIncomeExpense(
+      int transactionId) async {
+    Database db = await dbHelper.database;
+    var result = await db.delete(
+        IncomeExpenseModel.table,
+        where: "${IncomeExpenseModel.colTransactionId}=?",
+        whereArgs: [transactionId]);
+
+    return result > 0;
+  }
+
   Future<List<IncomeExpenseModel>> getAllTransactions() async {
     Database db = await dbHelper.database;
     // SELECT IE.*,C.icon,C.name as categoryName from IncomeExpense as IE INNER JOIN Category as C on C.categoryId = IE.transactionId

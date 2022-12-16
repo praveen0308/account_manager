@@ -52,7 +52,7 @@ class _CashCounterViewState extends State<CashCounterView> {
               },
               separatorBuilder: (_, index) {
                 return const Divider(
-                  thickness: 2,
+                  thickness: 0.5,
                 );
               },
               itemCount: state.currencies.length);

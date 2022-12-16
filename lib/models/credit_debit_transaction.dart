@@ -61,6 +61,7 @@ class CDTransaction {
 
 
   String getDate() => DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(addedOn));
+  String getClosingBalance() => closingBalance<0?"Due ${closingBalance*-1}":"Balance $closingBalance";
 
 
   Map<String, dynamic> toMap() {

@@ -13,27 +13,27 @@ class ExtraInfoForm extends StatefulWidget {
 }
 
 class _ExtraInfoFormState extends State<ExtraInfoForm> {
-
-  
-  final TextEditingController _manuallyAddedController = TextEditingController();
-  final TextEditingController _manuallySubtractedController = TextEditingController();
+  final TextEditingController _manuallyAddedController =
+      TextEditingController();
+  final TextEditingController _manuallySubtractedController =
+      TextEditingController();
   final TextEditingController _nameTxtController = TextEditingController();
   final TextEditingController _remarkTxtController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<CashCounterCubit, CashCounterState>(
-  listener: (context, state) {
-    if(state is ClearScreen){
-      _manuallyAddedController.text = "";
-      _manuallySubtractedController.text = "";
-      _nameTxtController.text = "";
-      _remarkTxtController.text = "";
-    }
-  },
-  child: Column(
-      children: [
-        Row(
+      listener: (context, state) {
+        if (state is ClearScreen) {
+          _manuallyAddedController.text = "";
+          _manuallySubtractedController.text = "";
+          _nameTxtController.text = "";
+          _remarkTxtController.text = "";
+        }
+      },
+      child: Column(
+        children: [
+          /*Row(
           children: [
             const Text(
               "Denomination Total",
@@ -52,8 +52,9 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
               },
             ),
           ],
-        ),
-        Row(
+        ),*/
+
+          /*Row(
           children: [
             const Text(
               "Manually Added(+)",
@@ -80,7 +81,7 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
           children: [
             const Text(
               "Manually Subtracted(-)",
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 18),
             ),
             const Spacer(),
             SizedBox(
@@ -98,35 +99,71 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
               ),
             ),
           ],
-        ),
-        OutlinedTextField(
-          controller: _nameTxtController,
-          inputType: TextInputType.text,
-          maxLength: 50,
-          onSubmitted: (String txt) {
-            BlocProvider.of<CashCounterCubit>(context).personName = txt;
-          },
-          onTextChanged: (String txt) {
-            BlocProvider.of<CashCounterCubit>(context).personName = txt;
-          },
-          hintText: "Person Name",
-        ),
+        ),*/
+          Row(
+            children: [
+              Expanded(
+                  child: OutlinedTextField(
+                    margin: const EdgeInsets.all(0),
+                    controller: _manuallyAddedController,
+                    inputType: TextInputType.number,
+                    maxLength: 7,
+                    hintText: "Added(+)",
+                    onSubmitted: (String txt) {
+                      BlocProvider.of<CashCounterCubit>(context)
+                          .updateManuallyAddedAmt(txt);
+                    },
+                    onTextChanged: (String txt) {
+                      BlocProvider.of<CashCounterCubit>(context)
+                          .updateManuallyAddedAmt(txt);
+                    },
+                  )),
+              const SizedBox(width: 16,),
+              Expanded(
+                  child: OutlinedTextField(
+                    margin: const EdgeInsets.all(0),
+                    controller: _manuallySubtractedController,
+                    inputType: TextInputType.number,
+                    maxLength: 7,
+                    hintText: "Subtracted(-)",
+                    onSubmitted: (String txt) {
+                      BlocProvider.of<CashCounterCubit>(context)
+                          .updateManuallySubtractedAmt(txt);
+                    },
+                    onTextChanged: (String txt) {
+                      BlocProvider.of<CashCounterCubit>(context)
+                          .updateManuallySubtractedAmt(txt);
+                    },
+                  )),
+            ],
+          ),
+          OutlinedTextField(
+            controller: _nameTxtController,
+            inputType: TextInputType.text,
+            maxLength: 50,
+            onSubmitted: (String txt) {
+              BlocProvider.of<CashCounterCubit>(context).personName = txt;
+            },
+            onTextChanged: (String txt) {
+              BlocProvider.of<CashCounterCubit>(context).personName = txt;
+            },
+            hintText: "Person Name",
+          ),
+          OutlinedTextField(
+            controller: _remarkTxtController,
+            inputType: TextInputType.text,
+            maxLength: 200,
+            onSubmitted: (String txt) {
+              BlocProvider.of<CashCounterCubit>(context).remark = txt;
+            },
+            onTextChanged: (String txt) {
+              BlocProvider.of<CashCounterCubit>(context).remark = txt;
+            },
+            hintText: "Remark",
+          ),
 
-        OutlinedTextField(
-          controller: _remarkTxtController,
-          inputType: TextInputType.text,
-          maxLength: 200,
-          onSubmitted: (String txt) {
-            BlocProvider.of<CashCounterCubit>(context).remark = txt;
-          },
-          onTextChanged: (String txt) {
-            BlocProvider.of<CashCounterCubit>(context).remark = txt;
-          },
-          hintText: "Remark",
-        ),
-        const SizedBox(height: 60,)
-      ],
-    ),
-);
+        ],
+      ),
+    );
   }
 }

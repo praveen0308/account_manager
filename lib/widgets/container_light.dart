@@ -11,7 +11,7 @@ class ContainerLight extends StatelessWidget {
     return GestureDetector(
       onTap: onClick,
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           color: AppColors.primaryLightest,
           borderRadius: BorderRadius.circular(8)

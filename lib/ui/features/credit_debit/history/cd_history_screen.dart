@@ -1,6 +1,7 @@
 import 'package:account_manager/models/credit_debit_transaction.dart';
 import 'package:account_manager/models/person_model.dart';
 import 'package:account_manager/res/app_colors.dart';
+import 'package:account_manager/ui/features/credit_debit/edit_transaction/edit_cd_transaction.dart';
 import 'package:account_manager/ui/features/credit_debit/history/cd_history_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/history/cd_history_footer.dart';
 import 'package:account_manager/utils/date_time_helper.dart';
@@ -24,13 +25,13 @@ class CDHistory extends StatefulWidget {
 
 class _CDHistoryState extends State<CDHistory> {
   List<CDTransaction> transactions = [];
+
   @override
   void initState() {
     BlocProvider.of<CdHistoryCubit>(context).personModel = widget.person;
     BlocProvider.of<CdHistoryCubit>(context).fetchTransactions();
     super.initState();
   }
-
 
   _showFilters(BuildContext context, TapDownDetails details) {
     showMenu<int>(
@@ -47,7 +48,6 @@ class _CDHistoryState extends State<CDHistory> {
         PopupMenuItem<int>(value: 3, child: Text('Last month')),
         PopupMenuItem<int>(value: 4, child: Text('Last 3 months')),
         PopupMenuItem<int>(value: 5, child: Text('Last year')),
-
       ],
       elevation: 8.0,
     ).then<void>((int? itemSelected) {
@@ -55,14 +55,14 @@ class _CDHistoryState extends State<CDHistory> {
 
       if (itemSelected == 1) {
         BlocProvider.of<CdHistoryCubit>(context).fetchTransactions();
-      } else if ([2,3,4,5].contains(itemSelected)) {
+      } else if ([2, 3, 4, 5].contains(itemSelected)) {
         var dates = DateTimeHelper.getDates(itemSelected);
-        BlocProvider.of<CdHistoryCubit>(context).fetchTransactions(from: dates[0],to:dates[1]);
-      } else {
-
-      }
+        BlocProvider.of<CdHistoryCubit>(context)
+            .fetchTransactions(from: dates[0], to: dates[1]);
+      } else {}
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -70,23 +70,30 @@ class _CDHistoryState extends State<CDHistory> {
       appBar: AppBar(
         title: Text(widget.person.name),
         actions: [
-          GestureDetector(onTapDown:(details){
-            _showFilters(context, details);
-          },child: const Icon(Icons.filter_alt_rounded)),
-          IconButton(onPressed: (){
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => CDPersonReportPreview(transactions:transactions,person: widget.person,),
-              ),
-            );
-          }, icon: const Icon(Icons.picture_as_pdf))
+          GestureDetector(
+              onTapDown: (details) {
+                _showFilters(context, details);
+              },
+              child: const Icon(Icons.filter_alt_rounded)),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CDPersonReportPreview(
+                      transactions: transactions,
+                      person: widget.person,
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.picture_as_pdf))
         ],
       ),
       body: Stack(
         children: [
           BlocConsumer<CdHistoryCubit, CdHistoryState>(
-            listener: (context,state){
-              if(state is DeletedSuccessfully){
+            listener: (context, state) {
+              if (state is DeletedSuccessfully) {
                 BlocProvider.of<CdHistoryCubit>(context).fetchTransactions();
               }
             },
@@ -111,16 +118,17 @@ class _CDHistoryState extends State<CDHistory> {
             },
           ),
           BlocBuilder<CdHistoryCubit, CdHistoryState>(
-  builder: (context, state) {
-    return Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: CDHistoryFooter(
-                person: BlocProvider.of<CdHistoryCubit>(context).personModel,
-              ));
-  },
-)
+            builder: (context, state) {
+              return Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: CDHistoryFooter(
+                    person:
+                        BlocProvider.of<CdHistoryCubit>(context).personModel,
+                  ));
+            },
+          )
         ],
       ),
     ));
@@ -136,22 +144,32 @@ class _CDHistoryState extends State<CDHistory> {
         details.globalPosition.dx,
         details.globalPosition.dy - 120,
       ), //position where you want to show the menu on screen
-      items: const [
-        PopupMenuItem<int>(value: 1, child: Text('Edit')),
-        PopupMenuItem<int>(value: 2, child: Text('Delete')),
-        PopupMenuItem<int>(value: 3, child: Text('Share')),
+      items: [
+        if (!transaction.isCancel)
+          const PopupMenuItem<int>(value: 1, child: Text('Edit')),
+        if (!transaction.isCancel)
+          const PopupMenuItem<int>(value: 2, child: Text('Delete')),
+        if (transaction.isCancel)
+          const PopupMenuItem<int>(value: 4, child: Text('Restore')),
+        const PopupMenuItem<int>(value: 3, child: Text('Share')),
       ],
       elevation: 8.0,
     ).then<void>((int? itemSelected) {
       if (itemSelected == null) return;
 
       if (itemSelected == 1) {
-          // todo edit cd transaction
+        Navigator.pushNamed(context, "/editCDTransaction",
+                arguments: EditCDTransactionArgs(widget.person, transaction))
+            .then((value) =>
+                BlocProvider.of<CdHistoryCubit>(context).fetchTransactions());
       } else if (itemSelected == 2) {
         BlocProvider.of<CdHistoryCubit>(context)
-            .deleteTransaction(transaction);
+            .updateTransactionStatus(transaction, true);
       } else if (itemSelected == 3) {
         ShareUtil.launchWhatsapp(transaction.getDescription());
+      } else if (itemSelected == 4) {
+        BlocProvider.of<CdHistoryCubit>(context)
+            .updateTransactionStatus(transaction, false);
       } else {}
     });
   }
@@ -162,7 +180,8 @@ class _CDHistoryState extends State<CDHistory> {
     return ChatBubble(
       alignment: isCredit ? Alignment.bottomLeft : Alignment.bottomRight,
       margin: const EdgeInsets.only(top: 20, left: 8, right: 8),
-      backGroundColor: AppColors.primaryLight,
+      backGroundColor:
+          transaction.isCancel ? AppColors.greyLight : AppColors.primaryLight,
       clipper: ChatBubbleClipper5(
           type: isCredit ? BubbleType.receiverBubble : BubbleType.sendBubble),
       child: Container(
@@ -190,7 +209,7 @@ class _CDHistoryState extends State<CDHistory> {
                       color: isCredit ? AppColors.success : AppColors.error),
                 ),
                 Text(
-                  "Cls Bal. ₹${transaction.closingBalance}",
+                  transaction.getClosingBalance(),
                   style: const TextStyle(
                       color: Colors.red,
                       fontSize: 16,
@@ -203,9 +222,11 @@ class _CDHistoryState extends State<CDHistory> {
               ],
             ),
             const Spacer(),
-            GestureDetector(onTapDown:(details){
-              _showPopupMenu(context, details, transaction);
-            },child: const Icon(Icons.more_vert_rounded))
+            GestureDetector(
+                onTapDown: (details) {
+                  _showPopupMenu(context, details, transaction);
+                },
+                child: const Icon(Icons.more_vert_rounded))
           ],
         ),
       ),

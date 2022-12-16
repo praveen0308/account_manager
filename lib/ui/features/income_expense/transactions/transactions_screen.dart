@@ -160,6 +160,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     var transaction = state.transactions[index];
 
                     return ListTile(
+                      onTap: (){
+                        Navigator.pushNamed(context, "/editIncomeExpenseTransaction",arguments: transaction).then((value) => BlocProvider.of<TransactionsScreenCubit>(context)
+                            .fetchTransactions(_fDate, activeFilter));
+                      },
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       leading: Icon(IconData(transaction.icon!,
@@ -176,6 +180,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                 : AppColors.error,
                             fontSize: 20,
                             fontWeight: FontWeight.w700),
+
                       ),
                     );
                   },

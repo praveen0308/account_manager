@@ -51,7 +51,7 @@ class IncomeExpenseModel {
     this.categoryName="",
   });
 
-  String getDate() => DateFormat("dd MMM yy").add_jm().format(DateTime.fromMillisecondsSinceEpoch(addedOn));
+  String getDate() => DateFormat("dd MMM yy").add_jm().format(DateTime.fromMillisecondsSinceEpoch(date));
   String getAmount() {
     return amount.toStringAsFixed(amount.truncateToDouble() == amount ? 0 : 1);
   }

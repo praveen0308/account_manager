@@ -20,6 +20,14 @@ class CategoryRepository {
     return result > 0;
   }
 
+  Future<bool> deleteCategory(int categoryId) async {
+    Database db = await dbHelper.database;
+
+    var result = await db.delete(CategoryModel.table, where: "${CategoryModel.colCategoryId}=?",whereArgs: [categoryId]);
+    return result > 0;
+  }
+
+
   Future<List<CategoryModel>> getAllCategories() async {
     Database db = await dbHelper.database;
     var result = await db.query(CategoryModel.table);

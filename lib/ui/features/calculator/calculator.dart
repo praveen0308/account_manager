@@ -1,4 +1,5 @@
 import 'package:account_manager/ui/features/calculator/emi_calculator/emi_calculator.dart';
+import 'package:account_manager/ui/features/calculator/emi_calculator1/custom_emi_calculator.dart';
 import 'package:flutter/material.dart';
 
 import '../../../res/app_colors.dart';
@@ -15,14 +16,15 @@ class _MainCalculatorState extends State<MainCalculator> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(AppStrings.emiCalculator),
       ),
       body: DefaultTabController(
         length: 2,
         child: Column(
-          children: [
-            const TabBar(
+          children: const [
+            TabBar(
 
               indicatorWeight: 3,
               labelColor: AppColors.primaryDarkest,
@@ -40,12 +42,12 @@ class _MainCalculatorState extends State<MainCalculator> {
               ],
             ),
 
-            const SizedBox(height: 8,),
+            SizedBox(height: 8,),
             Expanded(
               child: TabBarView(
                 children: [
-                 const EmiCalculator(),
-                  Text("Custom"),
+                 EmiCalculator(),
+                  CustomEMICalculator(),
 
                 ],
               ),

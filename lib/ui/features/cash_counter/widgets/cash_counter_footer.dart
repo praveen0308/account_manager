@@ -246,8 +246,9 @@ class _CCBottomSheetState extends State<CCBottomSheet> {
               Expanded(
                   child: PrimaryButton(
                       onClick: () {
+
                         BlocProvider.of<CashCounterCubit>(context)
-                            .addCashTransaction();
+                            .addCashTransaction(_addIntoCreditDebit);
                       },
                       text: "Save")),
               IconButton(onPressed: (){

@@ -1,4 +1,6 @@
+import 'package:account_manager/repository/cash_transaction_repository.dart';
 import 'package:account_manager/res/app_strings.dart';
+import 'package:account_manager/ui/features/cash_counter/edit_cash_transaction/edit_cash_transaction.dart';
 import 'package:account_manager/ui/features/cash_counter/history/cc_history_cubit.dart';
 import 'package:account_manager/ui/features/cash_counter/history/footer.dart';
 import 'package:account_manager/ui/features/cash_counter/widgets/cc_history_day_item.dart';
@@ -18,15 +20,15 @@ class CCHistoryScreen extends StatefulWidget {
   State<CCHistoryScreen> createState() => _CCHistoryScreenState();
 }
 
-class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin{
+class _CCHistoryScreenState extends State<CCHistoryScreen>
+    with RestorationMixin {
   @override
   String? get restorationId => "CashTransactionsFilter";
   final RestorableDateTimeN _startDate = RestorableDateTimeN(DateTime(2022));
-  final RestorableDateTimeN _endDate =
-  RestorableDateTimeN(DateTime(2030));
+  final RestorableDateTimeN _endDate = RestorableDateTimeN(DateTime(2030));
   late final RestorableRouteFuture<DateTimeRange?>
-  _restorableDateRangePickerRouteFuture =
-  RestorableRouteFuture<DateTimeRange?>(
+      _restorableDateRangePickerRouteFuture =
+      RestorableRouteFuture<DateTimeRange?>(
     onComplete: _selectDateRange,
     onPresent: (NavigatorState navigator, Object? arguments) {
       return navigator
@@ -43,7 +45,9 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin
         _startDate.value = newSelectedDate.start;
         _endDate.value = newSelectedDate.end;
 
-        BlocProvider.of<CcHistoryCubit>(context).fetchTransactions(from: _startDate.value!.millisecondsSinceEpoch,to:_endDate.value!.millisecondsSinceEpoch);
+        BlocProvider.of<CcHistoryCubit>(context).fetchTransactions(
+            from: _startDate.value!.millisecondsSinceEpoch,
+            to: _endDate.value!.millisecondsSinceEpoch);
       });
     }
   }
@@ -57,18 +61,17 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin
   }
 
   static Route<DateTimeRange?> _dateRangePickerRoute(
-      BuildContext context,
-      Object? arguments,
-      ) {
+    BuildContext context,
+    Object? arguments,
+  ) {
     return DialogRoute<DateTimeRange?>(
       context: context,
       builder: (BuildContext context) {
         return DateRangePickerDialog(
           restorationId: 'date_picker_dialog',
           initialDateRange:
-          _initialDateTimeRange(arguments! as Map<dynamic, dynamic>),
+              _initialDateTimeRange(arguments! as Map<dynamic, dynamic>),
           firstDate: DateTime(2022),
-
           lastDate: DateTime(2030),
         );
       },
@@ -90,6 +93,7 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin
   }
 
   List<CashTransactionModel> transactions = [];
+
   _showPopupMenu(BuildContext context, TapDownDetails details) {
     showMenu<int>(
       context: context,
@@ -113,9 +117,10 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin
 
       if (itemSelected == 1) {
         BlocProvider.of<CcHistoryCubit>(context).fetchTransactions();
-      } else if ([2,3,4,5].contains(itemSelected)) {
+      } else if ([2, 3, 4, 5].contains(itemSelected)) {
         var dates = DateTimeHelper.getDates(itemSelected);
-        BlocProvider.of<CcHistoryCubit>(context).fetchTransactions(from: dates[0],to:dates[1]);
+        BlocProvider.of<CcHistoryCubit>(context)
+            .fetchTransactions(from: dates[0], to: dates[1]);
       } else {
         _restorableDateRangePickerRouteFuture.present();
       }
@@ -143,7 +148,8 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin
                   onPdfClicked: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => PdfPreviewPage(transactions:transactions),
+                        builder: (context) =>
+                            PdfPreviewPage(transactions: transactions),
                       ),
                     );
                   },
@@ -170,7 +176,9 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin
                       if (state is ReceivedHistory) {
                         if (state.data.isNotEmpty) {
                           transactions.clear();
-                          transactions.addAll(BlocProvider.of<CcHistoryCubit>(context).transactions);
+                          transactions.addAll(
+                              BlocProvider.of<CcHistoryCubit>(context)
+                                  .transactions);
                           return ListView.separated(
                             padding: const EdgeInsets.only(bottom: 120),
                             itemCount: state.data.length,
@@ -179,7 +187,16 @@ class _CCHistoryScreenState extends State<CCHistoryScreen> with RestorationMixin
                               return CCHistoryDayItem(
                                 dayTransaction: dayTransaction,
                                 onEdit: (CashTransactionModel
-                                    cashTransactionModel) {},
+                                    cashTransactionModel) async {
+                                  var res = await Navigator.pushNamed(
+                                      context, "/editCashTransaction",
+                                      arguments: cashTransactionModel);
+
+                                  if (res == true) {
+                                    BlocProvider.of<CcHistoryCubit>(context)
+                                        .fetchTransactions();
+                                  }
+                                },
                                 onDelete: (int transactionId) {
                                   BlocProvider.of<CcHistoryCubit>(context)
                                       .deleteTransaction(transactionId);

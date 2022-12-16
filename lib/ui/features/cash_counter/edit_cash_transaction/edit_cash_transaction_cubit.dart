@@ -1,24 +1,17 @@
-import 'dart:async';
-
-import 'package:account_manager/models/cash_transaction.dart';
-import 'package:account_manager/repository/cash_transaction_repository.dart';
-import 'package:account_manager/utils/extension_methods.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:number_to_words_english/number_to_words_english.dart';
+import 'package:meta/meta.dart';
 
-import '../../../models/currency.dart';
-import '../../../repository/currency_repository.dart';
+import '../../../../models/cash_transaction.dart';
+import '../../../../models/currency.dart';
+import '../../../../repository/cash_transaction_repository.dart';
 
-part 'cash_counter_state.dart';
+part 'edit_cash_transaction_state.dart';
 
-class CashCounterCubit extends Cubit<CashCounterState> {
-  final CurrencyRepository _currencyRepository;
+class EditCashTransactionCubit extends Cubit<EditCashTransactionState> {
   final CashTransactionRepository _cashTransactionRepository;
 
-  CashCounterCubit(this._currencyRepository, this._cashTransactionRepository)
-      : super(const CashCounterInitial(0, 0.0, 0.0));
-
+  EditCashTransactionCubit(this._cashTransactionRepository) : super(EditCashTransactionInitial());
 
   int noOfNotes = 0;
   double denominationTotal = 0;
@@ -30,7 +23,7 @@ class CashCounterCubit extends Cubit<CashCounterState> {
   String remark = "";
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime =
-      TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+  TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
 
   void updateNoteQty(int item, int newQty) {
     noteMaps[item] = newQty;
@@ -46,7 +39,7 @@ class CashCounterCubit extends Cubit<CashCounterState> {
     grandTotal = denominationTotal + manuallyAdded - manuallySubtracted;
 
     RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
-    emit(EntriesChanged(noOfNotes, denominationTotal, grandTotal));
+    emit(EntriesUpdated(noOfNotes, denominationTotal, grandTotal));
   }
 
   void setTransactionDate(DateTime dateTime) {
@@ -60,13 +53,13 @@ class CashCounterCubit extends Cubit<CashCounterState> {
   void updateManuallyAddedAmt(String amt) {
     manuallyAdded = double.parse(amt);
     grandTotal = denominationTotal + manuallyAdded - manuallySubtracted;
-    emit(EntriesChanged(noOfNotes, denominationTotal, grandTotal));
+    emit(EntriesUpdated(noOfNotes, denominationTotal, grandTotal));
   }
 
   void updateManuallySubtractedAmt(String amt) {
     manuallySubtracted = double.parse(amt);
     grandTotal = denominationTotal + manuallyAdded - manuallySubtracted;
-    emit(EntriesChanged(noOfNotes, denominationTotal, grandTotal));
+    emit(EntriesUpdated(noOfNotes, denominationTotal, grandTotal));
   }
 
   void clearFields() {
@@ -82,13 +75,13 @@ class CashCounterCubit extends Cubit<CashCounterState> {
       noteMaps.update(key, (value) => 0);
     });
 
-    emit(ClearScreen(noOfNotes, denominationTotal, grandTotal));
-  }
 
-  void addCashTransaction(bool addIntoCD) async {
-    emit(AddingTransaction(noOfNotes, denominationTotal, grandTotal));
+  }
+  void updateCashTransaction(int transactionId) async {
+    emit(Updating());
 
     CashTransactionModel cashTransactionModel = CashTransactionModel();
+    cashTransactionModel.transactionID = transactionId;
     cashTransactionModel.manuallySubtracted = manuallySubtracted;
     cashTransactionModel.manuallyAdded = manuallyAdded;
     cashTransactionModel.denominationTotal = denominationTotal;
@@ -97,41 +90,25 @@ class CashCounterCubit extends Cubit<CashCounterState> {
     cashTransactionModel.name = personName;
     cashTransactionModel.remark = remark;
     cashTransactionModel.description = getFormattedDescription();
+    cashTransactionModel.updatedOn = DateTime.now().millisecondsSinceEpoch;
     cashTransactionModel.addedOn = DateTime(
         selectedDate.year,
         selectedDate.month,
         selectedDate.day,
         selectedTime.hour,
         selectedTime.minute).millisecondsSinceEpoch;
-    var result = await _cashTransactionRepository
-        .addCashTransaction(cashTransactionModel);
+    try{
+      var result = await _cashTransactionRepository
+          .updateCashTransaction(cashTransactionModel);
 
-    if (result) {
-      emit(TransactionAddedSuccessfully(
-          noOfNotes, denominationTotal, grandTotal,cashTransactionModel,addIntoCD));
-      clearFields();
-    } else {
-      emit(TransactionFailed(noOfNotes, denominationTotal, grandTotal));
+
+        emit(UpdatedSuccessfully());
+        clearFields();
+
+    }catch(e){
+      emit(Error("Something went wrong!!!"));
     }
-  }
 
-  CashTransactionModel getCurrentSession(){
-    CashTransactionModel cashTransactionModel = CashTransactionModel();
-    cashTransactionModel.manuallySubtracted = manuallySubtracted;
-    cashTransactionModel.manuallyAdded = manuallyAdded;
-    cashTransactionModel.denominationTotal = denominationTotal;
-    cashTransactionModel.grandTotal = grandTotal;
-    cashTransactionModel.noOfNotes = noOfNotes;
-    cashTransactionModel.name = personName;
-    cashTransactionModel.remark = remark;
-    cashTransactionModel.description = getFormattedDescription();
-    cashTransactionModel.addedOn = DateTime(
-        selectedDate.year,
-        selectedDate.month,
-        selectedDate.day,
-        selectedTime.hour,
-        selectedTime.minute).millisecondsSinceEpoch;
-    return cashTransactionModel;
   }
 
   String getFormattedDescription() {

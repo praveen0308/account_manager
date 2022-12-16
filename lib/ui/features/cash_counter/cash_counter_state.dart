@@ -43,7 +43,9 @@ class ReceivedCurrencies extends CashCounterState {
 }
 
 class TransactionAddedSuccessfully extends CashCounterState {
-  const TransactionAddedSuccessfully(super.noOfNotes, super.denominationTotal, super.grandTotal);
+  final CashTransactionModel savedTransaction;
+  final bool addIntCD;
+  const TransactionAddedSuccessfully(super.noOfNotes, super.denominationTotal, super.grandTotal, this.savedTransaction, this.addIntCD);
 }
 
 class TransactionFailed extends CashCounterState {

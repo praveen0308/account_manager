@@ -32,6 +32,7 @@ class CdHistoryCubit extends Cubit<CdHistoryState> {
       if (result.isNotEmpty) {
         transactions.addAll(result);
         for (int i = 0; i < transactions.length; i++) {
+
           if (i == 0) {
             transactions[0].closingBalance =
                 transactions[0].credit - transactions[0].debit;
@@ -51,11 +52,11 @@ class CdHistoryCubit extends Cubit<CdHistoryState> {
     }
   }
 
-  Future<void> deleteTransaction(CDTransaction transaction) async {
+  Future<void> updateTransactionStatus(CDTransaction transaction,bool status) async {
     emit(LoadingTransactions());
     try {
       var result =
-          await _creditDebitRepository.deleteCDTransaction(personModel,transaction);
+          await _creditDebitRepository.updateCDTransactionStatus(personModel,transaction,status);
       personModel = result;
       emit(DeletedSuccessfully());
 
@@ -64,4 +65,5 @@ class CdHistoryCubit extends Cubit<CdHistoryState> {
       debugPrint(e.toString());
     }
   }
+
 }

@@ -15,14 +15,22 @@ class ManageCategories extends StatefulWidget {
 }
 
 class _ManageCategoriesState extends State<ManageCategories> {
+  IncomeType activeType = IncomeType.income;
+  @override
+  void initState() {
+    BlocProvider.of<ManageCategoriesCubit>(context)
+        .fetchCategories(activeType);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           IncomeExpenseGroup(onChanged: (type) {
+            activeType = type;
             BlocProvider.of<ManageCategoriesCubit>(context)
-                .fetchCategories(type);
+                .fetchCategories(activeType);
           }),
           Expanded(
             child: BlocBuilder<ManageCategoriesCubit, ManageCategoriesState>(
@@ -37,11 +45,17 @@ class _ManageCategoriesState extends State<ManageCategories> {
                     var category = state.categories[index];
 
                     return ListTile(
+                      onTap: () {
+                        Navigator.pushNamed(context, "/categoryDetail",arguments: category).then((value) => BlocProvider.of<ManageCategoriesCubit>(context)
+                            .fetchCategories(activeType));
+
+                      },
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       leading: Icon(
                           IconData(category.icon, fontFamily: "MaterialIcons")),
                       title: Text(category.name),
+                      trailing: const Icon(Icons.chevron_right),
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
@@ -84,11 +98,7 @@ class _ManageCategoriesState extends State<ManageCategories> {
     );
   }
 
-  @override
-  void initState() {
-    BlocProvider.of<ManageCategoriesCubit>(context)
-        .fetchCategories(IncomeType.income);
-  }
+
 }
 
 class IncomeExpenseGroup extends StatefulWidget {

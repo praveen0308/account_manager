@@ -4,6 +4,7 @@ import 'package:account_manager/widgets/outlined_container.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../widgets/outlined_text_field.dart';
+import '../../../../widgets/primary_button.dart';
 
 class EmiCalculator extends StatefulWidget {
   const EmiCalculator({Key? key}) : super(key: key);
@@ -109,6 +110,7 @@ class _EmiCalculatorState extends State<EmiCalculator> {
               onTextChanged: (String txt) {},
               onSubmitted: (String txt) {},
             ),
+
             const Text(
               "Result : ",
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
@@ -150,11 +152,10 @@ class _EmiCalculatorState extends State<EmiCalculator> {
                   ],
                 )),
             const Spacer(),
-            ElevatedButton(
-              onPressed: _calculate,
-              child: const Text(
-                "Calculate",
-              ),
+            PrimaryButton(
+              onClick: _calculate,
+              text: 'Calculate',
+
             )
           ],
         ),

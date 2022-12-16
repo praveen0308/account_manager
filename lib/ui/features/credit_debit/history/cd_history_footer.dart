@@ -62,7 +62,25 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
                   style: const TextStyle(
                       color: AppColors.success, fontWeight: FontWeight.w600),
                 ),
-                ElevatedButton.icon(
+                InkWell(
+                  onTap: (){
+                    _displayDialog(TransactionType.credit);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: AppColors.success,
+                      borderRadius: BorderRadius.circular(8)
+                    ),
+                    child: const Icon(
+                      Icons.arrow_drop_down,
+                      size: 48,
+                      color: AppColors.white,
+                    ),
+                  ),
+                ),
+
+                /*ElevatedButton.icon(
                     onPressed: () {
                       _displayDialog(TransactionType.credit);
                     },
@@ -78,7 +96,7 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
                     style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all(AppColors.success),
-                    )),
+                    )),*/
               ],
             ),
             Expanded(
@@ -103,7 +121,24 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
                   style: const TextStyle(
                       color: AppColors.error, fontWeight: FontWeight.w600),
                 ),
-                ElevatedButton.icon(
+                InkWell(
+                  onTap: (){
+                    _displayDialog(TransactionType.debit);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        color: AppColors.error,
+                        borderRadius: BorderRadius.circular(8)
+                    ),
+                    child: const Icon(
+                      Icons.arrow_drop_up,
+                      size: 48,
+                      color: AppColors.white,
+                    ),
+                  ),
+                ),
+                /*ElevatedButton.icon(
                     onPressed: () {
                       _displayDialog(TransactionType.debit);
                     },
@@ -119,7 +154,7 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
                     style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all(AppColors.error),
-                    )),
+                    )),*/
               ],
             ),
           ],

@@ -145,7 +145,7 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
                                     .addNewTransaction(
                                         widget.person,
                                         CDTransaction(
-                                          walletId: selectedWalletId,
+                                          walletId: widget.person.walletId,
                                           debit: double.parse(amount),
                                           remark: remark,
                                           personId: widget.person.personId!,

@@ -27,7 +27,7 @@ class OutlinedTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: margin,
-      height: 50,
+      height: 40,
       child: TextFormField(
         controller: controller,
         onChanged: onTextChanged,

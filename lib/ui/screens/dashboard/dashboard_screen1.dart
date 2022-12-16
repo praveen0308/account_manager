@@ -36,6 +36,7 @@ class _DashboardScreen1State extends State<DashboardScreen1> {
 
       length: 4,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Column(
           children: [
             const TabBar(

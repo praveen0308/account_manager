@@ -11,9 +11,26 @@ class CreditDebitRepository {
 
   Future<bool> addNewPerson(PersonModel person) async {
     Database db = await dbHelper.database;
-    var result = await db.insert(PersonModel.table, person.toMap());
+    var exists = await checkPersonExists(person);
+    if(exists){
+      return false;
+    }else{
+      var result = await db.insert(PersonModel.table, person.toMap());
+      return true;
+    }
 
-    return result > 0;
+
+
+  }
+
+  Future<bool> checkPersonExists(PersonModel person) async {
+    Database db = await dbHelper.database;
+    var result = await db.query(PersonModel.table,
+        where:
+            "${PersonModel.colWalletId}=? and ${PersonModel.colMobileNumber}=?",
+        whereArgs: [person.walletId, person.mobileNumber]);
+
+    return result.isNotEmpty;
   }
 
 /*
@@ -106,10 +123,73 @@ class CreditDebitRepository {
         whereArgs: [transaction.personId]);
 
     return personModel;
+  }
+  Future<PersonModel> updateCDTransactionStatus(
+      PersonModel personModel, CDTransaction transaction,bool isCancel) async {
+    // cashTransactionModel.addedOn = DateTime.now().toString();
 
+    int cancelStatus = isCancel?1:0;
+    print("Transaction ID >>> ${transaction.transactionId}" );
+    bool isCredit = transaction.type == TransactionType.credit.name;
+    Database db = await dbHelper.database;
+    var result = await db.update(CDTransaction.table,{CDTransaction.colIsCancel:cancelStatus},
+        where: "${CDTransaction.colTransactionId}=?",
+        whereArgs: [transaction.transactionId]);
+    debugPrint("Deleted successfully >>> result : $result");
+    Map<String, dynamic> row;
+
+    if(isCancel){
+      if (isCredit) {
+        personModel.credit += transaction.credit;
+        row = {PersonModel.colCredit: personModel.credit};
+      } else {
+        personModel.debit -= transaction.debit;
+        row = {PersonModel.colDebit: personModel.debit};
+      }
+    }else{
+      if (isCredit) {
+        personModel.credit -= transaction.credit;
+        row = {PersonModel.colCredit: personModel.credit};
+      } else {
+        personModel.debit += transaction.debit;
+        row = {PersonModel.colDebit: personModel.debit};
+      }
+    }
+
+
+    await db.update(PersonModel.table, row,
+        where: "${PersonModel.colPersonId}=?",
+        whereArgs: [transaction.personId]);
+
+    return personModel;
   }
 
 
+  Future<PersonModel> updateCDTransaction(
+      PersonModel personModel, CDTransaction transaction) async {
+    // cashTransactionModel.addedOn = DateTime.now().toString();
+    bool isCredit = transaction.type == TransactionType.credit.name;
+    Database db = await dbHelper.database;
+    var result = await db.update(CDTransaction.table,transaction.toMap(),
+        where: "${CDTransaction.colTransactionId}=?",
+        whereArgs: [transaction.transactionId]);
+    debugPrint("Deleted successfully >>> result : $result");
+    Map<String, dynamic> row;
+
+    if (isCredit) {
+      personModel.credit -= transaction.credit;
+      row = {PersonModel.colCredit: personModel.credit};
+    } else {
+      personModel.debit += transaction.debit;
+      row = {PersonModel.colDebit: personModel.debit};
+    }
+
+    await db.update(PersonModel.table, row,
+        where: "${PersonModel.colPersonId}=?",
+        whereArgs: [transaction.personId]);
+
+    return personModel;
+  }
 
   Future<List<PersonModel>> getAllPersons() async {
     Database db = await dbHelper.database;
@@ -120,7 +200,8 @@ class CreditDebitRepository {
 
   Future<List<PersonModel>> getPersonsByWalletId(int walletId) async {
     Database db = await dbHelper.database;
-    var records = await db.query(PersonModel.table,where: "${PersonModel.colWalletId}=?",whereArgs: [walletId]);
+    var records = await db.query(PersonModel.table,
+        where: "${PersonModel.colWalletId}=?", whereArgs: [walletId]);
 
     return records.map((e) => PersonModel.fromMap(e)).toList();
   }
@@ -140,11 +221,13 @@ class CreditDebitRepository {
     return records.map((e) => CDTransaction.fromMap(e)).toList();
   }
 
-
-  Future<List<CDTransaction>> getTransactionsByPersonIdAcDate(int personId,int from,int to) async {
+  Future<List<CDTransaction>> getTransactionsByPersonIdAcDate(
+      int personId, int from, int to) async {
     Database db = await dbHelper.database;
     var records = await db.query(CDTransaction.table,
-        where: "${CDTransaction.colPersonId}=? and ${CDTransaction.colAddedOn}>=? and ${CDTransaction.colAddedOn}<=?", whereArgs: [personId,from,to]);
+        where:
+            "${CDTransaction.colPersonId}=? and ${CDTransaction.colAddedOn}>=? and ${CDTransaction.colAddedOn}<=?",
+        whereArgs: [personId, from, to]);
 
     return records.map((e) => CDTransaction.fromMap(e)).toList();
   }
@@ -175,16 +258,17 @@ class CreditDebitRepository {
         "SELECT sum(${CDTransaction.colCredit}) as result from ${CDTransaction.table} GROUP by ${CDTransaction.colWalletId},${CDTransaction.colType}";
     */
     var query =
-        "SELECT ${CDTransaction.colWalletId},sum(${CDTransaction.colCredit}) as credit,sum(${CDTransaction.colDebit}) as debit from credit_debit where ${CDTransaction.colWalletId}=$walletId;";
+        "SELECT ${CDTransaction.colWalletId},sum(${CDTransaction.colCredit}) as credit,sum(${CDTransaction.colDebit}) as debit from credit_debit where ${CDTransaction.colWalletId}=$walletId and ${CDTransaction.colIsCancel}=0;";
     var result = await db.rawQuery(query);
-
-    if(result[0]['walletId']==null){
+    print("Stats Result >>> $result");
+    if (result[0]['walletId'] == null) {
       return WalletModel(walletId, "Business $walletId}", 0, 0);
-    }else{
-
-      return WalletModel(result[0]['walletId'] as int, "Business ${result[0]['walletId']}", result[0]['credit'] as double,
+    } else {
+      return WalletModel(
+          result[0]['walletId'] as int,
+          "Business ${result[0]['walletId']}",
+          result[0]['credit'] as double,
           result[0]['debit'] as double);
     }
-
   }
 }

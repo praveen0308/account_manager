@@ -7,11 +7,13 @@ import 'package:account_manager/utils/toaster.dart';
 import 'package:account_manager/widgets/custom_dropdown.dart';
 import 'package:account_manager/widgets/outlined_text_field.dart';
 import 'package:account_manager/widgets/secondary_button.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 
+import '../../../../res/app_colors.dart';
 import '../../../../widgets/primary_button.dart';
 
 class AddPersonForm extends StatefulWidget {
@@ -28,9 +30,11 @@ class _AddPersonFormState extends State<AddPersonForm> {
   late PhoneContact _contact;
 
   bool isValid = true;
-  int selectedWallet = 1;
+  int _walletId = 1;
 
+  final List<WalletModel> _wallets = AppConstants.getWallets();
 
+  var _activeWallet = "Business 1";
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddPersonCubit, AddPersonState>(
@@ -41,6 +45,11 @@ class _AddPersonFormState extends State<AddPersonForm> {
           BlocProvider.of<CreditDebitCubit>(context).fetchPersons();
           ScaffoldMessenger.of(context).showToast("Added successfully!!!",ToastType.success);
           Navigator.pop(context,true);
+        }
+        if(state is Failed){
+
+          ScaffoldMessenger.of(context).showToast("Already exists!!!",ToastType.error);
+
         }
       },
 
@@ -54,6 +63,7 @@ class _AddPersonFormState extends State<AddPersonForm> {
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               const SizedBox(height: 24),
               Text(
@@ -66,9 +76,53 @@ class _AddPersonFormState extends State<AddPersonForm> {
                 ),
               ),
               const SizedBox(height: 16),
-              CustomDropDown(hint: "Business 1", itemList: AppConstants.getWallets(), onItemSelected: (item){
-                selectedWallet = item.walletId;
-              }),
+
+              DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    hint: Text(
+                      'Select Item',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+                    items: _wallets
+                        .map((item) => DropdownMenuItem<String>(
+                      value: item.name,
+                      child: Text(
+                        item.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ))
+                        .toList(),
+                    value: _activeWallet,
+                    onChanged: (value) {
+                      setState(() {
+                        _activeWallet = value as String;
+                        _walletId = int.parse(_activeWallet[-1]);
+                      });
+
+                    },
+                    buttonHeight: 40,
+                    itemHeight: 40,
+                    buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                    buttonDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                          color: AppColors.primaryDarkest,
+                          width: 1.5
+                      ),
+                      color: Colors.white,
+                    ),
+
+                    dropdownDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+
+
+                    ),
+                  )),
               OutlinedTextField(
                   controller: _txtNameController,
                   onTextChanged: (txt) {},
@@ -137,7 +191,7 @@ class _AddPersonFormState extends State<AddPersonForm> {
                               BlocProvider.of<AddPersonCubit>(context).addNewPerson(PersonModel(
                                 name: name,
                                 mobileNumber: mobileNo,
-                                walletId: selectedWallet
+                                walletId: _walletId
 
                               ));
                             }else{

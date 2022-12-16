@@ -17,8 +17,19 @@ class CashTransactionRepository {
     return result > 0;
   }
 
-  Future<bool> deleteTransaction(
-      int transactionId) async {
+  Future<bool> updateCashTransaction(
+      CashTransactionModel cashTransactionModel) async {
+    // cashTransactionModel.addedOn = DateTime.now().toString();
+    Database db = await dbHelper.database;
+    var result = await db.update(
+        CashTransactionModel.table, cashTransactionModel.toMap(),
+        where: "${CashTransactionModel.columnTransactionId}=?",
+        whereArgs: [cashTransactionModel.transactionID]);
+    debugPrint("Operation done >>> result : $result");
+    return result > 0;
+  }
+
+  Future<bool> deleteTransaction(int transactionId) async {
     // cashTransactionModel.addedOn = DateTime.now().toString();
     Database db = await dbHelper.database;
     var result = await db.delete(CashTransactionModel.table,
@@ -35,10 +46,14 @@ class CashTransactionRepository {
     return records.map((e) => CashTransactionModel.fromMap(e)).toList();
   }
 
-  Future<List<CashTransactionModel>> fetchTransactionsByDate(int from,int to) async {
+  Future<List<CashTransactionModel>> fetchTransactionsByDate(
+      int from, int to) async {
     Database db = await dbHelper.database;
     debugPrint("From >>> $from  -  to >>> $to");
-    var records = await db.query(CashTransactionModel.table,where:"${CashTransactionModel.columnAddedOn}>=? and ${CashTransactionModel.columnAddedOn}<=?",whereArgs: [from,to]);
+    var records = await db.query(CashTransactionModel.table,
+        where:
+            "${CashTransactionModel.columnAddedOn}>=? and ${CashTransactionModel.columnAddedOn}<=?",
+        whereArgs: [from, to]);
     debugPrint("Transactions >>> $records");
     return records.map((e) => CashTransactionModel.fromMap(e)).toList();
   }
