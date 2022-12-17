@@ -35,6 +35,11 @@ class CcHistoryCubit extends Cubit<CcHistoryState> {
       }
 
       grandTotal = 0;
+      gDenominationTotal = 0;
+      gAdded = 0;
+      gSubtracted = 0;
+      gNoOfNotes = 0;
+      gNotes = {};
 
       transactions.clear();
       transactions.addAll(result);
