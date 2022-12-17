@@ -21,8 +21,10 @@ class PickPersonScreen extends StatefulWidget {
 
 class _PickPersonScreenState extends State<PickPersonScreen> {
   var activeBusiness = "Business 1";
-
+  bool _shareViaWhatsapp = false;
   final List<String> _businessList = ["Business 1", "Business 2", "Business 3"];
+  PersonModel? mPerson;
+  CDTransaction? cdTransaction;
 
   @override
   void initState() {
@@ -43,6 +45,19 @@ class _PickPersonScreenState extends State<PickPersonScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            CheckboxListTile(
+              activeColor: AppColors.primaryDarkest,
+              value: _shareViaWhatsapp,
+              onChanged: (v) {
+                setState(() {
+                  _shareViaWhatsapp = v!;
+                });
+              },
+              title: const Text(
+                "Share via Whatsapp",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+            ),
             DropdownButtonHideUnderline(
                 child: DropdownButton2(
               hint: Text(
@@ -86,59 +101,61 @@ class _PickPersonScreenState extends State<PickPersonScreen> {
             )),
             BlocConsumer<PickPersonCubit, PickPersonState>(
                 builder: (context, state) {
-                  if (state is LoadingPersons || state is AddingTransaction) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (state is NoPersons) {
-                    return Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
-                            Icons.hourglass_empty,
-                            size: 60,
-                          ),
-                          Text("No Person!!"),
-                        ],
+              if (state is LoadingPersons || state is AddingTransaction) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is NoPersons) {
+                return Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.hourglass_empty,
+                        size: 60,
                       ),
-                    );
-                  }
-                  if (state is ReceivedPersons) {
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: state.persons.length,
-                        itemBuilder: (context, index) {
-                          PersonModel person = state.persons[index];
-                          return ListTile(
-                            leading: CircleAvatar(child: Text(person.name[0])),
-                            title: Text(person.name),
-                            onTap: () {
-                              BlocProvider.of<PickPersonCubit>(context)
-                                  .addNewTransaction(
-                                      person,
-                                      CDTransaction(
-                                          walletId:
-                                              getActiveWalletId(activeBusiness),
-                                          debit: widget.transaction.grandTotal,
-                                          remark: widget.transaction.remark,
-                                          personId: person.personId!,
-                                          type: "debit"));
-                            },
-                          );
-                        });
-                  }
-                  return const Center(
-                    child: Text("Something went wrong!!!"),
-                  );
-                },
-                listener: (context, state) {
-                  if(state is AddedTransaction){
-                    showToast("Transaction added successfully!!!",ToastType.success);
-                    Navigator.pop(context);
-                  }
-                }),
+                      Text("No Person!!"),
+                    ],
+                  ),
+                );
+              }
+              if (state is ReceivedPersons) {
+                return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.persons.length,
+                    itemBuilder: (context, index) {
+                      PersonModel person = state.persons[index];
+                      return ListTile(
+                        leading: CircleAvatar(child: Text(person.name[0])),
+                        title: Text(person.name),
+                        onTap: () {
+                          mPerson = person;
+                          cdTransaction = CDTransaction(
+                              walletId: getActiveWalletId(activeBusiness),
+                              debit: widget.transaction.grandTotal,
+                              remark: widget.transaction.remark,
+                              personId: person.personId!,
+                              type: "debit");
+                          BlocProvider.of<PickPersonCubit>(context)
+                              .addNewTransaction(person, cdTransaction!);
+                        },
+                      );
+                    });
+              }
+              return const Center(
+                child: Text("Something went wrong!!!"),
+              );
+            }, listener: (context, state) {
+              if (state is AddedTransaction) {
+                showToast(
+                    "Transaction added successfully!!!", ToastType.success);
+                Navigator.pop(
+                  context,
+                  [_shareViaWhatsapp,mPerson,cdTransaction]
+                );
+              }
+            }),
           ],
         ),
       ),

@@ -40,15 +40,29 @@ class IncomeExpenseParentCubit extends Cubit<IncomeExpenseParentState> {
       transactions.addAll(result);
       income =0;
       expense=0;
+      Map<String,num> incomeCats = {};
+      Map<String,num> expenseCats = {};
       for (var t in transactions) {
         if(t.type == IncomeType.income.name){
           income +=t.amount;
+          if(incomeCats.containsKey(t.categoryName)){
+            incomeCats.update(t.categoryName.toString(), (value) => incomeCats[t.categoryName]!+t.amount);
+          }else{
+            incomeCats[t.categoryName!] = t.amount;
+          }
+
         }else{
           expense +=t.amount;
+
+          if(expenseCats.containsKey(t.categoryName)){
+            expenseCats.update(t.categoryName.toString(), (value) => expenseCats[t.categoryName]!+t.amount);
+          }else{
+            expenseCats[t.categoryName!] = t.amount;
+          }
         }
       }
 
-      emit(ReceivedSummary(income,expense));
+      emit(ReceivedSummary(income,expense,incomeCats,expenseCats));
 
     }on Exception catch(e){
       emit(Error("Something went wrong!!!"));

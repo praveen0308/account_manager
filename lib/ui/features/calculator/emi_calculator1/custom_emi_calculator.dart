@@ -25,9 +25,9 @@ class _CustomEMICalculatorState extends State<CustomEMICalculator> {
   DateTime _endDate = DateTime.now();
   String durationInWords = "0 Days";
   int _duration = 0;
-  int emiPayable = 0;
-  int totalInterestPayable = 0;
-  int totalPayment = 0;
+  num emiPayable = 0;
+  num totalInterestPayable = 0;
+  num totalPayment = 0;
 
   void _calculate() {
     int diff = _endDate.millisecondsSinceEpoch-_startDate.millisecondsSinceEpoch;
@@ -39,19 +39,28 @@ class _CustomEMICalculatorState extends State<CustomEMICalculator> {
     num r = double.parse(_rate.text);
     int n = noOfMonths;
 
+    /*
     r = ((r / 12) / 100);
     num first = pow(r + 1, n);
-
     num thirdP = first / (first - 1);
     num emi = p * r * thirdP;
-
     num emiPerDay = emi/30;
     emi +=emiPerDay*extraDays;
+    */
+    // customized calculation
+
+    num emi = (r/100)*p;
+    num emiPerDay = emi/30;
+
+    num emi2 = emiPerDay*extraDays;
+    // emi +=emiPerDay*extraDays;
+
     setState(() {
       durationInWords = DateTimeHelper.prettyDuration(diff);
-      emiPayable = emi.toInt();
-      totalPayment = (emi * n).toInt();
-      totalInterestPayable = totalPayment - p;
+      emiPayable = emi;
+      totalInterestPayable =(emi * n)+emi2;
+      totalPayment =  p + totalInterestPayable;
+
     });
   }
 
@@ -143,7 +152,7 @@ class _CustomEMICalculatorState extends State<CustomEMICalculator> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  /*Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
@@ -161,10 +170,19 @@ class _CustomEMICalculatorState extends State<CustomEMICalculator> {
                         ],
                       )
                     ],
+                  ),*/
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      label("Total Interest Payable"),
+                      Text(":  ₹$totalInterestPayable",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600)),
+
+                    ],
                   ),
 
                   const SizedBox(height: 16,),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       label("Total Payment\n(Principal + Interest) "),
                       Text(": ₹$totalPayment",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600))

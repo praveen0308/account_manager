@@ -21,9 +21,9 @@ class _EmiCalculatorState extends State<EmiCalculator> {
   final TextEditingController _duration = TextEditingController();
   final TextEditingController _rate = TextEditingController();
 
-  int emiPayable = 0;
-  int totalInterestPayable = 0;
-  int totalPayment = 0;
+  num emiPayable = 0;
+  num totalInterestPayable = 0;
+  num totalPayment = 0;
 
   void _calculate() {
     int p = int.parse(_amount.text);
@@ -36,8 +36,9 @@ class _EmiCalculatorState extends State<EmiCalculator> {
     num thirdP = first / (first - 1);
     num emi = p * r * thirdP;
     setState(() {
-      emiPayable = emi.toInt();
-      totalPayment = (emi * n).toInt();
+
+      emiPayable = emi;
+      totalPayment = (emi * n);
       totalInterestPayable = totalPayment - p;
     });
   }
@@ -128,14 +129,14 @@ class _EmiCalculatorState extends State<EmiCalculator> {
                         Column(
                           children: [
                             const Text("EMI Payable"),
-                            Text("₹$emiPayable",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600),),
+                            Text("₹${emiPayable.toStringAsFixed(0)}",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600),),
 
                           ],
                         ),
                         Column(
                           children: [
                             const Text("Total Interest Payable"),
-                            Text("₹$totalInterestPayable",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600)),
+                            Text("₹${totalInterestPayable.toStringAsFixed(0)}",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600)),
 
                           ],
                         )
@@ -146,7 +147,7 @@ class _EmiCalculatorState extends State<EmiCalculator> {
                     Row(
                       children: [
                         label("Total Payment\n(Principal + Interest) "),
-                        Text(": ₹$totalPayment",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600))
+                        Text(": ₹${totalPayment.toStringAsFixed(0)}",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600))
                       ],
                     ),
                   ],

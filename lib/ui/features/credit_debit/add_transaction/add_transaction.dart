@@ -30,18 +30,18 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
 
   bool isValid = true;
   int selectedWalletId = 1;
+  CDTransaction? cdTransaction;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddTransactionCubit, AddTransactionState>(
       listener: (context, state) {
         if (state is AddedSuccessfully) {
-
           BlocProvider.of<CdHistoryCubit>(context).personModel = state.result;
           BlocProvider.of<CdHistoryCubit>(context).fetchTransactions();
           ScaffoldMessenger.of(context)
               .showToast("Added successfully!!!", ToastType.success);
-          Navigator.pop(context, _shareViaWhatsapp);
+          Navigator.pop(context, [_shareViaWhatsapp,widget.person,cdTransaction]);
         }
       },
       builder: (context, state) {
@@ -57,7 +57,9 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
             children: <Widget>[
               const SizedBox(height: 24),
               Text(
-                widget.type == TransactionType.credit ? "Receive(IN)" : "Give(OUT)".toUpperCase(),
+                widget.type == TransactionType.credit
+                    ? "Receive(IN)"
+                    : "Give(OUT)".toUpperCase(),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.black,
@@ -130,27 +132,25 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
                               });
 
                               if (widget.type == TransactionType.credit) {
+                                cdTransaction = CDTransaction(
+                                    walletId: widget.person.walletId,
+                                    credit: double.parse(amount),
+                                    remark: remark,
+                                    personId: widget.person.personId!,
+                                    type: widget.type.name);
                                 BlocProvider.of<AddTransactionCubit>(context)
                                     .addNewTransaction(
-                                        widget.person,
-                                        CDTransaction(
-                                          walletId: widget.person.walletId,
-                                          credit: double.parse(amount),
-                                          remark: remark,
-                                          personId: widget.person.personId!,
-                                          type: widget.type.name
-                                        ));
+                                        widget.person, cdTransaction!);
                               } else {
+                                cdTransaction = CDTransaction(
+                                    walletId: widget.person.walletId,
+                                    debit: double.parse(amount),
+                                    remark: remark,
+                                    personId: widget.person.personId!,
+                                    type: widget.type.name);
                                 BlocProvider.of<AddTransactionCubit>(context)
                                     .addNewTransaction(
-                                        widget.person,
-                                        CDTransaction(
-                                          walletId: widget.person.walletId,
-                                          debit: double.parse(amount),
-                                          remark: remark,
-                                          personId: widget.person.personId!,
-                                            type: widget.type.name
-                                        ));
+                                        widget.person, cdTransaction!);
                               }
                             } else {
                               setState(() {

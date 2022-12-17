@@ -80,7 +80,7 @@ class _CDHistoryState extends State<CDHistory> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => CDPersonReportPreview(
-                      transactions: transactions,
+                      transactions: transactions.where((element) => !element.isCancel).toList(),
                       person: widget.person,
                     ),
                   ),
@@ -145,8 +145,8 @@ class _CDHistoryState extends State<CDHistory> {
         details.globalPosition.dy - 120,
       ), //position where you want to show the menu on screen
       items: [
-        if (!transaction.isCancel)
-          const PopupMenuItem<int>(value: 1, child: Text('Edit')),
+        /*if (!transaction.isCancel)
+          const PopupMenuItem<int>(value: 1, child: Text('Edit')),*/
         if (!transaction.isCancel)
           const PopupMenuItem<int>(value: 2, child: Text('Delete')),
         if (transaction.isCancel)

@@ -16,7 +16,7 @@ class CategoryRepository {
     Database db = await dbHelper.database;
     var rows = category.toMap();
     rows.remove(CategoryModel.colCategoryId);
-    var result = await db.update(CategoryModel.table, rows);
+    var result = await db.update(CategoryModel.table, rows,where: "${CategoryModel.colCategoryId}=?",whereArgs: [category.categoryId]);
     return result > 0;
   }
 

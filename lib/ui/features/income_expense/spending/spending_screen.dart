@@ -16,7 +16,7 @@ class _SpendingScreenState extends State<SpendingScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        IncomeExpenseSummary(),
+        const IncomeExpenseSummary(),
         const Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

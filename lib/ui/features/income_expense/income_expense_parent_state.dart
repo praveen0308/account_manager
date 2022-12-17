@@ -13,8 +13,10 @@ class Error extends IncomeExpenseParentState {
 class ReceivedSummary extends IncomeExpenseParentState {
   final num income;
   final num expense;
+  final Map<String,num> incomeCats;
+  final Map<String,num> expenseCats;
 
-  ReceivedSummary(this.income, this.expense);
+  ReceivedSummary(this.income, this.expense, this.incomeCats, this.expenseCats);
 
 }
 class FilterChanged extends IncomeExpenseParentState {

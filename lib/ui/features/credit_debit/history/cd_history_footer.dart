@@ -9,6 +9,7 @@ import 'package:account_manager/widgets/footer_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../utils/share_utils.dart';
 import 'cd_history_cubit.dart';
 
 class CDHistoryFooter extends StatefulWidget {
@@ -41,8 +42,10 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
             ),
           );
         }).then((value) {
-          if(value){
-            showToast("Call whatsapp share", ToastType.success);
+          if(value[0]){
+            PersonModel person = value[1];
+            CDTransaction cdTransaction = value[2];
+            ShareUtil.launchWhatsapp1(cdTransaction.getDescription(), person.mobileNumber);
           }
     });
   }

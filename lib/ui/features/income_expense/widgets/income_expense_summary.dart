@@ -28,7 +28,6 @@ class _IncomeExpenseSummaryState extends State<IncomeExpenseSummary> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -37,7 +36,7 @@ class _IncomeExpenseSummaryState extends State<IncomeExpenseSummary> {
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          DateFilterBar(filterChanged: (date,filter){
+          DateFilterBar(filterChanged: (date, filter) {
             _fDate = date;
             activeFilter = filter;
             BlocProvider.of<IncomeExpenseParentCubit>(context)
@@ -52,7 +51,7 @@ class _IncomeExpenseSummaryState extends State<IncomeExpenseSummary> {
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: LinearPercentIndicator(
                         lineHeight: 20.0,
-                        percent: (state.expense/state.income),
+                        percent: (state.expense / state.income),
                         barRadius: const Radius.circular(10),
                         progressColor: AppColors.error,
                         backgroundColor: AppColors.successDark,
@@ -60,12 +59,47 @@ class _IncomeExpenseSummaryState extends State<IncomeExpenseSummary> {
                     ),
                     buildContentRow("Income", state.income,
                         prefix: "+", color: AppColors.successDark),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.incomeCats.length,
+                        itemBuilder: (context, index) {
+                          String key = state.incomeCats.keys.elementAt(index);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(key.toString(),style: const TextStyle(fontWeight: FontWeight.w500),),
+                                Text("+₹${state.incomeCats[key]}",style: const TextStyle(fontWeight: FontWeight.w500,color: AppColors.success),),
+                              ],
+                            ),
+                          );
+                        }),
+                    const Divider(
+                      thickness: 0.75,
+                    ),
                     buildContentRow("Expense", state.expense,
                         prefix: "-", color: AppColors.error),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.expenseCats.length,
+                        itemBuilder: (context, index) {
+                          String key = state.expenseCats.keys.elementAt(index);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(key.toString(),style: const TextStyle(fontWeight: FontWeight.w500),),
+                                Text("-₹${state.expenseCats[key]}",style: const TextStyle(fontWeight: FontWeight.w500,color: AppColors.error),),
+                              ],
+                            ),
+                          );
+                        }),
                     const Divider(
                       thickness: 2,
                     ),
-                    buildContentRow("Balance", state.income-state.expense),
+                    buildContentRow("Balance", state.income - state.expense),
                   ],
                 );
               }
