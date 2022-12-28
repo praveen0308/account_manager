@@ -17,94 +17,92 @@ Future<Uint8List> makeCDReport(List<PersonModel> persons) async {
       .map((person) => person.credit - person.debit)
       .fold(0, (prev, amount) => prev + amount);
   final font = await PdfGoogleFonts.robotoBold();
-  pdf.addPage(
-    Page(
-      build: (context) {
-        return Column(
+  final List<Widget> widgets = [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    Text("Cash Debit Report", style: Theme.of(context).header0),
-                  ],
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                ),
-                SizedBox(
-                  height: 80,
-                  width: 80,
-                  child: Image(imageLogo),
-                )
-              ],
+            Text("Cash Debit Report", style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold)),
+          ],
+          crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+        SizedBox(
+          height: 80,
+          width: 80,
+          child: Image(imageLogo),
+        )
+      ],
+    ),
+    Container(height: 50),
+    Table(
+      border: TableBorder.all(color: PdfColors.black),
+      children: [
+        TableRow(
+          children: [
+            Text(
+              'Name',
+              style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
-            Container(height: 50),
-            Table(
-              border: TableBorder.all(color: PdfColors.black),
-              children: [
-                TableRow(
-                  children: [
-                    Text(
-                      'Name',
-                      style: Theme.of(context).tableHeader,
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      'Mobile Number',
-                      style: Theme.of(context).tableHeader,
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      'Credit',
-                      style: Theme.of(context).tableHeader,
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      'Debit',
-                      style: Theme.of(context).tableHeader,
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      'Balance',
-                      style: Theme.of(context).tableHeader,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-                ...persons.map(
-                  (e) => TableRow(
-                    children: [
-                      PaddedText(e.name),
-                      PaddedText(e.mobileNumber),
-                      PaddedText("${e.credit}"),
-                      PaddedText("${e.debit}"),
-                      PaddedText("${e.credit - e.debit}"),
-                    ],
-                  ),
-                ),
-                TableRow(
-                  children: [
-                    Container(),
-                    Container(),
-                    Container(),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Text('Total Balance',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center)),
-                    Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text('₹${totalBalance.toStringAsFixed(2)}',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                font: font, fontWeight: FontWeight.bold)))
-                  ],
-                )
-              ],
+            Text(
+              'Mobile Number',
+              style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Credit',
+              style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Debit',
+              style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Balance',
+              style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
           ],
-        );
-      },
+        ),
+        ...persons.map(
+              (e) => TableRow(
+            children: [
+              PaddedText(e.name),
+              PaddedText(e.mobileNumber),
+              PaddedText("${e.credit}"),
+              PaddedText("${e.debit}"),
+              PaddedText("${e.credit - e.debit}"),
+            ],
+          ),
+        ),
+        TableRow(
+          children: [
+            Container(),
+            Container(),
+            Container(),
+            Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text('Total Balance',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center)),
+            Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text('₹${totalBalance.toStringAsFixed(2)}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        font: font, fontWeight: FontWeight.bold)))
+          ],
+        )
+      ],
+    ),
+  ];
+  pdf.addPage(
+    MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      build: (context) => widgets,//here goes the widgets list
     ),
   );
   return pdf.save();

@@ -10,6 +10,7 @@ import 'package:account_manager/widgets/secondary_button.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 // import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 
@@ -26,6 +27,7 @@ class AddPersonForm extends StatefulWidget {
 class _AddPersonFormState extends State<AddPersonForm> {
   final TextEditingController _txtNameController = TextEditingController();
   final TextEditingController _txtMobileNoController = TextEditingController();
+
   // final FlutterContactPicker _contactPicker = FlutterContactPicker();
   late PhoneContact _contact;
 
@@ -35,24 +37,29 @@ class _AddPersonFormState extends State<AddPersonForm> {
   final List<WalletModel> _wallets = AppConstants.getWallets();
 
   var _activeWallet = "Business 1";
+  int getActiveWalletId(){
+    if(_activeWallet == "Business 1"){return 1;}
+    if(_activeWallet == "Business 2"){return 2;}
+    else{return 3;}
+
+  }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddPersonCubit, AddPersonState>(
-      listener: (context,state){
-        if(state is AddedSuccessfully){
+      listener: (context, state) {
+        if (state is AddedSuccessfully) {
           _txtNameController.text = "";
           _txtMobileNoController.text = "";
           BlocProvider.of<CreditDebitCubit>(context).fetchPersons();
-          ScaffoldMessenger.of(context).showToast("Added successfully!!!",ToastType.success);
-          Navigator.pop(context,true);
+          ScaffoldMessenger.of(context)
+              .showToast("Added successfully!!!", ToastType.success);
+          Navigator.pop(context, true);
         }
-        if(state is Failed){
-
-          ScaffoldMessenger.of(context).showToast("Already exists!!!",ToastType.error);
-
+        if (state is Failed) {
+          ScaffoldMessenger.of(context)
+              .showToast("Already exists!!!", ToastType.error);
         }
       },
-
       builder: (context, state) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -76,53 +83,44 @@ class _AddPersonFormState extends State<AddPersonForm> {
                 ),
               ),
               const SizedBox(height: 16),
-
               DropdownButtonHideUnderline(
                   child: DropdownButton2(
-                    hint: Text(
-                      'Select Item',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).hintColor,
-                      ),
-                    ),
-                    items: _wallets
-                        .map((item) => DropdownMenuItem<String>(
-                      value: item.name,
-                      child: Text(
-                        item.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                    ))
-                        .toList(),
-                    value: _activeWallet,
-                    onChanged: (value) {
-                      setState(() {
-                        _activeWallet = value as String;
-                        _walletId = int.parse(_activeWallet[-1]);
-                      });
-
-                    },
-                    buttonHeight: 40,
-                    itemHeight: 40,
-                    buttonPadding: const EdgeInsets.only(left: 14, right: 14),
-                    buttonDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                          color: AppColors.primaryDarkest,
-                          width: 1.5
-                      ),
-                      color: Colors.white,
-                    ),
-
-                    dropdownDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-
-
-                    ),
-                  )),
+                hint: Text(
+                  'Select Item',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).hintColor,
+                  ),
+                ),
+                items: _wallets
+                    .map((item) => DropdownMenuItem<String>(
+                          value: item.name,
+                          child: Text(
+                            item.name,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ))
+                    .toList(),
+                value: _activeWallet,
+                onChanged: (value) {
+                  _activeWallet = value as String;
+                  _walletId = getActiveWalletId();
+                },
+                buttonHeight: 40,
+                itemHeight: 40,
+                buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                buttonDecoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  border:
+                      Border.all(color: AppColors.primaryDarkest, width: 1.5),
+                  color: Colors.white,
+                ),
+                dropdownDecoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              )),
               OutlinedTextField(
                   controller: _txtNameController,
                   onTextChanged: (txt) {},
@@ -144,22 +142,22 @@ class _AddPersonFormState extends State<AddPersonForm> {
                   ),
                   IconButton(
                       onPressed: () async {
-                        final PhoneContact contact = await FlutterContactPicker.pickPhoneContact(askForPermission: true);
+                        final PhoneContact contact =
+                            await FlutterContactPicker.pickPhoneContact(
+                                askForPermission: true);
 
                         // Contact? contact = await _contactPicker.selectContact();
                         setState(() {
                           _contact = contact;
                         });
 
-                        _txtNameController.text =
-                            _contact.fullName.toString();
+                        _txtNameController.text = _contact.fullName.toString();
                         _txtMobileNoController.text =
                             _contact.phoneNumber!.number.toString();
                       },
                       icon: const Icon(Icons.contacts_rounded))
                 ],
               ),
-
               Visibility(
                   visible: !isValid,
                   child: const Text(
@@ -173,7 +171,7 @@ class _AddPersonFormState extends State<AddPersonForm> {
                   Expanded(
                       child: SecondaryButton(
                           onClick: () {
-                            Navigator.pop(context,false);
+                            Navigator.pop(context, false);
                           },
                           text: "Cancel")),
                   const SizedBox(width: 8),
@@ -184,18 +182,17 @@ class _AddPersonFormState extends State<AddPersonForm> {
                             String mobileNo = _txtMobileNoController.text;
 
                             if (name.isNotEmpty && mobileNo.isNotEmpty) {
-                              setState((){
+                              setState(() {
                                 isValid = true;
                               });
 
-                              BlocProvider.of<AddPersonCubit>(context).addNewPerson(PersonModel(
-                                name: name,
-                                mobileNumber: mobileNo,
-                                walletId: _walletId
-
-                              ));
-                            }else{
-                              setState((){
+                              BlocProvider.of<AddPersonCubit>(context)
+                                  .addNewPerson(PersonModel(
+                                      name: name,
+                                      mobileNumber: mobileNo,
+                                      walletId: _walletId));
+                            } else {
+                              setState(() {
                                 isValid = false;
                               });
                             }

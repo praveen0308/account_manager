@@ -10,6 +10,7 @@ import 'package:account_manager/repository/income_expense_repository.dart';
 import 'package:account_manager/repository/note_repository.dart';
 import 'package:account_manager/ui/features/backup_restore/backup_restore.dart';
 import 'package:account_manager/ui/features/backup_restore/backup_restore_cubit.dart';
+import 'package:account_manager/ui/features/business_report/business_report_screen.dart';
 import 'package:account_manager/ui/features/calculator/calculator.dart';
 import 'package:account_manager/ui/features/calculator/emi_calculator/emi_calculator.dart';
 import 'package:account_manager/ui/features/cash_counter/cash_counter_cubit.dart';
@@ -46,6 +47,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/income_expense/category_model.dart';
+import '../ui/features/business_report/business_report_cubit.dart';
 import '../ui/features/cash_counter/edit_cash_transaction/edit_cash_transaction.dart';
 import '../ui/features/cash_counter/edit_cash_transaction/edit_cash_transaction_cubit.dart';
 import '../ui/features/income_expense/category/add_category/add_category_screen.dart';
@@ -74,6 +76,7 @@ const String selectPerson = '/selectPerson';
 const String notes = '/notes';
 const String backupNRestore = '/backupNRestore';
 const String addNewNote = '/addNewNote';
+const String businessReport = '/businessReport';
 
 Route<dynamic> controller(RouteSettings settings) {
   final args = settings.arguments;
@@ -232,6 +235,16 @@ Route<dynamic> controller(RouteSettings settings) {
             create: (context) => BackupRestoreCubit(
             ),
             child: BackupNRestoreScreen(),
+          ),
+          settings: settings);
+
+    case businessReport:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => BusinessReportCubit(
+              RepositoryProvider.of<CreditDebitRepository>(context)
+            ),
+            child: BusinessReportScreen(),
           ),
           settings: settings);
 

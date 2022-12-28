@@ -19,7 +19,7 @@ class PdfPreviewPage extends StatelessWidget {
         title: const Text('Cash Counter Report'),
       ),
       body: PdfPreview(
-        build: (context) => makePdf(transactions),
+        build: (context1) => makePdf(transactions),
       ),
     );
   }

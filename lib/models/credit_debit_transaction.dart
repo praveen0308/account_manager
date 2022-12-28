@@ -34,16 +34,18 @@ class CDTransaction {
   int? transactionId;
   int personId;
   int walletId;
+
   // double amount;
   double credit;
   double debit;
   double closingBalance;
-  String type;  // IN/OUT
+  String type; // IN/OUT
   String? description;
   String? remark;
   int addedOn;
   int? updatedOn;
   bool isCancel;
+  String? personName;
 
   CDTransaction(
       {this.transactionId,
@@ -52,17 +54,23 @@ class CDTransaction {
       this.credit = 0.0,
       this.debit = 0.0,
       this.closingBalance = 0.0,
-      this.type = "IN",
+      this.type = "credit",
       this.description,
       this.remark,
-      this.addedOn=0,
+      this.addedOn = 0,
       this.updatedOn,
-      this.isCancel=false});
+      this.isCancel = false,
+      this.personName = "X"});
 
+  String getDate() => DateFormat.yMd()
+      .add_jm()
+      .format(DateTime.fromMillisecondsSinceEpoch(addedOn));
 
-  String getDate() => DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(addedOn));
-  String getClosingBalance() => closingBalance<0?"Due ${closingBalance*-1}":"Balance $closingBalance";
+  String getClosingBalance() => closingBalance < 0
+      ? "Due ${closingBalance * -1}"
+      : "Balance $closingBalance";
 
+  num getAmount() => type == TransactionType.credit.name ? credit : debit;
 
   Map<String, dynamic> toMap() {
     return {
@@ -77,28 +85,28 @@ class CDTransaction {
       'remark': remark,
       'addedOn': addedOn,
       'updatedOn': updatedOn,
-      'isCancel': isCancel ? 1:0
+      'isCancel': isCancel ? 1 : 0
     };
   }
 
   factory CDTransaction.fromMap(Map<String, dynamic> map) {
     return CDTransaction(
-      transactionId: map['transactionId'] as int?,
-      personId: map['personId'] as int,
-      walletId: map['walletId'] as int,
-      credit: map['credit'] as double,
-      debit: map['debit'] as double,
-      closingBalance: map['closingBalance'] as double,
-      type: map['type'] as String,
-      description: map['description'] as String?,
-      remark: map['remark'] as String?,
-      addedOn: map['addedOn'] as int,
-      updatedOn: map['updatedOn'] as int?,
-      isCancel: map['isCancel'] as int == 1 ,
-    );
+        transactionId: map['transactionId'] as int?,
+        personId: map['personId'] as int,
+        walletId: map['walletId'] as int,
+        credit: map['credit'] as double,
+        debit: map['debit'] as double,
+        closingBalance: map['closingBalance'] as double,
+        type: map['type'] as String,
+        description: map['description'] as String?,
+        remark: map['remark'] as String?,
+        addedOn: map['addedOn'] as int,
+        updatedOn: map['updatedOn'] as int?,
+        isCancel: map['isCancel'] as int == 1,
+        personName: map['personName'] ?? "X");
   }
 
-  String getDescription(){
+  String getDescription() {
     return "Transaction ID : $transactionId\n"
         "Wallet : $walletId\n"
         "Credit : +₹$credit\n"
@@ -107,8 +115,7 @@ class CDTransaction {
         "Time : ${getDate()}\n"
         "Remark : $remark";
   }
+
 }
 
-enum TransactionType{
-  credit,debit
-}
+enum TransactionType { credit, debit }

@@ -17,7 +17,7 @@ import '../models/note_model.dart';
 
 class DatabaseHelper {
   static const _databaseName = "accountManager.db";
-  static const _databaseVersion = 2;
+  static const _databaseVersion = 1;
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -72,7 +72,7 @@ class DatabaseHelper {
   Future<FutureOr<void>> _onUpgrade(
       Database db, int oldVersion, int newVersion) async {
     // await db.execute("ALTER TABLE ${CDTransaction.table} ADD COLUMN walletId");
-    await db.execute(NoteModel.createTable);
+    // await db.execute(NoteModel.createTable);
   }
 
   Future close() async {

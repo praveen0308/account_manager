@@ -1,23 +1,20 @@
 import 'dart:typed_data';
-import 'package:account_manager/models/credit_debit_transaction.dart';
-import 'package:account_manager/models/person_model.dart';
 import 'package:account_manager/res/app_images.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:printing/printing.dart';
 
-Future<Uint8List> makeCDPersonReport(List<CDTransaction> transactions,PersonModel person) async {
+import '../../../../models/credit_debit_transaction.dart';
+
+Future<Uint8List> makeBusinessPdfReport(int businessID,String startDate,String endDate,List<CDTransaction> transactions) async {
   final pdf = Document();
   final imageLogo = MemoryImage(
       (await rootBundle.load(AppImages.appIcon)).buffer.asUint8List());
-  /*double totalBalance = transactions
-      .map((transaction) => transaction.closingBalance)
-      .fold(0, (prev, amount) => prev + amount);
-  */
-  double totalBalance = transactions.last.closingBalance;
 
   final font = await PdfGoogleFonts.robotoBold();
+
+  double totalBalance = transactions.last.closingBalance;
 
   final List<Widget> widgets = [
     Row(
@@ -25,9 +22,8 @@ Future<Uint8List> makeCDPersonReport(List<CDTransaction> transactions,PersonMode
       children: [
         Column(
           children: [
-            Text("Cash Debit Report", style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold)),
-            Text(person.name, style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
-            Text(person.mobileNumber, style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
+            Text("Business $businessID Report", style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold)),
+            Text("from $startDate to $endDate", style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
           ],
           crossAxisAlignment: CrossAxisAlignment.start,
         ),
@@ -45,7 +41,12 @@ Future<Uint8List> makeCDPersonReport(List<CDTransaction> transactions,PersonMode
         TableRow(
           children: [
             Text(
-              'Transaction ID',
+              'ID',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Name',
               style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -76,6 +77,7 @@ Future<Uint8List> makeCDPersonReport(List<CDTransaction> transactions,PersonMode
               (e) => TableRow(
             children: [
               PaddedText(e.transactionId.toString()),
+              PaddedText(e.personName.toString()),
               PaddedText("${e.credit}"),
               PaddedText("${e.debit}"),
               PaddedText("${e.closingBalance}"),
@@ -89,18 +91,15 @@ Future<Uint8List> makeCDPersonReport(List<CDTransaction> transactions,PersonMode
             Container(),
             Container(),
             Container(),
+            Container(),
 
-            Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(totalBalance<0?"Due":"Advance",
-                  style: TextStyle(fontWeight: FontWeight.bold,color: totalBalance<0?PdfColors.red:PdfColors.green),
-                  textAlign: TextAlign.center,)),
-            Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text('₹${totalBalance.toStringAsFixed(2)}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        font: font, fontWeight: FontWeight.bold,color: totalBalance<0?PdfColors.red:PdfColors.green)))
+            Text(totalBalance<0?"Due":"Advance",
+              style: TextStyle(fontWeight: FontWeight.bold,color: totalBalance<0?PdfColors.red:PdfColors.green),
+              textAlign: TextAlign.center,),
+            Text('₹${totalBalance.toStringAsFixed(2)}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    font: font, fontWeight: FontWeight.bold,color: totalBalance<0?PdfColors.red:PdfColors.green))
           ],
         )
       ],
@@ -118,13 +117,11 @@ Future<Uint8List> makeCDPersonReport(List<CDTransaction> transactions,PersonMode
 
 Widget PaddedText(
   final String text, {
-  final TextAlign align = TextAlign.left,
+  final TextAlign align = TextAlign.center,
 }) =>
     Expanded(
-        child: Padding(
-      padding: const EdgeInsets.all(10),
-      child: Text(
-        text,
-        textAlign: align,
-      ),
-    ));
+        child: Text(
+          text,
+          textAlign: align,
+          style: TextStyle(fontSize: 12)
+        ));

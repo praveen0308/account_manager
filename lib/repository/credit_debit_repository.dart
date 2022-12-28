@@ -2,6 +2,7 @@ import 'package:account_manager/models/credit_debit_transaction.dart';
 import 'package:account_manager/models/person_model.dart';
 import 'package:account_manager/models/wallet_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:googleapis/cloudsearch/v1.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../local/db_helper.dart';
@@ -231,6 +232,20 @@ class CreditDebitRepository {
 
     return records.map((e) => CDTransaction.fromMap(e)).toList();
   }
+
+  Future<List<CDTransaction>> getTransactionsByWalletIdAcDate(
+      int walletId, int from, int to) async {
+    Database db = await dbHelper.database;
+    var query = "select CD.*,P.${PersonModel.colName} as personName from ${CDTransaction.table} as CD left join ${PersonModel.table} as P on P.${PersonModel.colPersonId}=CD.${CDTransaction.colPersonId} where CD.${CDTransaction.colWalletId}=$walletId and CD.${CDTransaction.colAddedOn}>=$from and CD.${CDTransaction.colAddedOn}<=$to";
+    /*var records = await db.query(CDTransaction.table,
+        where:
+        "${CDTransaction.colWalletId}=? and ${CDTransaction.colAddedOn}>=? and ${CDTransaction.colAddedOn}<=?",
+        whereArgs: [walletId, from, to]);
+*/
+    var records = await db.rawQuery(query);
+    return records.map((e) => CDTransaction.fromMap(e)).toList();
+  }
+
 
   Future<List<WalletModel>> fetchStats() async {
     Database db = await dbHelper.database;

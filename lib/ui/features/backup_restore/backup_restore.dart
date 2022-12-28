@@ -34,11 +34,13 @@ class _BackupNRestoreScreenState extends State<BackupNRestoreScreen> {
           Positioned(bottom: 0,left: 0,right: 0,child: Row(
 
             children: [
-              ElevatedButton(onPressed: () async {
-                final dbFolder = await getDatabasesPath();
-                File source1 = File('$dbFolder/accountManager.db');
-                _gDrive.uploadFileToGoogleDrive(source1).then((value) => showToast("Uploaded successfully!!",ToastType.success));
-              }, child: Text("Backup"))
+              Expanded(
+                child: ElevatedButton(onPressed: () async {
+                  final dbFolder = await getDatabasesPath();
+                  File source1 = File('$dbFolder/accountManager.db');
+                  _gDrive.uploadFileToGoogleDrive(source1).then((value) => showToast("Uploaded successfully!!",ToastType.success));
+                }, child: Text("Backup")),
+              )
             ],
           ))
         ],

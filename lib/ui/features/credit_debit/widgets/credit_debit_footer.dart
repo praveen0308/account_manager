@@ -122,22 +122,28 @@ class _CreditDebitFooterState extends State<CreditDebitFooter> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  GestureDetector(
-                    onTapDown: (details){
-                      _showBusinessMenu(context, details);
-                    },
-                    child: OutlinedButton(
-                        onPressed: () {
-
+                  Row(
+                    children: [
+                      IconButton(onPressed: (){
+                        Navigator.pushNamed(context, "/businessReport");
+                      }, icon: const Icon(Icons.featured_play_list)),
+                      GestureDetector(
+                        onTapDown: (details){
+                          _showBusinessMenu(context, details);
                         },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                              width: 2.0, color: AppColors.primaryDark),
-                        ),
-                        child: Text("Business ${
-                          BlocProvider.of<CreditDebitCubit>(context)
-                              .activeWalletId
-                        }")),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(width: 2.0, color: AppColors.primaryDark)
+                            ),
+
+                            child: Text("Business ${
+                              BlocProvider.of<CreditDebitCubit>(context)
+                                  .activeWalletId
+                            }")),
+                      ),
+                    ],
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
