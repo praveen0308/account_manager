@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "521675601648",
+    "project_id": "accountmanager-9422b",
+    "storage_bucket": "accountmanager-9422b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:521675601648:android:926e4883a5f84179c6f435",
+        "android_client_info": {
+          "package_name": "com.sampurna.account_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "521675601648-kcfmk2l1h05ep52uipk3a41tvoimr2dk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sampurna.account_manager",
+            "certificate_hash": "b26c255dafaecac7e063c97cdab8e70b382eeba3"
+          }
+        },
+        {
+          "client_id": "521675601648-218dte5f5g7k16m5uae64r16tg3v65c7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDM1oMfL51tNLNctVC_Ea-9SOGez18eVC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "521675601648-218dte5f5g7k16m5uae64r16tg3v65c7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

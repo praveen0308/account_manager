@@ -99,13 +99,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             }),
                       ),
                       StaggeredGridTile.count(
-                        crossAxisCellCount: 2,
-                        mainAxisCellCount: 0.7,
-                        child: HrDashboardItem(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: DashboardItem(
                             iconUrl: AppIcons.icIncome,
                             title: AppStrings.incomeExpense,
                             onItemClick: () {
                               Navigator.pushNamed(context, route.incomeExpense);
+                            }),
+                      ),
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: DashboardItem(
+                            iconUrl: AppIcons.icTransaction,
+                            title: AppStrings.notes,
+                            onItemClick: () {
+                              Navigator.pushNamed(context, route.notes);
+                            }),
+                      ),
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 2,
+                        mainAxisCellCount: 0.7,
+                        child: HrDashboardItem(
+                            iconUrl: AppIcons.icIncome,
+                            title: AppStrings.backupNRestore,
+                            onItemClick: () {
+                              Navigator.pushNamed(context, route.backupNRestore);
+
                             }),
                       ),
                     ],

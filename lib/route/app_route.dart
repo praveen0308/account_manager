@@ -1,11 +1,15 @@
 import 'package:account_manager/models/cash_transaction.dart';
 import 'package:account_manager/models/income_expense/income_expense_model.dart';
+import 'package:account_manager/models/note_model.dart';
 import 'package:account_manager/models/person_model.dart';
 import 'package:account_manager/repository/cash_transaction_repository.dart';
 import 'package:account_manager/repository/category_repository.dart';
 import 'package:account_manager/repository/credit_debit_repository.dart';
 import 'package:account_manager/repository/currency_repository.dart';
 import 'package:account_manager/repository/income_expense_repository.dart';
+import 'package:account_manager/repository/note_repository.dart';
+import 'package:account_manager/ui/features/backup_restore/backup_restore.dart';
+import 'package:account_manager/ui/features/backup_restore/backup_restore_cubit.dart';
 import 'package:account_manager/ui/features/calculator/calculator.dart';
 import 'package:account_manager/ui/features/calculator/emi_calculator/emi_calculator.dart';
 import 'package:account_manager/ui/features/cash_counter/cash_counter_cubit.dart';
@@ -32,6 +36,9 @@ import 'package:account_manager/ui/features/income_expense/income_expense_parent
 import 'package:account_manager/ui/features/income_expense/income_expense_screen.dart';
 import 'package:account_manager/ui/features/income_expense/pick_category/pick_category.dart';
 import 'package:account_manager/ui/features/income_expense/pick_category/pick_category_cubit.dart';
+import 'package:account_manager/ui/features/notes/add_new_note/add_new_note_screen.dart';
+import 'package:account_manager/ui/features/notes/notes_cubit.dart';
+import 'package:account_manager/ui/features/notes/notes_screen.dart';
 import 'package:account_manager/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:account_manager/ui/screens/dashboard/dashboard_screen1.dart';
 import 'package:account_manager/ui/screens/splash/splash_screen.dart';
@@ -43,6 +50,7 @@ import '../ui/features/cash_counter/edit_cash_transaction/edit_cash_transaction.
 import '../ui/features/cash_counter/edit_cash_transaction/edit_cash_transaction_cubit.dart';
 import '../ui/features/income_expense/category/add_category/add_category_screen.dart';
 import '../ui/features/income_expense/edit_income_expense/edit_income_expense_cubit.dart';
+import '../ui/features/notes/add_new_note/add_new_note_cubit.dart';
 import '../utils/income_type.dart';
 
 const String splashScreen = '/';
@@ -63,6 +71,9 @@ const String editIncomeExpenseTransaction = '/editIncomeExpenseTransaction';
 const String editCDTransaction = '/editCDTransaction';
 const String categoryDetail = '/categoryDetail';
 const String selectPerson = '/selectPerson';
+const String notes = '/notes';
+const String backupNRestore = '/backupNRestore';
+const String addNewNote = '/addNewNote';
 
 Route<dynamic> controller(RouteSettings settings) {
   final args = settings.arguments;
@@ -197,6 +208,33 @@ Route<dynamic> controller(RouteSettings settings) {
                 child: SelectPersonScreen(args: args as SelectPersonArgs),
               ),
           settings: settings);
+    case addNewNote:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => AddNewNoteCubit(
+                RepositoryProvider.of<NoteRepository>(context)
+            ),
+            child: AddNewNoteScreen(note: args as NoteModel?,),
+          ),
+          settings: settings);
+    case notes:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => NotesCubit(
+              RepositoryProvider.of<NoteRepository>(context)
+                ),
+            child: NotesScreen(),
+          ),
+          settings: settings);
+    case backupNRestore:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => BackupRestoreCubit(
+            ),
+            child: BackupNRestoreScreen(),
+          ),
+          settings: settings);
+
 
     default:
       throw ('this route name does not exist');

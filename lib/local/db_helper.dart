@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:account_manager/models/cash_transaction.dart';
 import 'package:account_manager/models/credit_debit_transaction.dart';
@@ -12,9 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../models/note_model.dart';
+
 class DatabaseHelper {
   static const _databaseName = "accountManager.db";
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -49,6 +52,7 @@ class DatabaseHelper {
     await db.execute(CategoryModel.createTable);
     await db.execute(IncomeExpenseModel.createTable);
     await db.execute(CDTransaction.createTable);
+    await db.execute(NoteModel.createTable);
   }
 
   Future _populateCurrencies(Database db, List<Currency> currencies) async {
@@ -68,10 +72,18 @@ class DatabaseHelper {
   Future<FutureOr<void>> _onUpgrade(
       Database db, int oldVersion, int newVersion) async {
     // await db.execute("ALTER TABLE ${CDTransaction.table} ADD COLUMN walletId");
+    await db.execute(NoteModel.createTable);
   }
 
   Future close() async {
     final db = await instance.database;
     db.close();
+  }
+
+  Future<File> dBToCopy() async {
+    final db = await instance.database;
+    final dbPath = await getDatabasesPath();
+    var afile = File(dbPath);
+    return afile;
   }
 }

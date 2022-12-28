@@ -3,6 +3,7 @@ import 'package:account_manager/repository/category_repository.dart';
 import 'package:account_manager/repository/credit_debit_repository.dart';
 import 'package:account_manager/repository/currency_repository.dart';
 import 'package:account_manager/repository/income_expense_repository.dart';
+import 'package:account_manager/repository/note_repository.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:account_manager/route/route.dart' as route;
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(create: (_) => CurrencyRepository()),
         RepositoryProvider(create: (_) => CategoryRepository()),
         RepositoryProvider(create: (_) => IncomeExpenseRepository()),
+        RepositoryProvider(create: (_) => NoteRepository()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

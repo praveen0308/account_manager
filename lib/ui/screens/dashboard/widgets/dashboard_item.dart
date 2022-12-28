@@ -52,6 +52,7 @@ class HrDashboardItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
 
           children: [
+
             SvgPicture.asset(iconUrl,color: AppColors.primaryDarkest,height: 48,width: 48,),
             const SizedBox(width: 16,),
             Text(title,textAlign: TextAlign.center,style: AppTextStyles.subtitle1(wFont: FontWeight.w500),)
