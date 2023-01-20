@@ -1,3 +1,4 @@
+import 'package:account_manager/local/app_storage.dart';
 import 'package:account_manager/ui/features/gst_calculator/widgets/button_model.dart';
 import 'package:bloc/bloc.dart';
 import 'package:function_tree/function_tree.dart';
@@ -9,7 +10,13 @@ class GstCalculatorCubit extends Cubit<GstCalculatorState> {
   String expression = "";
   String answer = "";
   List<String> operationSigns = ["+","-","*","/","%"];
+  Future<void> init() async{
 
+    expression = await AppStorage.getGstExpression() ?? "";
+    answer = await AppStorage.getGstAnswer() ?? "";
+
+    emit(EvaluationPerformed(expression, answer));
+  }
   void performBtnClick(ButtonModel btnModel){
 
 
@@ -91,6 +98,7 @@ class GstCalculatorCubit extends Cubit<GstCalculatorState> {
         break;
     }
     evaluateExpression();
+
     emit(EvaluationPerformed(expression, answer));
   }
 

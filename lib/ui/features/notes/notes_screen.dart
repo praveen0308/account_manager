@@ -97,8 +97,9 @@ class NoteView extends StatelessWidget {
         margin: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          border: Border.all(),
-          borderRadius: BorderRadius.circular(8)
+          border: Border.all(color: Colors.black26),
+          borderRadius: BorderRadius.circular(2),
+          color: AppColors.primaryLight
         ),
         child: Row(
           children: [
@@ -111,13 +112,13 @@ class NoteView extends StatelessWidget {
                       Text(
                         note.title ?? "No Title",
                         style: const TextStyle(
-                        fontWeight: FontWeight.w600, fontSize: 17),
+                        fontWeight: FontWeight.w600, fontSize: 18),
                       ),
 
                     ],
                   ),
                   Text(note.description ?? "N.A."),
-                  Text(note.getFDate())
+                  Text(note.getFDate(),style:const TextStyle(fontSize: 12),)
                 ],
               ),
             ),

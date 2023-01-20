@@ -7,7 +7,6 @@ import 'package:account_manager/models/currency.dart';
 import 'package:account_manager/models/income_expense/category_model.dart';
 import 'package:account_manager/models/income_expense/income_expense_model.dart';
 import 'package:account_manager/models/person_model.dart';
-import 'package:account_manager/models/person_transaction.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -17,7 +16,7 @@ import '../models/note_model.dart';
 
 class DatabaseHelper {
   static const _databaseName = "accountManager.db";
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -72,7 +71,8 @@ class DatabaseHelper {
   Future<FutureOr<void>> _onUpgrade(
       Database db, int oldVersion, int newVersion) async {
     // await db.execute("ALTER TABLE ${CDTransaction.table} ADD COLUMN walletId");
-    // await db.execute(NoteModel.createTable);
+    var notesTableExists = (await db.query('sqlite_master', where: 'name = ?', whereArgs: [NoteModel.table])).isNotEmpty;
+    if(!notesTableExists)await db.execute(NoteModel.createTable);
   }
 
   Future close() async {

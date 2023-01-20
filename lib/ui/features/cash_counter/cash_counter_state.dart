@@ -9,8 +9,10 @@ abstract class CashCounterState {
   const CashCounterState(this.noOfNotes, this.denominationTotal, this.grandTotal);
 
   String getGrandTotalInWords(){
-    String inWords = NumberToWordsEnglish.convert(grandTotal.toInt());
+    /*String inWords = NumberToWordsEnglish.convert(grandTotal.toInt());
     inWords = inWords.replaceAll("-", " ");
+    inWords = inWords.capitalize();*/
+    String inWords = CurrencyUtils.convert(grandTotal.toInt());
     inWords = inWords.capitalize();
 
     return inWords;

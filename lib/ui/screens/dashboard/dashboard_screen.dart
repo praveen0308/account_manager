@@ -1,12 +1,18 @@
+import 'package:account_manager/local/secure_storage.dart';
 import 'package:account_manager/res/app_colors.dart';
 import 'package:account_manager/res/app_icons.dart';
 import 'package:account_manager/res/app_strings.dart';
 import 'package:account_manager/res/text_styles.dart';
+import 'package:account_manager/ui/features/lock_screen/create_pin/create_pin.dart';
+import 'package:account_manager/ui/features/lock_screen/pin_authentication/pin_authentication.dart';
 import 'package:account_manager/ui/screens/dashboard/widgets/app_drawer.dart';
 import 'package:account_manager/ui/screens/dashboard/widgets/dashboard_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:account_manager/route/route.dart' as route;
+
+import '../../../local/app_storage.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -17,6 +23,18 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final SecureStorage _secureStorage = SecureStorage();
+  bool _isSecured = false;
+
+
+  @override
+  void initState() {
+    _secureStorage.getPin().then((value){
+      _isSecured = value!=null;
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,10 +130,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisCellCount: 1,
                         mainAxisCellCount: 1,
                         child: DashboardItem(
-                            iconUrl: AppIcons.icTransaction,
+                            iconUrl: AppIcons.icNote,
                             title: AppStrings.notes,
                             onItemClick: () {
-                              Navigator.pushNamed(context, route.notes);
+                              // Navigator.pushNamed(context, route.notes);
+                              if(_isSecured){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>const PinAuthenticationScreen()));
+                              }else{
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>const CreatePin()));
+                              }
+
                             }),
                       ),
                       StaggeredGridTile.count(

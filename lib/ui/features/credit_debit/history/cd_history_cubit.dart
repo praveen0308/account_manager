@@ -31,17 +31,30 @@ class CdHistoryCubit extends Cubit<CdHistoryState> {
 
       if (result.isNotEmpty) {
         transactions.addAll(result);
+        num lastClosingBal = 0;
         for (int i = 0; i < transactions.length; i++) {
 
+          // if(transactions[i].isCancel)
           if (i == 0) {
             transactions[0].closingBalance =
                 transactions[0].credit - transactions[0].debit;
           } else {
-            transactions[i].closingBalance =
+
+            /*transactions[i].closingBalance =
                 transactions[i - 1].closingBalance +
+                    transactions[i].credit -
+                    transactions[i].debit;*/
+            transactions[i].closingBalance =
+                lastClosingBal +
                     transactions[i].credit -
                     transactions[i].debit;
           }
+
+          if(!transactions[i].isCancel){
+            lastClosingBal = transactions[i].closingBalance;
+          }
+
+
         }
       }
 

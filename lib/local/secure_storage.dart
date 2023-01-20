@@ -2,8 +2,15 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:googleapis_auth/auth_io.dart';
 
 class SecureStorage {
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
+  Future savePin(String pin) async{
+    await storage.write(key: "pin", value: pin);
+  }
+  Future<String?> getPin() async{
+    var result = await storage.read(key: "pin");
+    return result;
+  }
   //Save Credentials
   Future saveCredentials(AccessToken token, String refreshToken) async {
     print(token.expiry.toIso8601String());

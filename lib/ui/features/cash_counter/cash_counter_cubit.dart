@@ -9,6 +9,7 @@ import 'package:number_to_words_english/number_to_words_english.dart';
 
 import '../../../models/currency.dart';
 import '../../../repository/currency_repository.dart';
+import '../../../utils/currency_utils.dart';
 
 part 'cash_counter_state.dart';
 

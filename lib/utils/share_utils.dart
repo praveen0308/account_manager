@@ -7,11 +7,12 @@ class ShareUtil{
 
   }
   static launchWhatsapp1(String msg,String mobileNumber) async {
-    if(mobileNumber.length==10){
+
+    mobileNumber = mobileNumber.replaceAll(RegExp(r"\D"), "");
+    if(mobileNumber.length!=10){
       mobileNumber = mobileNumber.substring(mobileNumber.length - 10);
     }
     var whatsappAndroid =Uri.parse("whatsapp://send?phone=+91$mobileNumber&text=$msg");
     await launchUrl(whatsappAndroid);
-
   }
 }

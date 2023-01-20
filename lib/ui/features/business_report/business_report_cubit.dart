@@ -51,6 +51,7 @@ class BusinessReportCubit extends Cubit<BusinessReportState> {
       List<CDTransaction> result;
       result = await _creditDebitRepository.getTransactionsByWalletIdAcDate(walletId,from.millisecondsSinceEpoch, to.millisecondsSinceEpoch);
       transactions.clear();
+      transactions.removeWhere((element) => element.isCancel==true);
       if (result.isNotEmpty) {
         transactions.addAll(result);
         for (int i = 0; i < transactions.length; i++) {
@@ -66,10 +67,12 @@ class BusinessReportCubit extends Cubit<BusinessReportState> {
           }
         }
       }
+/*
       transactions.forEach((element) {
         debugPrint(element.getDescription());
       });
 
+*/
 
       filterTransactions(null);
     } catch (e) {

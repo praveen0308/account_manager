@@ -7,6 +7,8 @@ import 'package:account_manager/res/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:account_manager/route/route.dart' as route;
+import 'package:package_info_plus/package_info_plus.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -15,7 +17,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
+  String version = "";
 
   @override
   void initState() {
@@ -24,8 +26,11 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () async {
       Navigator.pushReplacementNamed(context, route.dashboard1);
     });
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      version = packageInfo.version;
+      setState(() {});
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +49,16 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             const Spacer(),
             Container(
-              height: 200,
-              width: 200,
-              decoration: BoxDecoration(
-                color: AppColors.primaryLightest,
-                borderRadius: BorderRadius.circular(100)
-              ),
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                    color: AppColors.primaryLightest,
+                    borderRadius: BorderRadius.circular(100)),
                 child: Image.asset(
-              AppImages.appIcon,
-              height: 110,
-              width: 110,
-            )),
+                  AppImages.appIcon,
+                  height: 110,
+                  width: 110,
+                )),
             const Spacer(
               flex: 2,
             ),
@@ -68,6 +72,10 @@ class _SplashScreenState extends State<SplashScreen> {
             const Text(
               AppStrings.poweredBy,
               style: TextStyle(fontSize: 16),
+            ),
+            const Spacer(),
+            Text(
+              version,
             ),
             const Spacer(),
           ],

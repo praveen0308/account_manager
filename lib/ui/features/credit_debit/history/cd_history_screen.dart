@@ -6,6 +6,7 @@ import 'package:account_manager/ui/features/credit_debit/history/cd_history_cubi
 import 'package:account_manager/ui/features/credit_debit/history/cd_history_footer.dart';
 import 'package:account_manager/utils/date_time_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
@@ -25,12 +26,19 @@ class CDHistory extends StatefulWidget {
 
 class _CDHistoryState extends State<CDHistory> {
   List<CDTransaction> transactions = [];
-
+  final ScrollController _lsController = ScrollController();
   @override
   void initState() {
     BlocProvider.of<CdHistoryCubit>(context).personModel = widget.person;
     BlocProvider.of<CdHistoryCubit>(context).fetchTransactions();
     super.initState();
+  }
+  void _scrollDown() {
+    _lsController.animateTo(
+      _lsController.position.maxScrollExtent+200,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   _showFilters(BuildContext context, TapDownDetails details) {
@@ -63,8 +71,13 @@ class _CDHistoryState extends State<CDHistory> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _scrollDown();
+    });
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -103,10 +116,21 @@ class _CDHistoryState extends State<CDHistory> {
                   transactions.clear();
                   transactions.addAll(state.transactions);
                   return ListView.builder(
+                      controller: _lsController,
                       itemCount: state.transactions.length,
                       itemBuilder: (BuildContext context, int index) {
+                        var len = state.transactions.length;
+                        if(index==len-1){
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 200.0),
+                            child: buildTransactionView(state.transactions[index]),
+                          );
+                        }
                         return buildTransactionView(state.transactions[index]);
+
+
                       });
+
                 } else {
                   return const Center(
                     child: Text("No Transactions!!!"),

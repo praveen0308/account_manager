@@ -147,13 +147,19 @@ class _AddPersonFormState extends State<AddPersonForm> {
                                 askForPermission: true);
 
                         // Contact? contact = await _contactPicker.selectContact();
+
                         setState(() {
                           _contact = contact;
                         });
 
                         _txtNameController.text = _contact.fullName.toString();
-                        _txtMobileNoController.text =
-                            _contact.phoneNumber!.number.toString();
+                        var mobileNumber = _contact.phoneNumber!.number.toString();
+
+                        mobileNumber = mobileNumber.replaceAll(RegExp(r"\D"), "");
+                        if(mobileNumber.length!=10){
+                          mobileNumber = mobileNumber.substring(mobileNumber.length - 11);
+                        }
+                        _txtMobileNoController.text = mobileNumber;
                       },
                       icon: const Icon(Icons.contacts_rounded))
                 ],

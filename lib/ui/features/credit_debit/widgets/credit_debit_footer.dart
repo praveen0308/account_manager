@@ -94,39 +94,37 @@ class _CreditDebitFooterState extends State<CreditDebitFooter> {
 
           }
 
-          return Row(
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  Text(
-                    "Cr. : +₹$credit",
-                    style: const TextStyle(
-                        color: AppColors.success,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18),
-                  ),
-                  Text("Db. : -₹$debit",
-                      style: const TextStyle(
-                          color: AppColors.error,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18)),
-                  Text(
-                    "Total : ₹$grandTotal",
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconButton(onPressed: (){
-                        Navigator.pushNamed(context, "/businessReport");
-                      }, icon: const Icon(Icons.featured_play_list)),
+                      Text(
+                        "Cr. : +₹$credit",
+                        style: const TextStyle(
+                            color: AppColors.success,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18),
+                      ),
+                      Text("Db. : -₹$debit",
+                          style: const TextStyle(
+                              color: AppColors.error,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18)),
+                      Text(
+                        "Total : ₹$grandTotal",
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
                       GestureDetector(
                         onTapDown: (details){
                           _showBusinessMenu(context, details);
@@ -143,46 +141,49 @@ class _CreditDebitFooterState extends State<CreditDebitFooter> {
                                   .activeWalletId
                             }")),
                       ),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          _displayDialog();
+                        },
+                        icon: const Icon(
+                          Icons.add,
+                          color: AppColors.white,
+                        ),
+                        label: const Text(
+                          "Person",
+                          style: TextStyle(color: AppColors.white),
+                        ),
+                        style: ButtonStyle(
+                            backgroundColor:
+                            MaterialStateProperty.all(AppColors.primaryDarkest)),
+                      )
                     ],
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      _displayDialog();
-                    },
-                    icon: const Icon(
-                      Icons.person_add,
-                      color: AppColors.white,
+                  /*Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: WalletView(walletModel: w1, color: Colors.blue,)),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Expanded(child: WalletView(walletModel: w2,color: Colors.red,)),
+                      ],
                     ),
-                    label: const Text(
-                      "Add Person",
-                      style: TextStyle(color: AppColors.white),
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all(AppColors.primaryDarkest)),
-                  )
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+
+
+                      ],
+                    )
+                  ],
+                ),*/
                 ],
               ),
-              /*Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(child: WalletView(walletModel: w1, color: Colors.blue,)),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Expanded(child: WalletView(walletModel: w2,color: Colors.red,)),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-
-
-                  ],
-                )
-              ],
-            ),*/
+              ElevatedButton(onPressed: (){
+                Navigator.pushNamed(context, "/businessReport");
+              }, child: const Text("Business Report"))
             ],
           );
         },

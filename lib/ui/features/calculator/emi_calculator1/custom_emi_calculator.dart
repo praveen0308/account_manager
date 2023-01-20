@@ -91,6 +91,7 @@ class _CustomEMICalculatorState extends State<CustomEMICalculator> {
                   _startDate = dateTime;
                   calculateDuration();
                 }),
+
               )
             ],
           ),
