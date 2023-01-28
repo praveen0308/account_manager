@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "854643891321",
+    "project_id": "account-manager-28012023",
+    "storage_bucket": "account-manager-28012023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854643891321:android:1d34b3f22c3a6e2b9388a8",
+        "android_client_info": {
+          "package_name": "com.sampurna.account_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854643891321-i4ngsacjk0u8adurjbb780q33qadmca3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJG4UbDe6PSO6bsxHoI-_1u8-MuxYIq3M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "854643891321-i4ngsacjk0u8adurjbb780q33qadmca3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
