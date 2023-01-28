@@ -69,6 +69,7 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
               ),
               const SizedBox(height: 16),
               OutlinedTextField(
+                autofocus: true,
                   controller: _txtAmountController,
                   onTextChanged: (txt) {},
                   onSubmitted: (txt) {},

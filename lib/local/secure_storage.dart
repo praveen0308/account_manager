@@ -1,3 +1,4 @@
+import 'package:account_manager/models/pair.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:googleapis_auth/auth_io.dart';
 
@@ -10,6 +11,15 @@ class SecureStorage {
   Future<String?> getPin() async{
     var result = await storage.read(key: "pin");
     return result;
+  }
+
+  Future saveQuestion(int n,String question,String answer) async{
+    await storage.write(key: "q$n", value: "$question,$answer");
+  }
+  Future<Pair<String,String>?> getQuestion(int n) async{
+    var result = await storage.read(key: "q$n");
+    List<String> ans = result!.split(",");
+    return Pair(ans[0], ans[1]);
   }
   //Save Credentials
   Future saveCredentials(AccessToken token, String refreshToken) async {

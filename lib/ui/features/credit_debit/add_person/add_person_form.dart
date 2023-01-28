@@ -10,8 +10,6 @@ import 'package:account_manager/widgets/secondary_button.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-// import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 
 import '../../../../res/app_colors.dart';
@@ -136,7 +134,7 @@ class _AddPersonFormState extends State<AddPersonForm> {
                       onTextChanged: (txt) {},
                       onSubmitted: (txt) {},
                       inputType: TextInputType.number,
-                      maxLength: 12,
+                      maxLength: 20,
                       hintText: "Mobile Number",
                     ),
                   ),

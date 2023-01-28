@@ -37,8 +37,7 @@ class _CashCounterScreenState extends State<CashCounterScreen> {
       body: BlocListener<CashCounterCubit, CashCounterState>(
         listener: (context, state) {
           if (state is TransactionAddedSuccessfully) {
-            ScaffoldMessenger.of(context).showToast(
-                "Transaction added successfully!!!", ToastType.success);
+            ScaffoldMessenger.of(context).showToast("Transaction added successfully!!!", ToastType.success);
             if (state.addIntCD) {
               Navigator.push(
                   context,
@@ -57,7 +56,10 @@ class _CashCounterScreenState extends State<CashCounterScreen> {
                       cdTransaction.getDescription(), person.mobileNumber);
                 }
               });
+            }else{
+              ShareUtil.launchWhatsapp(state.savedTransaction.getDescription());
             }
+
           }
           if (state is TransactionFailed) {
             ScaffoldMessenger.of(context)

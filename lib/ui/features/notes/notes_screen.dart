@@ -99,7 +99,7 @@ class NoteView extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black26),
           borderRadius: BorderRadius.circular(2),
-          color: AppColors.primaryLight
+          color: note.isActive! ? AppColors.primaryLight:AppColors.errorLight
         ),
         child: Row(
           children: [
@@ -107,22 +107,17 @@ class NoteView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        note.title ?? "No Title",
-                        style: const TextStyle(
-                        fontWeight: FontWeight.w600, fontSize: 18),
-                      ),
-
-                    ],
+                  Text(
+                    note.title ?? "No Title",
+                    style: const TextStyle(
+                    fontWeight: FontWeight.w600, fontSize: 18),
                   ),
                   Text(note.description ?? "N.A."),
                   Text(note.getFDate(),style:const TextStyle(fontSize: 12),)
                 ],
               ),
             ),
-            IconButton(onPressed: onDelete, icon: const Icon(Icons.delete))
+            IconButton(onPressed: onDelete, icon: Icon(Icons.delete,color: note.isActive! ? AppColors.primaryDarkest:AppColors.errorDark,))
           ],
         ),
       ),

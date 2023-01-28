@@ -6,6 +6,12 @@ import '../local/db_helper.dart';
 
 class NoteRepository{
   final dbHelper = DatabaseHelper.instance;
+  Future<bool> draftNewNote(NoteModel note) async {
+    Database db = await dbHelper.database;
+    var result = await db.insert(NoteModel.table, note.toMap());
+    return result > 0;
+  }
+
   Future<bool> addNewNote(NoteModel note) async {
     Database db = await dbHelper.database;
     var result = await db.insert(NoteModel.table, note.toMap());

@@ -10,4 +10,15 @@ class AppConstants{
 
     return wallets;
   }
+
+  static List<String> getQuestions(){
+    List<String> questions = [];
+    questions.add("What is your Date of Birth(ddMMyyyy)?");
+    questions.add("What is your pet name?");
+    questions.add("What is your first school name?");
+    questions.add("What is your favourite colour?");
+    questions.add("What is your favourite game?");
+    questions.add("What is your favourite number?");
+    return questions;
+  }
 }

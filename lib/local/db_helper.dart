@@ -9,8 +9,11 @@ import 'package:account_manager/models/income_expense/income_expense_model.dart'
 import 'package:account_manager/models/person_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../models/note_model.dart';
 
@@ -80,10 +83,99 @@ class DatabaseHelper {
     db.close();
   }
 
-  Future<File> dBToCopy() async {
-    final db = await instance.database;
-    final dbPath = await getDatabasesPath();
-    var afile = File(dbPath);
-    return afile;
+  static Future<File> getCurrentDB()async{
+    var status = await Permission.manageExternalStorage.status;
+    if(!status.isGranted){
+      await Permission.manageExternalStorage.request();
+    }
+    var s1 = await Permission.storage.status;
+    if(s1.isDenied){
+      await Permission.storage.request();
+    }
+    String dbPath = await getDatabasesPath();
+    File dbFile = File("$dbPath/$_databaseName");
+
+    return dbFile;
+  }
+  static Future<void> syncDB(File newDBfile)async{
+    var status = await Permission.manageExternalStorage.status;
+    if(!status.isGranted){
+      await Permission.manageExternalStorage.request();
+    }
+    var s1 = await Permission.storage.status;
+    if(s1.isDenied){
+      await Permission.storage.request();
+    }
+    String dbPath = await getDatabasesPath();
+    await newDBfile.copy("$dbPath/$_databaseName");
+    debugPrint("Restoration Successful!!!");
+
+  }
+   static backupDB() async{
+    var status = await Permission.manageExternalStorage.status;
+    if(!status.isGranted){
+      await Permission.manageExternalStorage.request();
+    }
+    var s1 = await Permission.storage.status;
+    if(s1.isDenied){
+      await Permission.storage.request();
+    }
+
+    // backup file
+
+     try {
+       String dbPath = await getDatabasesPath();
+       Directory? backupLocationPath = Directory("/storage/emulated/0/AccountManager/");
+      File dbFile = File("$dbPath/$_databaseName");
+      await backupLocationPath.create();
+      var currentTime = DateFormat("yyyyMMdd_hhmmss").format(DateTime.now());
+      await dbFile.copy("${backupLocationPath.path}/backup_$currentTime.db");
+       debugPrint("Backup Successful!!!");
+     }catch(e){
+        debugPrint("Error :X ${e.toString()}");
+     }
+  }
+
+
+  static restoreDB() async{
+    var status = await Permission.manageExternalStorage.status;
+    if(!status.isGranted){
+      await Permission.manageExternalStorage.request();
+    }
+    var s1 = await Permission.storage.status;
+    if(s1.isDenied){
+      await Permission.storage.request();
+    }
+
+    // restore file
+
+    try {
+      String dbPath = await getDatabasesPath();
+      Directory? backupLocationPath = Directory("/storage/emulated/0/AccountManager/");
+      File savedDBFile = backupLocationPath.listSync().first as File;
+      await savedDBFile.copy("$dbPath/$_databaseName");
+      debugPrint("Restoration Successful!!!");
+    }catch(e){
+      debugPrint("Error :X ${e.toString()}");
+    }
+  }
+
+  static deleteDB() async {
+    try{
+      _database = null;
+      String dbPath = await getDatabasesPath();
+      deleteDatabase("$dbPath/$_databaseName");
+      debugPrint("Deleted Successful!!!");
+    }catch(e){
+      debugPrint("Error :X ${e.toString()}");
+    }
+  }
+  static getDBPath() async{
+    String dbPath = await getDatabasesPath();
+
+    debugPrint("DB Path >>> $dbPath");
+    Directory? externalStoragePath = await getExternalStorageDirectory();
+
+    debugPrint("External storage Path >>> $externalStoragePath");
   }
 }

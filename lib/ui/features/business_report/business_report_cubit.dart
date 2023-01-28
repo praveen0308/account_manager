@@ -20,14 +20,14 @@ class BusinessReportCubit extends Cubit<BusinessReportState> {
       activeTypeFilter = filter;
     }
     emit(Loading());
-    List<CDTransaction> fTransactions;
+    List<CDTransaction> fTransactions = [];
     if(activeTypeFilter=="Credit"){
       fTransactions =  transactions.where((element) => element.type=="credit").toList();
     }
     else if(activeTypeFilter=="Debit"){
       fTransactions =  transactions.where((element) => element.type=="debit").toList();
     }else{
-      fTransactions = transactions;
+      fTransactions.addAll(transactions);
 
     }
     totalDebit = 0;
@@ -51,9 +51,10 @@ class BusinessReportCubit extends Cubit<BusinessReportState> {
       List<CDTransaction> result;
       result = await _creditDebitRepository.getTransactionsByWalletIdAcDate(walletId,from.millisecondsSinceEpoch, to.millisecondsSinceEpoch);
       transactions.clear();
-      transactions.removeWhere((element) => element.isCancel==true);
+
       if (result.isNotEmpty) {
         transactions.addAll(result);
+        transactions.removeWhere((element) => element.isCancel==true);
         for (int i = 0; i < transactions.length; i++) {
 
           if (i == 0) {
@@ -67,12 +68,10 @@ class BusinessReportCubit extends Cubit<BusinessReportState> {
           }
         }
       }
-/*
       transactions.forEach((element) {
-        debugPrint(element.getDescription());
+        debugPrint(element.toString());
       });
 
-*/
 
       filterTransactions(null);
     } catch (e) {

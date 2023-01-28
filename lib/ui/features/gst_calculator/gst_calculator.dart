@@ -1,5 +1,6 @@
 import 'package:account_manager/local/app_storage.dart';
 import 'package:account_manager/ui/features/gst_calculator/gst_calculator_cubit.dart';
+import 'package:account_manager/ui/features/gst_calculator/percentage_calculator.dart';
 import 'package:account_manager/ui/features/gst_calculator/widgets/button_model.dart';
 import 'package:account_manager/ui/features/gst_calculator/widgets/buttons.dart';
 import 'package:account_manager/res/app_colors.dart';
@@ -31,6 +32,21 @@ class _GstCalculatorState extends State<GstCalculator> {
     super.initState();
   }
 
+  _displayCalculatePercentageDialog() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
+            ),
+            elevation: 6,
+            backgroundColor: Colors.transparent,
+            child: const PercentageCalculator(),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery
@@ -48,7 +64,38 @@ class _GstCalculatorState extends State<GstCalculator> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                InkWell(
+                  onTap: (){
+                    _displayCalculatePercentageDialog();
+                  },
+                  customBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+
+                  ),
+
+                  splashColor: AppColors.primaryDarkest50
+                  ,
+                  child: Ink(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        color: AppColors.primaryLightest,
+
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.primaryLight)
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.percent_rounded,size: 16,),
+                        Text("Percentage".toUpperCase(),style: const TextStyle(color: AppColors.primaryDarkest,),),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8,),
                 Expanded(
                     child: BlocBuilder<GstCalculatorCubit, GstCalculatorState>(
                       builder: (context, state) {
@@ -99,6 +146,7 @@ class _GstCalculatorState extends State<GstCalculator> {
                 const SizedBox(
                   height: 16,
                 ),
+
                 GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -188,12 +236,12 @@ class _GstCalculatorState extends State<GstCalculator> {
     List<ButtonModel> buttons = [];
 
     // 1st row
-    buttons.add(ButtonModel("GST-3%", true, "-3", CalcAction.evalGst));
+    /*buttons.add(ButtonModel("GST-3%", true, "-3", CalcAction.evalGst));
     buttons.add(ButtonModel("-5%", true, "-5", CalcAction.evalGst));
     buttons.add(ButtonModel("-12%", true, "-12", CalcAction.evalGst));
     buttons.add(ButtonModel("-15%", true, "-15", CalcAction.evalGst));
     buttons.add(ButtonModel("-18%", true, "-18", CalcAction.evalGst));
-
+*/
     // 2nd row
     buttons.add(ButtonModel("GST+3%", true, "+3", CalcAction.evalGst));
     buttons.add(ButtonModel("+5%", true, "+5", CalcAction.evalGst));

@@ -5,6 +5,7 @@ import 'package:account_manager/res/app_strings.dart';
 import 'package:account_manager/res/text_styles.dart';
 import 'package:account_manager/ui/features/lock_screen/create_pin/create_pin.dart';
 import 'package:account_manager/ui/features/lock_screen/pin_authentication/pin_authentication.dart';
+import 'package:account_manager/ui/features/lock_screen/remember_password/remember_password.dart';
 import 'package:account_manager/ui/screens/dashboard/widgets/app_drawer.dart';
 import 'package:account_manager/ui/screens/dashboard/widgets/dashboard_item.dart';
 import 'package:flutter/material.dart';
@@ -134,12 +135,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             title: AppStrings.notes,
                             onItemClick: () {
                               // Navigator.pushNamed(context, route.notes);
-                              if(_isSecured){
+                              /*if(_isSecured){
                                 Navigator.push(context, MaterialPageRoute(builder: (context)=>const PinAuthenticationScreen()));
                               }else{
                                 Navigator.push(context, MaterialPageRoute(builder: (context)=>const CreatePin()));
-                              }
 
+                              }*/
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const RememberPassword()));
                             }),
                       ),
                       StaggeredGridTile.count(

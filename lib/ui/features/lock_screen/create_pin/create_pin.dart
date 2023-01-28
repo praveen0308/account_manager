@@ -23,9 +23,9 @@ class _CreatePinState extends State<CreatePin> {
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
-      textStyle:const TextStyle(fontSize: 20, color: Color.fromRGBO(30, 60, 87, 1), fontWeight: FontWeight.w600),
+      textStyle:const TextStyle(fontSize: 20, color: AppColors.primaryDarkest, fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromRGBO(234, 239, 243, 1)),
+        border: Border.all(color: AppColors.primary),
         borderRadius: BorderRadius.circular(20),
       ),
     );
@@ -37,7 +37,7 @@ class _CreatePinState extends State<CreatePin> {
 
     final submittedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration?.copyWith(
-        color: const Color.fromRGBO(234, 239, 243, 1),
+        color: AppColors.primaryLightest,
       ),
     );
     return SafeArea(child: Scaffold(

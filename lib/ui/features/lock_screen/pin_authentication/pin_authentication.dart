@@ -29,13 +29,12 @@ class _PinAuthenticationScreenState extends State<PinAuthenticationScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
-      textStyle:const TextStyle(fontSize: 20, color: Color.fromRGBO(30, 60, 87, 1), fontWeight: FontWeight.w600),
+      textStyle:const TextStyle(fontSize: 20, color: AppColors.primaryDarkest, fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromRGBO(234, 239, 243, 1)),
+        border: Border.all(color: AppColors.primary),
         borderRadius: BorderRadius.circular(20),
       ),
     );
@@ -47,7 +46,7 @@ class _PinAuthenticationScreenState extends State<PinAuthenticationScreen> {
 
     final submittedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration?.copyWith(
-        color: const Color.fromRGBO(234, 239, 243, 1),
+        color: AppColors.primaryLightest,
       ),
     );
     return SafeArea(child: Scaffold(
@@ -59,7 +58,7 @@ class _PinAuthenticationScreenState extends State<PinAuthenticationScreen> {
 
             const Spacer(),
 
-            const Text("Enter Pin",style: const TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
+            const Text("Enter Pin",style: TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
             const SizedBox(height: 24,),
             const Spacer(),
             Pinput(
@@ -72,6 +71,9 @@ class _PinAuthenticationScreenState extends State<PinAuthenticationScreen> {
               submittedPinTheme: submittedPinTheme,
               crossAxisAlignment: CrossAxisAlignment.center,
               validator: (s) {
+                if(s != originalPin){
+                  _pin.clear();
+                }
                 return s == originalPin ? null : 'Pin is incorrect';
               },
               pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,

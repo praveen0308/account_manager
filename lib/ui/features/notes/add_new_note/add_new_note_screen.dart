@@ -35,95 +35,106 @@ class _AddNewNoteScreenState extends State<AddNewNoteScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(widget.note == null ? "New Note" : "Edit Note"),
-          actions: [
-            TextButton(onPressed: (){
-              if (noteId == 0) {
-                BlocProvider.of<AddNewNoteCubit>(context)
-                    .addNewNote(NoteModel(
-                  title: _title.text,
-                  description: _description.text,
-                ));
-              } else {
-                BlocProvider.of<AddNewNoteCubit>(context)
-                    .updateNote(NoteModel(
-                    noteId: noteId,
+      child: WillPopScope(
+        onWillPop: () {
+          BlocProvider.of<AddNewNoteCubit>(context)
+              .draftNote(NoteModel(
+            title: _title.text,
+            description: _description.text,
+          ));
+
+          return Future.value(false);
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.note == null ? "New Note" : "Edit Note"),
+            actions: [
+              TextButton(onPressed: (){
+                if (noteId == 0) {
+                  BlocProvider.of<AddNewNoteCubit>(context)
+                      .addNewNote(NoteModel(
                     title: _title.text,
                     description: _description.text,
-                    addedOn: widget.note!.addedOn));
+                  ));
+                } else {
+                  BlocProvider.of<AddNewNoteCubit>(context)
+                      .updateNote(NoteModel(
+                      noteId: noteId,
+                      title: _title.text,
+                      description: _description.text,
+                      addedOn: widget.note!.addedOn));
+                }
+              }, child: const Text("Save",style: TextStyle(color: AppColors.primaryDarkest),))
+            ],
+          ),
+          body: BlocListener<AddNewNoteCubit, AddNewNoteState>(
+            listener: (context, state) {
+              if (state is AddedSuccessfully) {
+                showToast("Added successfully!!!", ToastType.success);
+                Navigator.pop(context, true);
               }
-            }, child: const Text("Save",style: TextStyle(color: AppColors.primaryDarkest),))
-          ],
-        ),
-        body: BlocListener<AddNewNoteCubit, AddNewNoteState>(
-          listener: (context, state) {
-            if (state is AddedSuccessfully) {
-              showToast("Added successfully!!!", ToastType.success);
-              Navigator.pop(context, true);
-            }
-            if (state is Error) {
-              showToast(state.msg, ToastType.error);
-            }
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              if (state is Error) {
+                showToast(state.msg, ToastType.error);
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
 
-                TextField(
-                  controller: _title,
-                  decoration: InputDecoration(
-                      hintText: "Title",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                        borderSide: const BorderSide(
-                          color: AppColors.primaryDark,
-                          width: 2.0,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 0)),
-                  scrollPadding: const EdgeInsets.all(8.0),
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w500),
-                  keyboardType: TextInputType.multiline,
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Flexible(
-                  child: TextField(
-                    controller: _description,
+                  TextField(
+                    controller: _title,
                     decoration: InputDecoration(
-                      hintText: "Enter your text...",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                        borderSide: const BorderSide(
-                          color: AppColors.primaryDark,
-                          width: 2.0,
+                        hintText: "Title",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(2.0),
+                          borderSide: const BorderSide(
+                            color: AppColors.primaryDark,
+                            width: 2.0,
+                          ),
                         ),
-                      ),
-                      filled: true,
-                      fillColor: AppColors.primaryLight
-                    ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 0)),
+                    scrollPadding: const EdgeInsets.all(8.0),
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.w500),
-                    scrollPadding: const EdgeInsets.all(20.0),
                     keyboardType: TextInputType.multiline,
-                    maxLines: 10000,
-                    autofocus: true,
                   ),
-                ),
-                // Expanded(child: ruledTextField()),
-                // Expanded(child: UnderlineTextField(style: TextStyle(), lines: 100,decoration: InputDecoration(contentPadding: const EdgeInsets.all(0),)))
-              ],
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Flexible(
+                    child: TextField(
+                      controller: _description,
+                      decoration: InputDecoration(
+                        hintText: "Enter your text...",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(2.0),
+                          borderSide: const BorderSide(
+                            color: AppColors.primaryDark,
+                            width: 2.0,
+                          ),
+                        ),
+                        filled: true,
+                        fillColor: AppColors.primaryLight
+                      ),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w500),
+                      scrollPadding: const EdgeInsets.all(20.0),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 10000,
+                      autofocus: true,
+                    ),
+                  ),
+                  // Expanded(child: ruledTextField()),
+                  // Expanded(child: UnderlineTextField(style: TextStyle(), lines: 100,decoration: InputDecoration(contentPadding: const EdgeInsets.all(0),)))
+                ],
+              ),
             ),
           ),
+          resizeToAvoidBottomInset: true,
         ),
-        resizeToAvoidBottomInset: true,
       ),
     );
   }

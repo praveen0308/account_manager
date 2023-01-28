@@ -30,6 +30,25 @@ class AddNewNoteCubit extends Cubit<AddNewNoteState> {
     }
   }
 
+  void draftNote(NoteModel note) async {
+    emit(AddingNote());
+
+    try{
+      note.isActive = false;
+      note.addedOn = DateTime.now().millisecondsSinceEpoch;
+      var result = await _noteRepository
+          .addNewNote(note);
+      if(result) {
+        emit(AddedSuccessfully());
+      } else {
+        emit(Error("Failed!!!"));
+      }
+    }catch(e){
+      emit(Error("Something went wrong!!!"));
+      debugPrint(e.toString());
+    }
+  }
+
   void updateNote(NoteModel note) async {
     emit(AddingNote());
 

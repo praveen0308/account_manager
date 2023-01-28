@@ -43,6 +43,7 @@ class _BusinessReportScreenState extends State<BusinessReportScreen> {
   void initState() {
     startDate = DateTime(today.year,today.month,today.day);
     endDate = DateTime(startDate.year, startDate.month, startDate.day + 30);
+    setState((){});
     BlocProvider.of<BusinessReportCubit>(context)
         .fetchTransactions(getActiveWalletId(), startDate, endDate);
     super.initState();
@@ -216,13 +217,15 @@ class _BusinessReportScreenState extends State<BusinessReportScreen> {
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
 
-                      itemCount: state.transactions.length,
+                      itemCount: state.transactions.length+1,
                       itemBuilder: (context, index) {
                         var len = state.transactions.length;
-                        var transaction = state.transactions[index];
-                        if(index==len-1){
+
+
+                        if(index==len){
                           return const SizedBox(height: 150,);
                         }
+                        var transaction = state.transactions[index];
                         return ListTile(
                           onTap: () {},
                           visualDensity:

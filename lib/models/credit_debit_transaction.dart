@@ -39,7 +39,7 @@ class CDTransaction {
   double credit;
   double debit;
   double closingBalance;
-  String type; // IN/OUT
+  String type;
   String? description;
   String? remark;
   int addedOn;
@@ -115,6 +115,7 @@ class CDTransaction {
         "Time : ${getDate()}\n"
         "Remark : $remark";
   }
+
 
 }
 
