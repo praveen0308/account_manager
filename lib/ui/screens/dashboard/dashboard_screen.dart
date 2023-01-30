@@ -12,9 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:account_manager/route/route.dart' as route;
 
-import '../../../local/app_storage.dart';
-
-
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
@@ -135,13 +132,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             title: AppStrings.notes,
                             onItemClick: () {
                               // Navigator.pushNamed(context, route.notes);
-                              /*if(_isSecured){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>const PinAuthenticationScreen()));
+                              if(_isSecured){
+                                Navigator.pushNamed(context, route.pinAuthentication);
                               }else{
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>const CreatePin()));
+                                Navigator.pushNamed(context, route.createPin,arguments: true);
 
-                              }*/
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const RememberPassword()));
+                              }
+                              // Navigator.push(context, MaterialPageRoute(builder: (context)=>const RememberPassword()));
                             }),
                       ),
                       StaggeredGridTile.count(

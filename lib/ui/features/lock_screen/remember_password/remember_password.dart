@@ -1,9 +1,11 @@
 import 'package:account_manager/local/secure_storage.dart';
 import 'package:account_manager/models/pair.dart';
 import 'package:account_manager/res/app_constants.dart';
+import 'package:account_manager/ui/features/lock_screen/remember_password/remember_password_cubit.dart';
 import 'package:account_manager/utils/toaster.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../res/app_colors.dart';
 import '../../../../widgets/outlined_text_field.dart';
@@ -21,7 +23,7 @@ class _RememberPasswordState extends State<RememberPassword> {
   final List<String> _questions = [];
   var _activeQuestion = "";
   List<Pair<String, String>> qNAPairs = [];
-  final SecureStorage _storage = SecureStorage();
+
 
   @override
   void initState() {
@@ -31,49 +33,46 @@ class _RememberPasswordState extends State<RememberPassword> {
     super.initState();
   }
 
-  bool alreadyExist(String str){
+  bool alreadyExist(String str) {
     bool exist = false;
-    for(Pair p in qNAPairs){
-      if(str==p.first){
+    for (Pair p in qNAPairs) {
+      if (str == p.first) {
         exist = true;
       }
     }
     return exist;
   }
 
-  Future<void> saveQNA() async {
-    int qN = 0;
-
-    for(Pair<String,String> p in qNAPairs){
-      await _storage.saveQuestion(qN, p.first, p.second);
-      qN++;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Remeber Password"),
+          title: const Text("Remember Password"),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const Text("Note: Choose questions and answer the questions carefully. It will be necessary to answer the your opt questions.",style: TextStyle(color: Colors.red),),
+              const SizedBox(height: 16,),
               DropdownButtonHideUnderline(
                   child: DropdownButton2(
                     isExpanded: true,
-                hint: Text(
-                  'Select Item',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).hintColor,
-                  ),
-                ),
-                items: _questions
-                    .map((item) => DropdownMenuItem<String>(
+                    hint: Text(
+                      'Select Item',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme
+                            .of(context)
+                            .hintColor,
+                      ),
+                    ),
+                    items: _questions
+                        .map((item) =>
+                        DropdownMenuItem<String>(
                           value: item,
                           enabled: !alreadyExist(item),
                           child: Text(
@@ -84,26 +83,26 @@ class _RememberPasswordState extends State<RememberPassword> {
                             ),
                           ),
                         ))
-                    .toList(),
-                value: _activeQuestion,
-                onChanged: (value) {
-                  _activeQuestion = value as String;
+                        .toList(),
+                    value: _activeQuestion,
+                    onChanged: (value) {
+                      _activeQuestion = value as String;
 
-                  setState(() {});
-                },
-                buttonHeight: 40,
-                itemHeight: 40,
-                buttonPadding: const EdgeInsets.only(left: 14, right: 14),
-                buttonDecoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  border:
+                      setState(() {});
+                    },
+                    buttonHeight: 40,
+                    itemHeight: 40,
+                    buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                    buttonDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      border:
                       Border.all(color: AppColors.primaryDarkest, width: 1.5),
-                  color: Colors.white,
-                ),
-                dropdownDecoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              )),
+                      color: Colors.white,
+                    ),
+                    dropdownDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  )),
               const SizedBox(
                 height: 16,
               ),
@@ -122,15 +121,14 @@ class _RememberPasswordState extends State<RememberPassword> {
               ElevatedButton(
                   onPressed: isAllowed
                       ? () {
-                          if(alreadyExist(_activeQuestion)){
-                            showToast("Already exists!!!",ToastType.error);
-                          }else{
-                            qNAPairs.add(Pair(_activeQuestion, _answer.text));
-                            isAllowed = qNAPairs.length < 3;
-                            setState(() {});
-                          }
-
-                        }
+                    if (alreadyExist(_activeQuestion)) {
+                      showToast("Already exists!!!", ToastType.error);
+                    } else {
+                      qNAPairs.add(Pair(_activeQuestion, _answer.text));
+                      isAllowed = qNAPairs.length < 3;
+                      setState(() {});
+                    }
+                  }
                       : null,
                   child: const Text("Add")),
               ListView.separated(
@@ -154,11 +152,24 @@ class _RememberPasswordState extends State<RememberPassword> {
                   },
                   itemCount: qNAPairs.length),
               const Spacer(),
-              ElevatedButton(
-                  onPressed: !isAllowed ? () {
-                    saveQNA();
-                  } : null,
-                  child: const Text("Save"))
+              BlocConsumer<RememberPasswordCubit, RememberPasswordState>(
+                listener: (context, state) {
+                  if(state is SavedSuccessfully){
+                    showToast("Saved Successfully!!!", ToastType.success);
+                    Navigator.pushReplacementNamed(context, "/notes");
+                  }
+                },
+                builder: (context, state) {
+                  if(state is Loading){
+                    return const Center(child: CircularProgressIndicator(),);
+                  }
+                  return ElevatedButton(
+                      onPressed: !isAllowed ? () {
+                        BlocProvider.of<RememberPasswordCubit>(context).saveQNA(qNAPairs);
+                      } : null,
+                      child: const Text("Save"));
+                },
+              )
             ],
           ),
         ),

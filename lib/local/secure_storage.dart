@@ -5,22 +5,36 @@ import 'package:googleapis_auth/auth_io.dart';
 class SecureStorage {
   final storage = const FlutterSecureStorage();
 
-  Future savePin(String pin) async{
+  Future savePin(String pin) async {
     await storage.write(key: "pin", value: pin);
   }
-  Future<String?> getPin() async{
+
+  Future<String?> getPin() async {
     var result = await storage.read(key: "pin");
     return result;
   }
 
-  Future saveQuestion(int n,String question,String answer) async{
+  Future saveQuestion(int n, String question, String answer) async {
     await storage.write(key: "q$n", value: "$question,$answer");
   }
-  Future<Pair<String,String>?> getQuestion(int n) async{
+
+  Future<Pair<String, String>?> getQuestion(int n) async {
     var result = await storage.read(key: "q$n");
     List<String> ans = result!.split(",");
     return Pair(ans[0], ans[1]);
   }
+
+  Future<List<Pair<String, String>>> getQuestions() async {
+    List<Pair<String, String>> pairs = [];
+    for (int i = 0; i < 3; i++) {
+      var result = await storage.read(key: "q$i");
+      List<String> ans = result!.split(",");
+      pairs.add(Pair(ans[0], ans[1]));
+    }
+
+    return pairs;
+  }
+
   //Save Credentials
   Future saveCredentials(AccessToken token, String refreshToken) async {
     print(token.expiry.toIso8601String());

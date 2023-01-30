@@ -6,7 +6,9 @@ import 'package:pinput/pinput.dart';
 import '../../../../widgets/numeric_keyboard_view.dart';
 
 class CreatePin extends StatefulWidget {
-  const CreatePin({Key? key}) : super(key: key);
+  final bool firstTime;
+
+  const CreatePin({Key? key, required this.firstTime}) : super(key: key);
 
   @override
   State<CreatePin> createState() => _CreatePinState();
@@ -17,13 +19,15 @@ class _CreatePinState extends State<CreatePin> {
   String _savedPin = "";
   String _tempPin = "";
   final SecureStorage _secureStorage = SecureStorage();
+
   @override
   Widget build(BuildContext context) {
-
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
-      textStyle:const TextStyle(fontSize: 20, color: AppColors.primaryDarkest, fontWeight: FontWeight.w600),
+      textStyle: const TextStyle(fontSize: 20,
+          color: AppColors.primaryDarkest,
+          fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.primary),
         borderRadius: BorderRadius.circular(20),
@@ -49,7 +53,9 @@ class _CreatePinState extends State<CreatePin> {
 
             const Spacer(),
 
-            Text(_savedPin.isEmpty?"Create Pin":"Re-enter Pin",style: const TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
+            Text(_savedPin.isEmpty ? "Create Pin" : "Re-enter Pin",
+              style: const TextStyle(
+                  fontSize: 22, fontWeight: FontWeight.w600),),
             const SizedBox(height: 24,),
             const Spacer(),
             Pinput(
@@ -66,34 +72,40 @@ class _CreatePinState extends State<CreatePin> {
               },*/
               pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
               showCursor: true,
-              onCompleted: (pin){
+              onCompleted: (pin) {
                 _tempPin = pin;
               },
 
             ),
             const Spacer(),
             NumericKeyboardView(onTap: (String char) {
-              if(char=="⌫"){
+              if (char == "⌫") {
                 _pin.delete();
               }
-              else if(char=="OK"){
-                if(_savedPin.isNotEmpty){
+              else if (char == "OK") {
+                if (_savedPin.isNotEmpty) {
                   // second time
-                  _secureStorage.savePin(_savedPin).then((value) => Navigator.pushReplacementNamed(context, "/notes"));
-                }else{
+                  _secureStorage.savePin(_savedPin).then((value) {
+                    if(widget.firstTime){
+                      Navigator.pushReplacementNamed(context, "/rememberPassword");
+                    }
+                    else{
+                      Navigator.pushReplacementNamed(context, "/notes");
+                    }
+
+                  });
+                } else {
                   _savedPin = _tempPin;
                 }
 
                 _tempPin = "";
                 _pin.text = "";
 
-                setState((){});
+                setState(() {});
               }
-              else{
-                _pin.append(char,4);
-
+              else {
+                _pin.append(char, 4);
               }
-
             }, isEnterEnabled: true,),
             const SizedBox(height: 32,)
           ],

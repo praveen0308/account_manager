@@ -37,6 +37,14 @@ import 'package:account_manager/ui/features/income_expense/income_expense_parent
 import 'package:account_manager/ui/features/income_expense/income_expense_screen.dart';
 import 'package:account_manager/ui/features/income_expense/pick_category/pick_category.dart';
 import 'package:account_manager/ui/features/income_expense/pick_category/pick_category_cubit.dart';
+import 'package:account_manager/ui/features/lock_screen/create_pin/create_pin.dart';
+import 'package:account_manager/ui/features/lock_screen/create_pin/create_pin_cubit.dart';
+import 'package:account_manager/ui/features/lock_screen/forgot_password/forgot_password.dart';
+import 'package:account_manager/ui/features/lock_screen/forgot_password/forgot_password_cubit.dart';
+import 'package:account_manager/ui/features/lock_screen/pin_authentication/pin_authentication.dart';
+import 'package:account_manager/ui/features/lock_screen/pin_authentication/pin_authentication_cubit.dart';
+import 'package:account_manager/ui/features/lock_screen/remember_password/remember_password.dart';
+import 'package:account_manager/ui/features/lock_screen/remember_password/remember_password_cubit.dart';
 import 'package:account_manager/ui/features/notes/add_new_note/add_new_note_screen.dart';
 import 'package:account_manager/ui/features/notes/notes_cubit.dart';
 import 'package:account_manager/ui/features/notes/notes_screen.dart';
@@ -77,6 +85,10 @@ const String notes = '/notes';
 const String backupNRestore = '/backupNRestore';
 const String addNewNote = '/addNewNote';
 const String businessReport = '/businessReport';
+const String createPin = '/createPin';
+const String pinAuthentication = '/pinAuthentication';
+const String forgotPassword = '/forgotPassword';
+const String rememberPassword = '/rememberPassword';
 
 Route<dynamic> controller(RouteSettings settings) {
   final args = settings.arguments;
@@ -214,40 +226,66 @@ Route<dynamic> controller(RouteSettings settings) {
     case addNewNote:
       return MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (context) => AddNewNoteCubit(
-                RepositoryProvider.of<NoteRepository>(context)
-            ),
-            child: AddNewNoteScreen(note: args as NoteModel?,),
-          ),
+                create: (context) => AddNewNoteCubit(
+                    RepositoryProvider.of<NoteRepository>(context)),
+                child: AddNewNoteScreen(
+                  note: args as NoteModel?,
+                ),
+              ),
           settings: settings);
     case notes:
       return MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (context) => NotesCubit(
-              RepositoryProvider.of<NoteRepository>(context)
-                ),
-            child: NotesScreen(),
-          ),
+                create: (context) =>
+                    NotesCubit(RepositoryProvider.of<NoteRepository>(context)),
+                child: NotesScreen(),
+              ),
           settings: settings);
     case backupNRestore:
       return MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (context) => BackupRestoreCubit(
-            ),
-            child: BackupNRestoreScreen(),
-          ),
+                create: (context) => BackupRestoreCubit(),
+                child: BackupNRestoreScreen(),
+              ),
           settings: settings);
 
     case businessReport:
       return MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (context) => BusinessReportCubit(
-              RepositoryProvider.of<CreditDebitRepository>(context)
-            ),
-            child: BusinessReportScreen(),
-          ),
+                create: (context) => BusinessReportCubit(
+                    RepositoryProvider.of<CreditDebitRepository>(context)),
+                child: BusinessReportScreen(),
+              ),
           settings: settings);
 
+    case createPin:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+                create: (context) => CreatePinCubit(),
+                child: CreatePin(firstTime: args as bool,),
+              ),
+          settings: settings);
+    case pinAuthentication:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+                create: (context) => PinAuthenticationCubit(),
+                child: const PinAuthenticationScreen(),
+              ),
+          settings: settings);
+    case forgotPassword:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+                create: (context) => ForgotPasswordCubit(),
+                child: const ForgotPassword(),
+              ),
+          settings: settings);
+    case rememberPassword:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+                create: (context) => RememberPasswordCubit(),
+                child: const RememberPassword(),
+              ),
+          settings: settings);
 
     default:
       throw ('this route name does not exist');

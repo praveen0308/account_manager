@@ -55,6 +55,11 @@ class _PinAuthenticationScreenState extends State<PinAuthenticationScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Row(mainAxisAlignment: MainAxisAlignment.end,children: [
+              TextButton(onPressed: (){
+                Navigator.pushReplacementNamed(context, "/forgotPassword");
+              }, child: const Text("Forgot Password?"))
+            ],),
 
             const Spacer(),
 
