@@ -133,10 +133,10 @@ class _PickPersonScreenState extends State<PickPersonScreen> {
                           mPerson = person;
                           cdTransaction = CDTransaction(
                               walletId: getActiveWalletId(activeBusiness),
-                              debit: widget.transaction.grandTotal,
+                              credit: widget.transaction.grandTotal,
                               remark: widget.transaction.remark,
                               personId: person.personId!,
-                              type: "debit");
+                              type: TransactionType.credit.name);
                           BlocProvider.of<PickPersonCubit>(context)
                               .addNewTransaction(person, cdTransaction!);
                         },

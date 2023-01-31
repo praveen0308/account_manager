@@ -107,13 +107,34 @@ class CDTransaction {
   }
 
   String getDescription() {
-    return "Transaction ID : $transactionId\n"
+    // New messaging format
+    StringBuffer msg = StringBuffer();
+
+    if(credit>0){
+      msg.write("Credit : ₹$credit\n");
+
+    }else{
+      msg.write("Debit : ₹$debit\n");
+    }
+
+
+    if(closingBalance>=0){
+      msg.write("Advance : ₹$closingBalance\n");
+    }else{
+      msg.write("Due : ₹$closingBalance\n");
+    }
+    msg.write("Time : ${getDate()}\n");
+    msg.write("Remark : $remark");
+    return msg.toString();
+    /*return "Transaction ID : $transactionId\n"
         "Wallet : $walletId\n"
         "Credit : +₹$credit\n"
         "Debit : -₹$debit\n"
         "Closing : ₹$closingBalance\n"
         "Time : ${getDate()}\n"
         "Remark : $remark";
+
+*/
   }
 
 

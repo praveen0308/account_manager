@@ -60,6 +60,7 @@ class _GstCalculatorState extends State<GstCalculator> {
 
     return SafeArea(
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(

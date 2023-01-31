@@ -154,8 +154,8 @@ class _AddPersonFormState extends State<AddPersonForm> {
                         var mobileNumber = _contact.phoneNumber!.number.toString();
 
                         mobileNumber = mobileNumber.replaceAll(RegExp(r"\D"), "");
-                        if(mobileNumber.length!=10){
-                          mobileNumber = mobileNumber.substring(mobileNumber.length - 11);
+                        if(mobileNumber.length>10){
+                          mobileNumber = mobileNumber.substring(mobileNumber.length - 10);
                         }
                         _txtMobileNoController.text = mobileNumber;
                       },

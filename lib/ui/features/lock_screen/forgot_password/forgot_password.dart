@@ -30,6 +30,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(title: const Text("Forgot Password"),),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -50,73 +51,71 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
 
-                      Text(
-                        "Question No. ${activeQ+1}",
-                        style:
-                            const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                      ),
+                    Text(
+                      "Question No. ${activeQ+1}",
+                      style:
+                          const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                    ),
 
-                      const SizedBox(
-                        height: 24,
-                      ),
-                      Text(
-                        questions.isEmpty ? "NA" : questions[activeQ].first,
-                        style:
-                            const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      TextFormField(
-                        controller: _answer,
-                        autofocus: true,
-                        textInputAction:
-                            activeQ == 2 ? TextInputAction.done : TextInputAction.next,
-                        onFieldSubmitted: (txt) {
-                          var isValid = _formKey.currentState!.validate();
-                          if (isValid) {
-                            activeQ++;
-                            setState(() {
-
-                            });
-                          }
-                          if (activeQ > 2) {
-                            showToast(
-                                "You've successfully answered all 3 questions right!!!",
-                                ToastType.success);
-                            Navigator.pushReplacementNamed(context, "/createPin",arguments: false);
-                          }
-                        },
-                        validator: (txt) {
-                          if (txt != questions[activeQ].second) {
-                            return "Wrong Answer!!!";
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: const InputDecoration(
-                            hintText: "Enter answer...", labelText: "Answer"),
-                      ),
-                      const Spacer(),
-                      PrimaryButton(onClick: () {
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    Text(
+                      questions.isEmpty ? "NA" : questions[activeQ].first,
+                      style:
+                          const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    TextFormField(
+                      controller: _answer,
+                      autofocus: true,
+                      textInputAction:
+                          activeQ == 2 ? TextInputAction.done : TextInputAction.next,
+                      onFieldSubmitted: (txt) {
                         var isValid = _formKey.currentState!.validate();
                         if (isValid) {
                           activeQ++;
+                          setState(() {
+
+                          });
                         }
                         if (activeQ > 2) {
                           showToast(
                               "You've successfully answered all 3 questions right!!!",
                               ToastType.success);
-                          Navigator.pushReplacementNamed(context, "/createPin");
+                          Navigator.pushReplacementNamed(context, "/createPin",arguments: false);
                         }
-                      }, text: "Continue")
-                    ],
-                  ),
+                      },
+                      validator: (txt) {
+                        if (txt != questions[activeQ].second) {
+                          return "Wrong Answer!!!";
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: const InputDecoration(
+                          hintText: "Enter answer...", labelText: "Answer"),
+                    ),
+                    const Spacer(),
+                    PrimaryButton(onClick: () {
+                      var isValid = _formKey.currentState!.validate();
+                      if (isValid) {
+                        activeQ++;
+                      }
+                      if (activeQ > 2) {
+                        showToast(
+                            "You've successfully answered all 3 questions right!!!",
+                            ToastType.success);
+                        Navigator.pushReplacementNamed(context, "/createPin");
+                      }
+                    }, text: "Continue")
+                  ],
                 );
               },
             ),

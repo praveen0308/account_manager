@@ -31,6 +31,7 @@ class PickPersonCubit extends Cubit<PickPersonState> {
     emit(AddingTransaction());
     try{
       transaction.addedOn = DateTime.now().millisecondsSinceEpoch;
+
       var result = await _creditDebitRepository.addNewTransaction1(personModel,transaction);
       emit(AddedTransaction());
 

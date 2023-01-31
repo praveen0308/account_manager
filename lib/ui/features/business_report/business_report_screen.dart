@@ -115,7 +115,9 @@ class _BusinessReportScreenState extends State<BusinessReportScreen> {
                   children: [
                     Expanded(
                       child: DropdownButtonHideUnderline(
+
                           child: DropdownButton2(
+                            isExpanded:true,
                         hint: Text(
                           'Select Item',
                           style: TextStyle(
@@ -125,6 +127,7 @@ class _BusinessReportScreenState extends State<BusinessReportScreen> {
                         ),
                         items: _wallets
                             .map((item) => DropdownMenuItem<String>(
+
                                   value: item,
                                   child: Text(
                                     item,
@@ -162,49 +165,48 @@ class _BusinessReportScreenState extends State<BusinessReportScreen> {
                     ),
                     Expanded(
                       child: DropdownButtonHideUnderline(
-                          child: FittedBox(
-                        child: DropdownButton2(
-                          hint: Text(
-                            'Select Item',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).hintColor,
+                          child: DropdownButton2(
+                            isExpanded:true,
+                            hint: Text(
+                              'Select Item',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).hintColor,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          items: _types
-                              .map((item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 16,
+                            items: _types
+                                .map((item) => DropdownMenuItem<String>(
+                                      value: item,
+                                      child: Text(
+                                        item,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                        ),
                                       ),
-                                    ),
-                                  ))
-                              .toList(),
-                          value: _activeType,
-                          onChanged: (value) {
-                            setState(() {
-                              _activeType = value as String;
-                            });
-                            BlocProvider.of<BusinessReportCubit>(context)
-                                .filterTransactions(_activeType);
-                          },
-                          buttonHeight: 40,
-                          itemHeight: 40,
-                          buttonPadding: const EdgeInsets.only(left: 14, right: 14),
-                          buttonDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                                color: AppColors.primaryDarkest, width: 1.5),
-                            color: Colors.white,
-                          ),
-                          dropdownDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      )),
+                                    ))
+                                .toList(),
+                            value: _activeType,
+                            onChanged: (value) {
+                              setState(() {
+                                _activeType = value as String;
+                              });
+                              BlocProvider.of<BusinessReportCubit>(context)
+                                  .filterTransactions(_activeType);
+                            },
+                            buttonHeight: 40,
+                            itemHeight: 40,
+                            buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                            buttonDecoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                  color: AppColors.primaryDarkest, width: 1.5),
+                              color: Colors.white,
+                            ),
+                            dropdownDecoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          )),
                     ),
                   ],
                 ),

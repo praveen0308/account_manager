@@ -37,11 +37,21 @@ class _AddNewNoteScreenState extends State<AddNewNoteScreen> {
     return SafeArea(
       child: WillPopScope(
         onWillPop: () {
-          BlocProvider.of<AddNewNoteCubit>(context)
-              .draftNote(NoteModel(
-            title: _title.text,
-            description: _description.text,
-          ));
+          if (noteId == 0) {
+            BlocProvider.of<AddNewNoteCubit>(context)
+                .draftNote(NoteModel(
+              title: _title.text,
+              description: _description.text,
+            ));
+          } else {
+            BlocProvider.of<AddNewNoteCubit>(context)
+                .updateNote(NoteModel(
+                noteId: noteId,
+                title: _title.text,
+                description: _description.text,
+                addedOn: widget.note!.addedOn));
+          }
+
 
           return Future.value(false);
         },

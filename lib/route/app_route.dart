@@ -25,6 +25,8 @@ import 'package:account_manager/ui/features/credit_debit/edit_transaction/select
 import 'package:account_manager/ui/features/credit_debit/edit_transaction/select_person/select_person_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/history/cd_history_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/history/cd_history_screen.dart';
+import 'package:account_manager/ui/features/feedback/feedback_form.dart';
+import 'package:account_manager/ui/features/feedback/feedback_form_cubit.dart';
 import 'package:account_manager/ui/features/gst_calculator/gst_calculator.dart';
 import 'package:account_manager/ui/features/gst_calculator/gst_calculator_cubit.dart';
 import 'package:account_manager/ui/features/income_expense/add_income_expense/add_income_expense.dart';
@@ -89,6 +91,7 @@ const String createPin = '/createPin';
 const String pinAuthentication = '/pinAuthentication';
 const String forgotPassword = '/forgotPassword';
 const String rememberPassword = '/rememberPassword';
+const String feedback = '/feedback';
 
 Route<dynamic> controller(RouteSettings settings) {
   final args = settings.arguments;
@@ -285,6 +288,13 @@ Route<dynamic> controller(RouteSettings settings) {
                 create: (context) => RememberPasswordCubit(),
                 child: const RememberPassword(),
               ),
+          settings: settings);
+    case feedback:
+      return MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => FeedbackFormCubit(),
+            child: const FeedbackForm(),
+          ),
           settings: settings);
 
     default:

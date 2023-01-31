@@ -8,4 +8,6 @@ class AppIcons{
   static const String icNote = "$_root/ic_note.svg";
   static const String icEmiCalculator = "$_root/ic_emi_calculator.svg";
   static const String icIncome = "$_root/ic_income.svg";
+  static const String icFeedback= "$_root/ic_feedback.svg";
+  static const String icBackup= "$_root/ic_backup.svg";
 }

@@ -3,9 +3,6 @@ import 'package:account_manager/res/app_colors.dart';
 import 'package:account_manager/res/app_icons.dart';
 import 'package:account_manager/res/app_strings.dart';
 import 'package:account_manager/res/text_styles.dart';
-import 'package:account_manager/ui/features/lock_screen/create_pin/create_pin.dart';
-import 'package:account_manager/ui/features/lock_screen/pin_authentication/pin_authentication.dart';
-import 'package:account_manager/ui/features/lock_screen/remember_password/remember_password.dart';
 import 'package:account_manager/ui/screens/dashboard/widgets/app_drawer.dart';
 import 'package:account_manager/ui/screens/dashboard/widgets/dashboard_item.dart';
 import 'package:flutter/material.dart';
@@ -24,15 +21,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final SecureStorage _secureStorage = SecureStorage();
   bool _isSecured = false;
 
-
   @override
   void initState() {
-    _secureStorage.getPin().then((value){
-      _isSecured = value!=null;
+    _secureStorage.getPin().then((value) {
+      _isSecured = value != null;
     });
 
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +48,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: ListView(
                 children: [
                   Text(
-                    "Good Morning",
+                    "Welcome",
                     style: AppTextStyles.headline5(
                         txtColor: AppColors.primaryText),
                   ),
@@ -60,12 +57,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     style: AppTextStyles.headline6(
                         txtColor: AppColors.primaryText),
                   ),
-                  /*Row(
-                    children: [
-                      DashboardItem(iconUrl: AppIcons.icGSTCalculator, title: AppStrings.gstCalculator, onItemClick: (){}),
-                      DashboardItem(iconUrl: AppIcons.icCash, title: AppStrings.cashCounter, onItemClick: (){}),
-                    ],
-                  )*/
                   const SizedBox(
                     height: 32,
                   ),
@@ -132,28 +123,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             title: AppStrings.notes,
                             onItemClick: () {
                               // Navigator.pushNamed(context, route.notes);
-                              if(_isSecured){
-                                Navigator.pushNamed(context, route.pinAuthentication);
-                              }else{
-                                Navigator.pushNamed(context, route.createPin,arguments: true);
-
+                              if (_isSecured) {
+                                Navigator.pushNamed(
+                                    context, route.pinAuthentication).then((value){
+                                  _secureStorage.getPin().then((value) {
+                                    _isSecured = value != null;
+                                  });
+                                });
+                              } else {
+                                Navigator.pushNamed(context, route.createPin,
+                                    arguments: true).then((value){
+                                  _secureStorage.getPin().then((value) {
+                                    _isSecured = value != null;
+                                  });
+                                });
                               }
                               // Navigator.push(context, MaterialPageRoute(builder: (context)=>const RememberPassword()));
                             }),
                       ),
                       StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: DashboardItem(
+                            iconUrl: AppIcons.icFeedback,
+                            title: AppStrings.feedBack,
+                            onItemClick: () {
+                              Navigator.pushNamed(
+                                  context, route.feedback);
+                            }),
+                      ),
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: DashboardItem(
+                            iconUrl: AppIcons.icBackup,
+                            title: AppStrings.backupNRestore,
+                            onItemClick: () {
+                              Navigator.pushNamed(
+                                  context, route.backupNRestore);
+                            }),
+                      ),
+                      /*StaggeredGridTile.count(
                         crossAxisCellCount: 2,
                         mainAxisCellCount: 0.7,
                         child: HrDashboardItem(
                             iconUrl: AppIcons.icIncome,
                             title: AppStrings.backupNRestore,
                             onItemClick: () {
-                              Navigator.pushNamed(context, route.backupNRestore);
-
+                              Navigator.pushNamed(
+                                  context, route.backupNRestore);
                             }),
-                      ),
+                      ),*/
                     ],
-                  )
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
                 ],
               ),
             )));
