@@ -10,4 +10,5 @@ class AppIcons{
   static const String icIncome = "$_root/ic_income.svg";
   static const String icFeedback= "$_root/ic_feedback.svg";
   static const String icBackup= "$_root/ic_backup.svg";
+  static const String icShare= "$_root/ic_share.svg";
 }

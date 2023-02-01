@@ -12,5 +12,6 @@ class AppStrings{
   static const String incomeExpense = "Income & Expense";
   static const String backupNRestore = "Backup & Restore";
   static const String feedBack = "Feedback";
+  static const String shareNow = "Share App";
 
 }

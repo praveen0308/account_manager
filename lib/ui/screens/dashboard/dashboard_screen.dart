@@ -8,7 +8,7 @@ import 'package:account_manager/ui/screens/dashboard/widgets/dashboard_item.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:account_manager/route/route.dart' as route;
-
+import 'package:share_plus/share_plus.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
@@ -61,7 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     height: 32,
                   ),
                   StaggeredGrid.count(
-                    crossAxisCount: 2,
+                    crossAxisCount: 3,
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 16,
                     children: [
@@ -145,6 +145,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisCellCount: 1,
                         mainAxisCellCount: 1,
                         child: DashboardItem(
+                            iconUrl: AppIcons.icBackup,
+                            title: AppStrings.backupNRestore,
+                            onItemClick: () {
+                              Navigator.pushNamed(
+                                  context, route.backupNRestore);
+                            }),
+                      ),
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 1,
+                        mainAxisCellCount: 1,
+                        child: DashboardItem(
                             iconUrl: AppIcons.icFeedback,
                             title: AppStrings.feedBack,
                             onItemClick: () {
@@ -152,15 +163,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   context, route.feedback);
                             }),
                       ),
+
                       StaggeredGridTile.count(
                         crossAxisCellCount: 1,
                         mainAxisCellCount: 1,
                         child: DashboardItem(
-                            iconUrl: AppIcons.icBackup,
-                            title: AppStrings.backupNRestore,
+                            iconUrl: AppIcons.icShare,
+                            title: AppStrings.shareNow,
                             onItemClick: () {
-                              Navigator.pushNamed(
-                                  context, route.backupNRestore);
+                              Share.share('Check out this application https://example.com', subject: 'Account Manager');
                             }),
                       ),
                       /*StaggeredGridTile.count(

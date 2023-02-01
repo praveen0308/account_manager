@@ -58,7 +58,7 @@ class _CashCounterScreenState extends State<CashCounterScreen> {
                 }
               });
             }else{
-              ShareUtil.launchWhatsapp(state.savedTransaction.getDescription());
+              // ShareUtil.launchWhatsapp(state.savedTransaction.getDescription());
             }
 
           }

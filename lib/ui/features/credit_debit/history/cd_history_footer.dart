@@ -45,6 +45,7 @@ class _CDHistoryFooterState extends State<CDHistoryFooter> {
           if(value[0]){
             PersonModel person = value[1];
             CDTransaction cdTransaction = value[2];
+            cdTransaction.closingBalance = person.credit-person.debit;
             ShareUtil.launchWhatsapp1(cdTransaction.getDescription(), person.mobileNumber);
           }
     });

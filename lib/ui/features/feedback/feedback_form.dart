@@ -110,6 +110,8 @@ class _FeedbackFormState extends State<FeedbackForm> {
                         ),
                         TextFormField(
                           controller: feedbackController,
+                          maxLines: 100,
+                          minLines: 5,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Enter Valid Feedback';

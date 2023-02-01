@@ -14,6 +14,7 @@ class DashboardItem extends StatelessWidget {
     return InkWell(
       onTap: onItemClick,
       child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           color: AppColors.primaryLightest,
           borderRadius: BorderRadius.circular(8)
@@ -22,9 +23,9 @@ class DashboardItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(iconUrl,color: AppColors.primaryDarkest,height: 48,width: 48,),
+            SvgPicture.asset(iconUrl,color: AppColors.primaryDarkest,height: 32,width: 32,),
             const SizedBox(height: 16,),
-            Text(title,textAlign: TextAlign.center,style: AppTextStyles.subtitle1(wFont: FontWeight.w400,txtColor: AppColors.primaryText),)
+            Text(title,textAlign: TextAlign.center,style: AppTextStyles.subtitle2(wFont: FontWeight.w400,txtColor: AppColors.primaryText),)
           ],
         ),
       ),

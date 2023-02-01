@@ -1,10 +1,11 @@
-import 'package:account_manager/local/secure_storage.dart';
 import 'package:account_manager/utils/toaster.dart';
 import 'package:account_manager/widgets/primary_button.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../models/pair.dart';
+import '../../../../res/app_colors.dart';
 import 'forgot_password_cubit.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -18,7 +19,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _answer = TextEditingController();
   final List<Pair<String, String>> questions = [];
-  int activeQ = 0;
+  Pair<String,String> _activeQuestion = Pair("","");
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 if (state is ReceivedQuestions) {
                   questions.clear();
                   questions.addAll(state.questions);
+                  _activeQuestion = questions[0];
                   setState(() {
 
                   });
@@ -55,45 +57,76 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
 
-                    Text(
-                      "Question No. ${activeQ+1}",
-                      style:
-                          const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                    const Text(
+                      "Select 1 of 3 questions",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                     ),
 
                     const SizedBox(
                       height: 24,
                     ),
-                    Text(
-                      questions.isEmpty ? "NA" : questions[activeQ].first,
-                      style:
-                          const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
+                    DropdownButtonHideUnderline(
+                        child: DropdownButton2(
+                          isExpanded: true,
+                          hint: Text(
+                            'Select Item',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme
+                                  .of(context)
+                                  .hintColor,
+                            ),
+                          ),
+                          items: questions
+                              .map((item) =>
+                              DropdownMenuItem<Pair<String,String>>(
+                                value: item,
+                                child: Text(
+                                  item.first,
+                                  overflow: TextOverflow.clip,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ))
+                              .toList(),
+                          value: _activeQuestion,
+                          onChanged: (value) {
+                            _activeQuestion = value as Pair<String,String>;
+
+                            setState(() {});
+                          },
+                          buttonHeight: 40,
+                          itemHeight: 40,
+                          buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                          buttonDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            border:
+                            Border.all(color: AppColors.primaryDarkest, width: 1.5),
+                            color: Colors.white,
+                          ),
+                          dropdownDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        )),
                     const SizedBox(
                       height: 16,
                     ),
                     TextFormField(
                       controller: _answer,
                       autofocus: true,
-                      textInputAction:
-                          activeQ == 2 ? TextInputAction.done : TextInputAction.next,
+                      textInputAction: TextInputAction.done,
                       onFieldSubmitted: (txt) {
                         var isValid = _formKey.currentState!.validate();
                         if (isValid) {
-                          activeQ++;
-                          setState(() {
-
-                          });
-                        }
-                        if (activeQ > 2) {
                           showToast(
-                              "You've successfully answered all 3 questions right!!!",
+                              "You've successfully answered the given question right!!!",
                               ToastType.success);
                           Navigator.pushReplacementNamed(context, "/createPin",arguments: false);
                         }
                       },
                       validator: (txt) {
-                        if (txt != questions[activeQ].second) {
+                        if (txt != _activeQuestion.second) {
                           return "Wrong Answer!!!";
                         } else {
                           return null;
@@ -106,13 +139,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     PrimaryButton(onClick: () {
                       var isValid = _formKey.currentState!.validate();
                       if (isValid) {
-                        activeQ++;
-                      }
-                      if (activeQ > 2) {
                         showToast(
-                            "You've successfully answered all 3 questions right!!!",
+                            "You've successfully answered the given question right!!!",
                             ToastType.success);
-                        Navigator.pushReplacementNamed(context, "/createPin");
+                        Navigator.pushReplacementNamed(context, "/createPin",arguments: false);
                       }
                     }, text: "Continue")
                   ],
