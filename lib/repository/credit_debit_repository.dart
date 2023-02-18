@@ -19,9 +19,6 @@ class CreditDebitRepository {
       var result = await db.insert(PersonModel.table, person.toMap());
       return true;
     }
-
-
-
   }
 
   Future<bool> checkPersonExists(PersonModel person) async {
@@ -141,7 +138,7 @@ class CreditDebitRepository {
 
     if(isCancel){
       if (isCredit) {
-        personModel.credit += transaction.credit;
+        personModel.credit -= transaction.credit;
         row = {PersonModel.colCredit: personModel.credit};
       } else {
         personModel.debit -= transaction.debit;
@@ -149,7 +146,7 @@ class CreditDebitRepository {
       }
     }else{
       if (isCredit) {
-        personModel.credit -= transaction.credit;
+        personModel.credit += transaction.credit;
         row = {PersonModel.colCredit: personModel.credit};
       } else {
         personModel.debit += transaction.debit;

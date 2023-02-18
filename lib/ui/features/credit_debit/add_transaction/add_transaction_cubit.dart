@@ -16,7 +16,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
   Future<void> addNewTransaction(PersonModel personModel,CDTransaction transaction) async {
     emit(AddingTransaction());
     try{
-      transaction.addedOn = DateTime.now().millisecondsSinceEpoch;
+      // transaction.addedOn = DateTime.now().millisecondsSinceEpoch;
       var result = await _creditDebitRepository.addNewTransaction1(personModel,transaction);
       if(result!=null) {
         emit(AddedSuccessfully(result));

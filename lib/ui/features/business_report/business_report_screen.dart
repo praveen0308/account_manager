@@ -279,7 +279,8 @@ class _BusinessReportScreenState extends State<BusinessReportScreen> {
               }, listener: (context, state) {
                 if (state is ReceivedTransactions) {
                   visibleTransactions.clear();
-                  visibleTransactions.addAll(state.transactions);
+                  visibleTransactions.addAll(state.transactions.reversed.toList());
+
                 } else {
                   visibleTransactions.clear();
                 }

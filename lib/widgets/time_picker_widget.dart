@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 
 class TimePickerWidget extends StatefulWidget {
   final Function(TimeOfDay time) onTimeSelected;
-  const TimePickerWidget({Key? key, required this.onTimeSelected}) : super(key: key);
+  final PickerType? type;
+
+  const TimePickerWidget(
+      {Key? key, required this.onTimeSelected, this.type = PickerType.normal})
+      : super(key: key);
 
   @override
   State<TimePickerWidget> createState() => _TimePickerWidgetState();
@@ -16,13 +20,15 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? pickedS = await showTimePicker(
         context: context,
-        initialTime: selectedTime, builder: (BuildContext context, Widget? child) {
-      return MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-        child: child!,
-      );});
+        initialTime: selectedTime,
+        builder: (BuildContext context, Widget? child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+            child: child!,
+          );
+        });
 
-    if (pickedS != null && pickedS != selectedTime ) {
+    if (pickedS != null && pickedS != selectedTime) {
       setState(() {
         selectedTime = pickedS;
         widget.onTimeSelected(selectedTime);
@@ -33,14 +39,17 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         _selectTime(context);
       },
       child: Row(
         children: [
-          const Icon(Icons.access_time_rounded,color: AppColors.primaryDarkest,size: 32,),
-          const SizedBox(width:8 ,),
-          Expanded(child: Text(selectedTime.format(context),style: const TextStyle(fontSize: 20,color: AppColors.primaryText,fontWeight: FontWeight.w600),))
+          Icon(Icons.access_time_rounded, color: AppColors.primaryDarkest,
+            size: widget.type == PickerType.normal ? 32 : 24,),
+          const SizedBox(width: 8,),
+          Expanded(child: Text(selectedTime.format(context), style: TextStyle(
+              fontSize: widget.type == PickerType.normal ? 20 : 14,
+              color: AppColors.primaryText,fontWeight: FontWeight.w600),))
         ],
       ),
     );

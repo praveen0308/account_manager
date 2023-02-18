@@ -96,6 +96,12 @@ class CcHistoryCubit extends Cubit<CcHistoryState> {
         dayTransactions.add(dayTransaction);
       });
 
+      dayTransactions.forEach((element) {
+        element.cashTransactions = element.cashTransactions.reversed.toList();
+      });
+
+
+
       emit(ReceivedHistory(dayTransactions.reversed.toList(), grandTotal));
     } on Exception catch(e) {
       emit(Error("Something went wrong !!!"));

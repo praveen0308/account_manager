@@ -39,11 +39,6 @@ class CdHistoryCubit extends Cubit<CdHistoryState> {
             transactions[0].closingBalance =
                 transactions[0].credit - transactions[0].debit;
           } else {
-
-            /*transactions[i].closingBalance =
-                transactions[i - 1].closingBalance +
-                    transactions[i].credit -
-                    transactions[i].debit;*/
             transactions[i].closingBalance =
                 lastClosingBal +
                     transactions[i].credit -

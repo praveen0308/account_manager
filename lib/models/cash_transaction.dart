@@ -2,6 +2,8 @@ import 'package:account_manager/utils/extension_methods.dart';
 import 'package:intl/intl.dart';
 import 'package:number_to_words_english/number_to_words_english.dart';
 
+import '../utils/currency_utils.dart';
+
 class CashTransactionModel {
   static const String table = "cash_transactions";
 
@@ -130,10 +132,10 @@ class CashTransactionModel {
     return result;
   }
   String getGrandTotalInWords(){
-    String inWords = NumberToWordsEnglish.convert(grandTotal.toInt());
+    /*String inWords = NumberToWordsEnglish.convert(grandTotal.toInt());
     inWords = inWords.replaceAll("-", " ");
-    inWords = inWords.capitalize();
-
+    inWords = inWords.capitalize();*/
+    String inWords = CurrencyUtils.convert(grandTotal.toInt());
     return inWords;
   }
   Map<String, dynamic> toMap() {

@@ -111,10 +111,10 @@ class CDTransaction {
     StringBuffer msg = StringBuffer();
 
     if(credit>0){
-      msg.write("Credit : ₹$credit\n");
+      msg.write("Paid : ₹$credit\n");
 
     }else{
-      msg.write("Debit : ₹$debit\n");
+      msg.write("Received : ₹$debit\n");
     }
 
 

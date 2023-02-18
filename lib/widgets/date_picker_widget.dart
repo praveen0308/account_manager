@@ -8,7 +8,8 @@ class DatePickerWidget extends StatefulWidget {
   final DateTime? initialDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
-  const DatePickerWidget({Key? key, required this.onDateSelected, this.firstDate, this.lastDate, this.initialDate})
+  final PickerType? type;
+  const DatePickerWidget({Key? key, required this.onDateSelected, this.firstDate, this.lastDate, this.initialDate, this.type=PickerType.normal})
       : super(key: key);
 
   @override
@@ -40,10 +41,10 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       },
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.calendar_month,
             color: AppColors.primaryDarkest,
-            size: 32,
+            size: widget.type==PickerType.normal?32:24,
           ),
           const SizedBox(
             width: 8,
@@ -51,8 +52,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           Expanded(
               child: Text(
             DateTimeHelper.formatDate(currentDate, "dd MMM yyyy"),
-            style: const TextStyle(
-                fontSize: 20,
+            style: TextStyle(
+                fontSize: widget.type==PickerType.normal?20:14,
                 color: AppColors.primaryText,
                 fontWeight: FontWeight.w600),
           ))

@@ -149,3 +149,4 @@ extension DateBounds on DateTime {
 }
 
 enum DateFilter { daily, monthly, yearly }
+enum PickerType { normal, mini }

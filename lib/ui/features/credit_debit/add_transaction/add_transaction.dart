@@ -2,9 +2,12 @@ import 'package:account_manager/models/credit_debit_transaction.dart';
 import 'package:account_manager/models/person_model.dart';
 import 'package:account_manager/ui/features/credit_debit/add_transaction/add_transaction_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/history/cd_history_cubit.dart';
+import 'package:account_manager/utils/date_time_helper.dart';
 import 'package:account_manager/utils/toaster.dart';
+import 'package:account_manager/widgets/date_picker_widget.dart';
 import 'package:account_manager/widgets/outlined_text_field.dart';
 import 'package:account_manager/widgets/secondary_button.dart';
+import 'package:account_manager/widgets/time_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,6 +34,8 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
   bool isValid = true;
   int selectedWalletId = 1;
   CDTransaction? cdTransaction;
+  var selectedDate = DateTime.now();
+  var selectedTime = TimeOfDay.fromDateTime(DateTime.now());
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +89,27 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
                 maxLength: 50,
                 hintText: "Remark",
               ),
+
+              Row(
+
+                children: [
+                  Expanded(child: DatePickerWidget(
+                    onDateSelected: (DateTime date) {
+                      selectedDate = date;
+                    },
+                    type: PickerType.mini,
+                  )),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(child: TimePickerWidget(
+                    onTimeSelected: (TimeOfDay time) {
+                      selectedTime = time;
+                    },
+                    type:PickerType.mini
+                  ))
+                ],
+              ),
               /*Padding(
                   padding: const EdgeInsets.only(left: 5, right: 5),
                   child: WalletGroup(
@@ -131,13 +157,14 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
                               setState(() {
                                 isValid = true;
                               });
-
+                              var addedOn = DateTime(selectedDate.year,selectedDate.month,selectedDate.day,selectedTime.hour,selectedTime.minute);
                               if (widget.type == TransactionType.credit) {
                                 cdTransaction = CDTransaction(
                                     walletId: widget.person.walletId,
                                     credit: double.parse(amount),
                                     remark: remark,
                                     personId: widget.person.personId!,
+                                    addedOn: addedOn.millisecondsSinceEpoch,
                                     type: widget.type.name);
                                 BlocProvider.of<AddTransactionCubit>(context)
                                     .addNewTransaction(
@@ -148,6 +175,7 @@ class _AddCDTransactionFormState extends State<AddCDTransactionForm> {
                                     debit: double.parse(amount),
                                     remark: remark,
                                     personId: widget.person.personId!,
+                                    addedOn: addedOn.millisecondsSinceEpoch,
                                     type: widget.type.name);
                                 BlocProvider.of<AddTransactionCubit>(context)
                                     .addNewTransaction(
