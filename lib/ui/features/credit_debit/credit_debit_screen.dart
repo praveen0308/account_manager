@@ -94,7 +94,15 @@ class _CreditDebitScreenState extends State<CreditDebitScreen> {
                             itemCount: state.persons.length,
                             itemBuilder: (context, index) {
                               var person = state.persons[index];
-                              return CreditDebitRow(personModel: person);
+                              if(index==persons.length-1){
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 250),
+                                  child: CreditDebitRow(personModel: person),
+                                );
+                              }else{
+                                return CreditDebitRow(personModel: person);
+                              }
+
                             },
                             separatorBuilder:
                                 (BuildContext context, int index) {

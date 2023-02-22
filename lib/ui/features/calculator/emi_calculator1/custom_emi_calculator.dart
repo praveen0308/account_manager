@@ -136,7 +136,7 @@ class _CustomEMICalculatorState extends State<CustomEMICalculator> {
           OutlinedTextField(
             controller: _rate,
             inputType: TextInputType.number,
-            maxLength: 3,
+            maxLength: 5,
             hintText: "Rate",
             onTextChanged: (String txt) {},
             onSubmitted: (String txt) {},
@@ -176,7 +176,7 @@ class _CustomEMICalculatorState extends State<CustomEMICalculator> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       label("Total Interest Payable"),
-                      Text(":  ₹$totalInterestPayable",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600)),
+                      Text(":  ₹${totalInterestPayable.toStringAsFixed(0)}",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600)),
 
                     ],
                   ),
@@ -186,7 +186,7 @@ class _CustomEMICalculatorState extends State<CustomEMICalculator> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       label("Total Payment\n(Principal + Interest) "),
-                      Text(": ₹$totalPayment",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600))
+                      Text(": ₹${totalPayment.toStringAsFixed(0)}",style: const TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.w600))
                     ],
                   ),
                 ],

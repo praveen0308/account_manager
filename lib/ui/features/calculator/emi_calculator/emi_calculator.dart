@@ -68,12 +68,12 @@ class _EmiCalculatorState extends State<EmiCalculator> {
             OutlinedTextField(
               controller: _rate,
               inputType: TextInputType.number,
-              maxLength: 3,
+              maxLength: 5,
               hintText: "Rate",
               onTextChanged: (String txt) {},
               onSubmitted: (String txt) {},
             ),
-
+            // Visibility(child: Text("Invalid interest rate")),
             Row(
               children: [
                 Expanded(
@@ -90,6 +90,7 @@ class _EmiCalculatorState extends State<EmiCalculator> {
                 ),
                 Expanded(
                   child: RadioListTile<DurationFormat>(
+
                     title: const Text('Monthly'),
                     value: DurationFormat.monthly,
                     groupValue: _format,
