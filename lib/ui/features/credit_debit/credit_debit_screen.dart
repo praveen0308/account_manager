@@ -1,12 +1,10 @@
 import 'package:account_manager/ui/features/credit_debit/credit_debit_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/widgets/credit_debit_footer.dart';
 import 'package:account_manager/ui/features/credit_debit/widgets/credit_debit_row.dart';
-import 'package:account_manager/widgets/custom_dropdown.dart';
 import 'package:account_manager/widgets/list_data_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
+
 
 import '../../../models/person_model.dart';
 import '../../../reports/credit_debit/cd_transaction_preview.dart';

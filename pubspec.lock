@@ -262,14 +262,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  flutter_native_contact_picker:
-    dependency: "direct main"
-    description:
-      name: flutter_native_contact_picker
-      sha256: fb3ffce8440a97efeb26966054760e31c93a85135879287a9c088bf64de8cd86
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.3"
   flutter_phone_direct_caller:
     dependency: "direct main"
     description:
@@ -941,22 +933,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  syncfusion_flutter_core:
-    dependency: transitive
-    description:
-      name: syncfusion_flutter_core
-      sha256: "66529f3f102c6501a75811e8d931a1908ad9865ea4d3416c40ac05cf62fdcd44"
-      url: "https://pub.dev"
-    source: hosted
-    version: "20.4.44"
-  syncfusion_flutter_pdf:
-    dependency: "direct main"
-    description:
-      name: syncfusion_flutter_pdf
-      sha256: e500ece526fc740aadae04cfeda9cee050f12f14babe7cb34be37cc53605e2e3
-      url: "https://pub.dev"
-    source: hosted
-    version: "20.4.44"
   synchronized:
     dependency: transitive
     description:

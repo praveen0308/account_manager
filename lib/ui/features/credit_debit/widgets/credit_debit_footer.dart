@@ -4,12 +4,9 @@ import 'package:account_manager/res/app_colors.dart';
 import 'package:account_manager/ui/features/credit_debit/add_person/add_person_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/add_person/add_person_form.dart';
 import 'package:account_manager/ui/features/credit_debit/credit_debit_cubit.dart';
-import 'package:account_manager/ui/features/credit_debit/widgets/wallet_view.dart';
-import 'package:account_manager/widgets/outlined_text_field.dart';
-import 'package:account_manager/widgets/secondary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
+
 
 class CreditDebitFooter extends StatefulWidget {
   const CreditDebitFooter({Key? key}) : super(key: key);

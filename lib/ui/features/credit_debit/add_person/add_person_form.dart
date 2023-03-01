@@ -4,7 +4,6 @@ import 'package:account_manager/res/app_constants.dart';
 import 'package:account_manager/ui/features/credit_debit/add_person/add_person_cubit.dart';
 import 'package:account_manager/ui/features/credit_debit/credit_debit_cubit.dart';
 import 'package:account_manager/utils/toaster.dart';
-import 'package:account_manager/widgets/custom_dropdown.dart';
 import 'package:account_manager/widgets/outlined_text_field.dart';
 import 'package:account_manager/widgets/secondary_button.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -143,9 +142,6 @@ class _AddPersonFormState extends State<AddPersonForm> {
                         final PhoneContact contact =
                             await FlutterContactPicker.pickPhoneContact(
                                 askForPermission: true);
-
-                        // Contact? contact = await _contactPicker.selectContact();
-
                         setState(() {
                           _contact = contact;
                         });
