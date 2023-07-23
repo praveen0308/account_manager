@@ -84,7 +84,7 @@ class CreditDebitRow extends StatelessWidget {
                       onPressed: () async {
                         ShareUtil.launchWhatsapp1("Hiii", personModel.mobileNumber);
                       },
-                      icon: const Icon(Icons.whatsapp)),
+                      icon: const Icon(Icons.message)),
                   IconButton(
                       padding: const EdgeInsets.all(0),
                       constraints: const BoxConstraints(),
